@@ -47,7 +47,7 @@ namespace HelloMod
 		void OnGUI()
 		{
 			if (_segment != null)
-			_windowRect = GUILayout.Window(45051 , _windowRect, DrawMain, "Bezire Modifer");
+                _windowRect = GUILayout.Window(45051 , _windowRect, DrawMain, "Bezier Modifer");
 
 		}
 		public void DrawMain(int windowId)
@@ -57,6 +57,8 @@ namespace HelloMod
 			for (int x = 0; x < _vectorUI.Count; x++) {
 				_vectorUI [x].GUI ();
 			}
+
+            _segment.Initialize ();
 
 			GUI.EndGroup();
 			GUI.DragWindow(_titleBarRect);
