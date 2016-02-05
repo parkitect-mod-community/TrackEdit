@@ -17,15 +17,23 @@
 [Rr]eleases/
 x64/
 x86/
+<<<<<<< HEAD
 build/
+=======
+>>>>>>> f846fddb080c99f518b2b26bdf4d36f2a5140dbe
 bld/
 [Bb]in/
 [Oo]bj/
 
+<<<<<<< HEAD
 # Visual Studo 2015 cache/options directory
+.vs/
+=======
+# Visual Studio 2015 cache/options directory
 .vs/
 # Uncomment if you have tasks that create the project's static files in wwwroot
 #wwwroot/
+>>>>>>> f846fddb080c99f518b2b26bdf4d36f2a5140dbe
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
@@ -40,10 +48,13 @@ TestResult.xml
 [Rr]eleasePS/
 dlldata.c
 
+<<<<<<< HEAD
+=======
 # DNX
 project.lock.json
 artifacts/
 
+>>>>>>> f846fddb080c99f518b2b26bdf4d36f2a5140dbe
 *_i.c
 *_p.c
 *_i.h
@@ -76,7 +87,10 @@ _Chutzpah*
 ipch/
 *.aps
 *.ncb
+<<<<<<< HEAD
+=======
 *.opendb
+>>>>>>> f846fddb080c99f518b2b26bdf4d36f2a5140dbe
 *.opensdf
 *.sdf
 *.cachefile
@@ -85,7 +99,10 @@ ipch/
 *.psess
 *.vsp
 *.vspx
+<<<<<<< HEAD
+=======
 *.sap
+>>>>>>> f846fddb080c99f518b2b26bdf4d36f2a5140dbe
 
 # TFS 2012 Local Workspace
 $tf/
@@ -98,7 +115,11 @@ _ReSharper*/
 *.[Rr]e[Ss]harper
 *.DotSettings.user
 
+<<<<<<< HEAD
+# JustCode is a .NET coding addin-in
+=======
 # JustCode is a .NET coding add-in
+>>>>>>> f846fddb080c99f518b2b26bdf4d36f2a5140dbe
 .JustCode
 
 # TeamCity is a build add-in
@@ -110,7 +131,10 @@ _TeamCity*
 # NCrunch
 _NCrunch_*
 .*crunch*.local.xml
+<<<<<<< HEAD
+=======
 nCrunchTemp_*
+>>>>>>> f846fddb080c99f518b2b26bdf4d36f2a5140dbe
 
 # MightyMoose
 *.mm.*
@@ -151,6 +175,20 @@ publish/
 !**/packages/build/
 # Uncomment if necessary however generally it will be regenerated when needed
 #!**/packages/repositories.config
+<<<<<<< HEAD
+
+# Windows Azure Build Output
+csx/
+*.build.csdef
+
+# Windows Store app package directory
+AppPackages/
+
+# Others
+*.[Cc]ache
+ClientBin/
+[Ss]tyle[Cc]op.*
+=======
 # NuGet v3's project.json files produces more ignoreable files
 *.nuget.props
 *.nuget.targets
@@ -178,6 +216,7 @@ BundleArtifacts/
 
 # Others
 ClientBin/
+>>>>>>> f846fddb080c99f518b2b26bdf4d36f2a5140dbe
 ~$*
 *~
 *.dbmdl
@@ -185,7 +224,11 @@ ClientBin/
 *.pfx
 *.publishsettings
 node_modules/
+<<<<<<< HEAD
+bower_components/
+=======
 orleans.codegen.cs
+>>>>>>> f846fddb080c99f518b2b26bdf4d36f2a5140dbe
 
 # RIA/Silverlight projects
 Generated_Code/
@@ -210,9 +253,12 @@ UpgradeLog*.htm
 # Microsoft Fakes
 FakesAssemblies/
 
+<<<<<<< HEAD
+=======
 # GhostDoc plugin setting file
 *.GhostDoc.xml
 
+>>>>>>> f846fddb080c99f518b2b26bdf4d36f2a5140dbe
 # Node.js Tools for Visual Studio
 .ntvs_analysis.dat
 
@@ -221,6 +267,8 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
+<<<<<<< HEAD
+=======
 
 # Visual Studio LightSwitch build output
 **/*.HTMLClient/GeneratedArtifacts
@@ -235,3 +283,4 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+>>>>>>> f846fddb080c99f518b2b26bdf4d36f2a5140dbe
