@@ -80,9 +80,14 @@ namespace HelloMod
 		{
 
 				foreach(Transform child in segment.gameObject.transform) {
-				if (child.name != "BetweenTracksMouseCollider" && child.name != "StationPlatformTrackTile(Clone)" && child.name != "MouseSelectionCollider") {
-						UnityEngine.Debug.Log (child.name);
+				if (child.name != "BetweenTracksMouseCollider" && !child.name.Contains("StationPlatformTrackTile") && child.name != "MouseSelectionCollider") {
+						var mesh_filter = child.gameObject.GetComponent<MeshFilter> ();
+						if (mesh_filter != null) {
+							Destroy (mesh_filter.mesh);
+							Destroy (mesh_filter.sharedMesh);
+						}
 						Destroy (child.gameObject);
+
 					}
 				}
 
@@ -141,6 +146,9 @@ namespace HelloMod
 				meshGenerator.afterExtrusion(segment, segment.gameObject);
 				MeshFilter component = segment.gameObject.GetComponent<MeshFilter>();
 				Mesh mesh = meshGenerator.getMesh(segment.gameObject);
+				Destroy (component.sharedMesh);
+				Destroy (component.mesh);
+				
 				component.sharedMesh = mesh;
 				meshGenerator.afterMeshGeneration(segment, segment.gameObject);
 				
@@ -157,6 +165,8 @@ namespace HelloMod
 				track_mouse_collider.layer = LayerMasks.ID_MOUSECOLLIDERS;
 				MeshCollider meshCollider = track_mouse_collider.GetComponent<MeshCollider>();
 				Mesh collisionMesh = meshGenerator.getCollisionMesh(segment.gameObject);
+				
+			Destroy (meshCollider.sharedMesh);
 				meshCollider.sharedMesh = collisionMesh;
 
 				MouseCollider mouseCollider = segment.gameObject.GetComponent<MouseCollider>();

@@ -60,6 +60,8 @@
     <Compile Include="Hook.cs" />
     <Compile Include="PreciseModify.cs" />
     <Compile Include="VectorUI.cs" />
+    <Compile Include="CubeBezierModify.cs" />
+    <Compile Include="BezierNode.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>
