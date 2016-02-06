@@ -14,7 +14,8 @@ namespace HelloMod
 		private FieldInfo _trackCurrentPositionField;
 		private FieldInfo _trackerRiderField;
 		private TrackBuilder _trackBuilder;
-		private TrackSegment4 _segment;
+
+		private TrackedRide _trackRide;
 
 		private List<VectorUI> _vectorUI = new List<HelloMod.VectorUI>();
 
@@ -29,6 +30,7 @@ namespace HelloMod
 			BindingFlags flags = BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic;
 			_trackCurrentPositionField = _trackBuilder.GetType ().GetField ("trackCursorPosition", flags);
 			_trackerRiderField = _trackBuilder.GetType ().GetField ("trackedRide", flags);
+		
 		}
 
 		void Update()
@@ -36,17 +38,20 @@ namespace HelloMod
 			if ((int)_trackCurrentPositionField.GetValue(_trackBuilder)  != _trackPosition) {
 				_vectorUI.Clear ();
 				_trackPosition = (int)_trackCurrentPositionField.GetValue (_trackBuilder);
-				_segment = ((TrackedRide)_trackerRiderField.GetValue (_trackBuilder)).Track.trackSegments [_trackPosition];
-				for (int x = 0; x < _segment.curves.Count; x++) {
-					_vectorUI.Add (new HelloMod.VectorUI(_segment.curves [x]));
+				_trackRide = ((TrackedRide)_trackerRiderField.GetValue (_trackBuilder));
+				for (int x = 0; x < _trackRide.Track.trackSegments[_trackPosition].curves.Count; x++) {
+					_vectorUI.Add (new HelloMod.VectorUI(_trackRide.Track.trackSegments[_trackPosition].curves [x]));
 				}
 			}
+
+
+
 
 		}
 			
 		void OnGUI()
 		{
-			if (_segment != null)
+			if (_trackRide != null )
                 _windowRect = GUILayout.Window(45051 , _windowRect, DrawMain, "Bezier Modifer");
 
 		}
@@ -58,38 +63,108 @@ namespace HelloMod
 				_vectorUI [x].GUI ();
 			}
 
-            _segment.Initialize ();
+				for (int x = 0; x < _vectorUI.Count; x++) {
+					_vectorUI [x].UpdateVector ();
+
+				}
+
+				recalculate (_trackRide.meshGenerator, _trackRide.Track.trackSegments [_trackPosition]);
+			
+
 
 			GUI.EndGroup();
 			GUI.DragWindow(_titleBarRect);
 		}
 
-		private Vector3 VectorUI(Vector3 vector)
+		private void recalculate(MeshGenerator meshGenerator, TrackSegment4 segment)
 		{
-			string vectorx = vector.x+"";
-			string vectory = vector.y+"";
-			string vectorz = vector.z+"";
 
-			GUILayout.BeginHorizontal ();
-			vectorx=GUILayout.TextField (vectorx);
-			vectory=GUILayout.TextField (vectory);
-			vectorz=GUILayout.TextField (vectorz);
-			GUILayout.EndHorizontal ();
+				foreach(Transform child in segment.gameObject.transform) {
+				if (child.name != "BetweenTracksMouseCollider" && child.name != "StationPlatformTrackTile(Clone)" && child.name != "MouseSelectionCollider") {
+						UnityEngine.Debug.Log (child.name);
+						Destroy (child.gameObject);
+					}
+				}
 
-			float result;
-			Vector3 output = new Vector3 ();
-			if (float.TryParse (vectorx, out result)) {
-				output.x = result;
-			}
-			if (float.TryParse (vectory, out result)) {
-				output.y = result;
-			}
-			if (float.TryParse (vectorz, out result)) {
-				output.z = result;
-			}
-			return output;
+
+				if (segment.getLength() <= 0f)
+				{
+					Debug.LogWarning("Can't extrude this segment! Has a length of 0.");
+				}
+			meshGenerator.prepare(segment, segment.gameObject);
+				float num = 0f;
+				float num2 = 0f;
+			meshGenerator.sampleAt(segment, 0f);
+				int num3 = 0;
+				int num4 = 0;
+			Vector3 b = segment.getStartpoint();
+				do
+				{
+					float num5 = 1f - num2;
+				if (Vector3.Angle(segment.getDirection(), segment.getPoint(num2 + num5) - segment.getPoint(num2)) > 5f)
+					{
+						num5 /= 2f;
+					}
+					int num6 = 0;
+				Vector3 point = segment.getPoint(num2 + num5);
+				float num7 = Vector3.Angle(segment.getTangentPoint(num2), segment.getTangentPoint(num2 + num5));
+				num7 = Mathf.Max(num7, Vector3.Angle(segment.getNormal(num2), segment.getNormal(num2 + num5)));
+					while (num5 > 0.01f && (num7 > 10f || (num7 > 2f && (point - b).magnitude > 0.225f)))
+					{
+						num4++;
+						num5 /= 2f;
+					point = segment.getPoint(num2 + num5);
+					num7 = Vector3.Angle(segment.getTangentPoint(num2), segment.getTangentPoint(num2 + num5));
+					num7 = Mathf.Max(num7, Vector3.Angle(segment.getNormal(num2), segment.getNormal(num2 + num5)));
+						num6++;
+						if (num6 > 50)
+						{
+							break;
+						}
+					}
+					num += (point - b).magnitude;
+					num2 += num5;
+					b = point;
+					if (num2 > 1f)
+					{
+						break;
+					}
+				meshGenerator.sampleAt(segment, num2);
+					num3++;
+				}
+				while (num2 < 1f && num3 < 300);
+				if (!Mathf.Approximately(num2, 1f))
+				{
+				meshGenerator.sampleAt(segment, 1f);
+				}
+
+				meshGenerator.afterExtrusion(segment, segment.gameObject);
+				MeshFilter component = segment.gameObject.GetComponent<MeshFilter>();
+				Mesh mesh = meshGenerator.getMesh(segment.gameObject);
+				component.sharedMesh = mesh;
+				meshGenerator.afterMeshGeneration(segment, segment.gameObject);
+				
+				Extruder buildVolumeMeshExtruder = meshGenerator.getBuildVolumeMeshExtruder();
+				buildVolumeMeshExtruder.transform(segment.gameObject.transform.worldToLocalMatrix);
+				BoundingMesh boundingMesh = segment.gameObject.GetComponent<BoundingMesh>();
+				boundingMesh.layers = BoundingVolume.Layers.Buildvolume;
+				boundingMesh.setMesh(buildVolumeMeshExtruder.vertices.ToArray(), buildVolumeMeshExtruder.indizes.ToArray());
+				
+				GameObject track_mouse_collider = segment.transform.Find ("BetweenTracksMouseCollider").gameObject;// new GameObject("BetweenTracksMouseCollider");
+				track_mouse_collider.transform.parent = segment.gameObject.transform;
+				track_mouse_collider.transform.localPosition = Vector3.zero;
+				track_mouse_collider.transform.localRotation = Quaternion.identity;
+				track_mouse_collider.layer = LayerMasks.ID_MOUSECOLLIDERS;
+				MeshCollider meshCollider = track_mouse_collider.GetComponent<MeshCollider>();
+				Mesh collisionMesh = meshGenerator.getCollisionMesh(segment.gameObject);
+				meshCollider.sharedMesh = collisionMesh;
+
+				MouseCollider mouseCollider = segment.gameObject.GetComponent<MouseCollider>();
+				mouseCollider.colliderObject = track_mouse_collider;
 
 		}
+
+	
 	}
 }
 

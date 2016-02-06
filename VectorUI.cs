@@ -5,7 +5,7 @@ namespace HelloMod
 {
 	public class VectorUI
 	{
-		private CubicBezier Value;
+		public CubicBezier Value{ get;private set;}
 
 		private string[] p0 = {"","",""};
 		private string[] p1 = {"","",""};
@@ -40,11 +40,15 @@ namespace HelloMod
 			v[2]=GUILayout.TextField (v[2]);
 			GUILayout.EndHorizontal ();
 
+		}
+
+		public void UpdateVector()
+		{
 			Value.p0 = GetVector(this.p0);
 			Value.p1 = GetVector(this.p1);
 			Value.p2 = GetVector(this.p2);
 			Value.p3 = GetVector(this.p3);
-		
+
 
 		}
 
