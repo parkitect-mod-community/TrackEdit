@@ -18,12 +18,12 @@ namespace HelloMod
 
         public string Name
         {
-            get { return "Hello Mod"; }
+            get { return "Track Edit"; }
         }
 
         public string Description
         {
-            get { return "Validates if mods are working on your PC"; }
+            get { return "Allows the User to modify track Path"; }
         }
     }
 }
