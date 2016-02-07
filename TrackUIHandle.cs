@@ -91,7 +91,11 @@ namespace HelloMod
 				}
 			} else if (Input.GetMouseButtonUp (0)) 
 			{
-				_selected = null;
+				if (_selected) {
+					_selected.gameObject.GetComponent<TrackCurveNode> ().UpdatePosition ();
+
+					_selected = null;
+				}
 			}
 
 			if (_selected) {

@@ -112,6 +112,33 @@ namespace HelloMod
 			}
 		}
 
+		public void UpdatePosition()
+		{
+			if (_previousPos != Vector3.zero) {
+				switch (NodePoint) {
+				case NodeType.PO:
+					Curve.p0 = _previousPos;
+					this.transform.position = TrackSegmentModify.TrackSegment.transform.TransformPoint (Curve.p0) + offset;
+					break;
+				case NodeType.P1:
+					Curve.p1 = _previousPos;
+					this.transform.position = TrackSegmentModify.TrackSegment.transform.TransformPoint (Curve.p1) + offset;
+					break;
+				case NodeType.P2:
+					Curve.p2 = _previousPos ;
+					this.transform.position = TrackSegmentModify.TrackSegment.transform.TransformPoint (Curve.p2) + offset;
+
+					break;
+				case NodeType.P3:
+					Curve.p3 = _previousPos ;
+					this.transform.position = TrackSegmentModify.TrackSegment.transform.TransformPoint (Curve.p3) + offset;
+					break;
+				}
+				_previousPos = Vector3.zero;
+			}
+		}
+
+
 		public void NodeUpdate()
 		{
 			var nextSegment = TrackSegmentModify.GetNextSegment ();
@@ -174,43 +201,32 @@ namespace HelloMod
 
 			this.SetPoint (this.transform.position);
 
+			if(previousSegment != null)
 			previousSegment.TrackSegment.calculateLengthAndNormals (TrackSegmentModify.TrackSegment);
 			TrackSegmentModify.TrackSegment.calculateLengthAndNormals (nextSegment.TrackSegment);
+			if(nextSegment != null)
+			nextSegment.TrackSegment.calculateLengthAndNormals (TrackSegmentModify.TrackSegment);
+
 
 			if (previousSegment != null) {
 				if (!previousSegment.TrackSegment.isConnectedTo (TrackSegmentModify.TrackSegment)) {
-					
-					RollBack ();
-					previousSegment.GetLastCurve.P0.RollBack ();
-					previousSegment.GetLastCurve.P1.RollBack ();
-					previousSegment.GetLastCurve.P2.RollBack ();
-					previousSegment.GetLastCurve.P3.RollBack ();
+					previousSegment.RollBackSegment ();
+					TrackSegmentModify.RollBackSegment ();
 
-					TrackSegmentModify.GetFirstCurve.P0.RollBack ();
-					TrackSegmentModify.GetFirstCurve.P1.RollBack ();
-					TrackSegmentModify.GetFirstCurve.P2.RollBack ();
-					TrackSegmentModify.GetFirstCurve.P3.RollBack ();
 				}
 			}
 			if (nextSegment != null) {
 				if (!TrackSegmentModify.TrackSegment.isConnectedTo (nextSegment.TrackSegment)) {
-
-					RollBack ();
-					TrackSegmentModify.GetLastCurve.P0.RollBack ();
-					TrackSegmentModify.GetLastCurve.P1.RollBack ();
-					TrackSegmentModify.GetLastCurve.P2.RollBack ();
-					TrackSegmentModify.GetLastCurve.P3.RollBack ();
-
-					nextSegment.GetFirstCurve.P0.RollBack ();
-					nextSegment.GetFirstCurve.P1.RollBack ();
-					nextSegment.GetFirstCurve.P2.RollBack ();
-					nextSegment.GetFirstCurve.P3.RollBack ();
+					TrackSegmentModify.RollBackSegment ();
+					nextSegment.RollBackSegment ();
 				}
 			}
 
-
+			if(previousSegment != null)
 			previousSegment.TrackSegment.calculateLengthAndNormals (TrackSegmentModify.TrackSegment);
 			TrackSegmentModify.TrackSegment.calculateLengthAndNormals (nextSegment.TrackSegment);
+			if(nextSegment != null)
+			nextSegment.TrackSegment.calculateLengthAndNormals (TrackSegmentModify.TrackSegment);
 
 			TrackSegmentModify.Invalidate = true;
 

@@ -43,6 +43,22 @@ namespace HelloMod
 		public TrackNodeCurve GetFirstCurve{ get { return _nodes [0];} }
 
 
+		public void RollBackSegment()
+		{
+			for (int x = 0; x < _nodes.Count; x++) {
+				_nodes [x].P0.RollBack ();
+				_nodes [x].P1.RollBack ();
+				_nodes [x].P2.RollBack ();
+				_nodes [x].P3.RollBack ();
+
+				_nodes [x].P0.UpdatePosition();
+				_nodes [x].P1.UpdatePosition();
+				_nodes [x].P2.UpdatePosition();
+				_nodes [x].P3.UpdatePosition();
+
+			}
+		}
+
 		public TrackSegmentModify GetNextSegment()
 		{
 			if (TrackSegment.isConnectedToNextSegment) {
