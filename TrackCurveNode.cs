@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace HelloMod
 {
-	public class Node : MonoBehaviour
+	public class TrackCurveNode : MonoBehaviour
 	{
 		private readonly Vector3 offset = new Vector3 (0, .5f, 0);
 
@@ -14,18 +14,13 @@ namespace HelloMod
 			P3
 		};
 
-		public delegate void OnNodeChangeHandle();
-		public event OnNodeChangeHandle NodeChangeEvent;
-
 		public NodeType NodePoint;
 		public CubicBezier Curve;
-		public TrackSegment4 Segment;
-		public PreciseModify PreciseModify;
+		public TrackSegmentModify TrackSegmentModify;
 
-		public Node ()
+		public TrackCurveNode ()
 		{
 			this.transform.transform.localScale = new Vector3 (0.2f, 0.2f, 0.2f);
-
 		}
 
 		void Start()
@@ -39,7 +34,8 @@ namespace HelloMod
 
 		public void NodeUpdate()
 		{
-			Vector3 p = Segment.transform.InverseTransformPoint (this.transform.position) -offset;
+
+			Vector3 p = TrackSegmentModify.TrackSegment.transform.InverseTransformPoint (this.transform.position) -offset;
 			switch (NodePoint) {
 			case NodeType.PO:
 				Curve.p0 =	p;
@@ -51,16 +47,21 @@ namespace HelloMod
 				Curve.p2 = p;
 					break;
 			case NodeType.P3:
+				//Vector3 previsionPosition = TrackSegmentModify.TrackSegment.transform.TransformPoint (Curve.p3);
 				Curve.p3 = p;
-				if (Segment.isConnectedToNextSegment) {
-					var nextSegement = PreciseModify._trackRide.Track.trackSegments [PreciseModify._trackRide.Track.trackSegments.IndexOf (Segment) + 1];
+
+				/*if (TrackSegmentModify.GetNextSegment () != null) {
+				
+				}*/
+				/*if (Segment.isConnectedToNextSegment) {
+					var nextSegement = PreciseModify.TrackRide.Track.trackSegments [PreciseModify.TrackRide.Track.trackSegments.IndexOf (Segment) + 1];
 					nextSegement.curves [0].p0 = nextSegement.transform.InverseTransformPoint (this.transform.position) - offset;
 
-				}
-					break;
+				}*/
+			break;
 			}
+			TrackSegmentModify.Invalidate = true;
 
-			NodeChangeEvent ();
 		}
 
 

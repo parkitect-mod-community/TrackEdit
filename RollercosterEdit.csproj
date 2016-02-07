@@ -57,10 +57,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
-    <Compile Include="PreciseModify.cs" />
-    <Compile Include="CubeBezierModify.cs" />
-    <Compile Include="BezierNodes.cs" />
-    <Compile Include="Node.cs" />
+    <Compile Include="TrackNodeCurve.cs" />
+    <Compile Include="TrackCurveNode.cs" />
+    <Compile Include="TrackSegmentModify.cs" />
+    <Compile Include="TrackUIHandle.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>

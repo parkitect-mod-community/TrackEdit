@@ -4,55 +4,62 @@ using UnityEngine;
 
 namespace HelloMod
 {
-	public class CubeBezierModify
+	public class TrackSegmentModify
 	{
-		private TrackSegment4 _trackSegment;
-		private List<BezierNodes> _nodes = new List<BezierNodes> ();
-		private PreciseModify _preciseModify;
-		public CubeBezierModify (TrackSegment4 segment,PreciseModify preciseModify)
+		public bool Invalidate = false;
+
+		public TrackSegment4 TrackSegment{ get; private set; }
+		public List<TrackNodeCurve> _nodes = new List<TrackNodeCurve> ();
+		public TrackUIHandle _trackUIHandler;
+		public TrackSegmentModify (TrackSegment4 segment,TrackUIHandle trackUIHandler)
 		{
-			_preciseModify = preciseModify;
-			_trackSegment = segment;
-			for (int x = 0; x < _trackSegment.curves.Count; x++) {
+			this._trackUIHandler = trackUIHandler;
+			this.TrackSegment = segment;
+
+			for (int x = 0; x < TrackSegment.curves.Count; x++) {
 				if(0 == x)
-					_nodes.Add (new BezierNodes(segment,_trackSegment.curves[x],preciseModify,true));
+					_nodes.Add (new TrackNodeCurve(TrackSegment.curves[x],this,true));
 				else
-					_nodes.Add (new BezierNodes(segment,_trackSegment.curves[x],preciseModify,false));
+					_nodes.Add (new TrackNodeCurve(TrackSegment.curves[x],this,false));
 
 
 			}
-			for (int y = 0; y < _nodes.Count; y++) {
-				if(_nodes[y].P0!= null)
-				_nodes[y].P0.NodeChangeEvent += () => {
-					recalculate(preciseModify._trackRide.meshGenerator,_trackSegment);
-				};
-				if(_nodes[y].P1!= null)
-				_nodes[y].P1.NodeChangeEvent += () => {
-					recalculate(preciseModify._trackRide.meshGenerator,_trackSegment);
-				};
-				if(_nodes[y].P2!= null)
-				_nodes[y].P2.NodeChangeEvent += () => {
-					recalculate(preciseModify._trackRide.meshGenerator,_trackSegment);
-				};
-				if(_nodes[y].P3!= null)
-				_nodes[y].P3.NodeChangeEvent += () => {
-					recalculate(preciseModify._trackRide.meshGenerator,_trackSegment);
-				};
-			}
-			_nodes[_nodes.Count -1].P3.NodeChangeEvent += () => {
-				
-				if(_trackSegment.isConnectedToNextSegment)
-				{
-					var nextSegement = _preciseModify._trackRide.Track.trackSegments [_preciseModify._trackRide.Track.trackSegments.IndexOf (_trackSegment) + 1];
-					recalculate(preciseModify._trackRide.meshGenerator,nextSegement);
-				}
-			};
+
 		}
+
+		public TrackSegmentModify GetNextSegment()
+		{
+			if (TrackSegment.isConnectedToNextSegment) {
+				var trackSegment =	_trackUIHandler.TrackRide.Track.trackSegments[_trackUIHandler.TrackRide.Track.getNextSegmentIndex (_trackUIHandler.TrackRide.Track.trackSegments.IndexOf (TrackSegment))];
+				return _trackUIHandler.GetSegment (trackSegment);
+			}
+			return null;
+		}
+
+		public TrackSegmentModify GetPreviousSegment()
+		{
+			if (TrackSegment.isConnectedToPreviousSegment) {
+				var trackSegment =	_trackUIHandler.TrackRide.Track.trackSegments[_trackUIHandler.TrackRide.Track.getPreviousSegmentIndex (_trackUIHandler.TrackRide.Track.trackSegments.IndexOf (TrackSegment))];
+				return _trackUIHandler.GetSegment (trackSegment);
+			}
+			return null;
+
+		}
+
 
 		public void Destroy()
 		{
 			for (int x = 0; x < _nodes.Count; x++) {
 				_nodes [x].Destroy ();
+			}
+		}
+
+		public void Update()
+		{
+			if (Invalidate) {
+				recalculate(_trackUIHandler.TrackRide.meshGenerator,TrackSegment);
+
+				Invalidate = false;
 			}
 		}
 
