@@ -6,25 +6,33 @@ namespace HelloMod
 {
 	public class TrackNodeCurve
 	{
+		public enum Grouping
+		{
+			Start,
+			Middle,
+			Both,
+			End
+		}
+
 		private CubicBezier _cubicBezier;
 		private TrackSegmentModify _segmentModify;
 
-		public TrackCurveNode P0;
-		public TrackCurveNode P1;
-		public TrackCurveNode P2;
-		public TrackCurveNode P3;
+		public TrackCurveNode P0{ get; private set; }
+		public TrackCurveNode P1{ get; private set; }
+		public TrackCurveNode P2{ get; private set; }
+		public TrackCurveNode P3{ get; private set; }
+		public Grouping Group { get; private set; }
 
-		public TrackNodeCurve (CubicBezier cubicBezier, TrackSegmentModify segmentModify,bool beginning)
+		public TrackNodeCurve (CubicBezier cubicBezier, TrackSegmentModify segmentModify,Grouping grouping)
 		{
+			this.Group = grouping;
 			this._cubicBezier = cubicBezier;
 			this._segmentModify = segmentModify;
 
-			if(!beginning)
-				P0 = AddNode ( _segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p0),TrackCurveNode.NodeType.PO);
-			
-			P1 = AddNode (_segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p1),TrackCurveNode.NodeType.P1);
-			P2 = AddNode (_segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p2),TrackCurveNode.NodeType.P2);
-			P3 = AddNode (_segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p3),TrackCurveNode.NodeType.P3);
+			P0 = AddNode ( _segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p0),TrackCurveNode.NodeType.PO,!(this.Group == Grouping.Start || this.Group == Grouping.Both));
+			P1 = AddNode (_segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p1),TrackCurveNode.NodeType.P1,true);
+			P2 = AddNode (_segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p2),TrackCurveNode.NodeType.P2,true);
+			P3 = AddNode (_segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p3),TrackCurveNode.NodeType.P3,true);
 
 		}
 
@@ -41,16 +49,19 @@ namespace HelloMod
 
 		}
 
-		private TrackCurveNode AddNode(Vector3 position, TrackCurveNode.NodeType type)
+		private TrackCurveNode AddNode(Vector3 position, TrackCurveNode.NodeType type,bool IsActive)
 		{
 			GameObject node = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 			node.transform.name = "BezierNode";
 			node.layer = 900;
 			node.transform.transform.position = position;
+
 			var n = node.AddComponent< TrackCurveNode>();
+			n.gameObject.SetActive (IsActive);
 			n.TrackSegmentModify = _segmentModify;
 			n.Curve = _cubicBezier;
 			n.NodePoint = type;
+			n.TrackCurve = this;
 			return n;
 		}
 

@@ -9,29 +9,45 @@ namespace HelloMod
 		public bool Invalidate = false;
 
 		public TrackSegment4 TrackSegment{ get; private set; }
-		public List<TrackNodeCurve> _nodes = new List<TrackNodeCurve> ();
-		public TrackUIHandle _trackUIHandler;
+		private List<TrackNodeCurve> _nodes = new List<TrackNodeCurve> ();
+		public TrackUIHandle TrackUIHandler{ get; private set; }
 		public TrackSegmentModify (TrackSegment4 segment,TrackUIHandle trackUIHandler)
 		{
-			this._trackUIHandler = trackUIHandler;
+			this.TrackUIHandler = trackUIHandler;
 			this.TrackSegment = segment;
 
 			for (int x = 0; x < TrackSegment.curves.Count; x++) {
-				if(0 == x)
-					_nodes.Add (new TrackNodeCurve(TrackSegment.curves[x],this,true));
-				else
-					_nodes.Add (new TrackNodeCurve(TrackSegment.curves[x],this,false));
+				TrackNodeCurve.Grouping grouping = TrackNodeCurve.Grouping.Middle;
+			
+				if (x == 0)
+					grouping = TrackNodeCurve.Grouping.Start;
+				if (x == TrackSegment.curves.Count - 1)
+					grouping = TrackNodeCurve.Grouping.End;
+				if (TrackSegment.curves.Count == 1)
+					grouping = TrackNodeCurve.Grouping.Both;
+				
+				_nodes.Add (new TrackNodeCurve(TrackSegment.curves[x],this,grouping));
 
 
 			}
 
 		}
 
+		public List<TrackNodeCurve> GetTrackCurves{ get 
+			{ 
+				return _nodes;
+			} 
+		}
+
+		public TrackNodeCurve GetLastCurve{ get { return _nodes [_nodes.Count - 1];} }
+		public TrackNodeCurve GetFirstCurve{ get { return _nodes [0];} }
+
+
 		public TrackSegmentModify GetNextSegment()
 		{
 			if (TrackSegment.isConnectedToNextSegment) {
-				var trackSegment =	_trackUIHandler.TrackRide.Track.trackSegments[_trackUIHandler.TrackRide.Track.getNextSegmentIndex (_trackUIHandler.TrackRide.Track.trackSegments.IndexOf (TrackSegment))];
-				return _trackUIHandler.GetSegment (trackSegment);
+				var trackSegment =	TrackUIHandler.TrackRide.Track.trackSegments[TrackUIHandler.TrackRide.Track.getNextSegmentIndex (TrackUIHandler.TrackRide.Track.trackSegments.IndexOf (TrackSegment))];
+				return TrackUIHandler.GetSegment (trackSegment);
 			}
 			return null;
 		}
@@ -39,8 +55,8 @@ namespace HelloMod
 		public TrackSegmentModify GetPreviousSegment()
 		{
 			if (TrackSegment.isConnectedToPreviousSegment) {
-				var trackSegment =	_trackUIHandler.TrackRide.Track.trackSegments[_trackUIHandler.TrackRide.Track.getPreviousSegmentIndex (_trackUIHandler.TrackRide.Track.trackSegments.IndexOf (TrackSegment))];
-				return _trackUIHandler.GetSegment (trackSegment);
+				var trackSegment =	TrackUIHandler.TrackRide.Track.trackSegments[TrackUIHandler.TrackRide.Track.getPreviousSegmentIndex (TrackUIHandler.TrackRide.Track.trackSegments.IndexOf (TrackSegment))];
+				return TrackUIHandler.GetSegment (trackSegment);
 			}
 			return null;
 
@@ -57,7 +73,7 @@ namespace HelloMod
 		public void Update()
 		{
 			if (Invalidate) {
-				recalculate(_trackUIHandler.TrackRide.meshGenerator,TrackSegment);
+				recalculate(TrackUIHandler.TrackRide.meshGenerator,TrackSegment);
 
 				Invalidate = false;
 			}
