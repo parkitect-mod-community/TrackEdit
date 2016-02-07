@@ -57,11 +57,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
-    <Compile Include="Hook.cs" />
     <Compile Include="PreciseModify.cs" />
-    <Compile Include="VectorUI.cs" />
     <Compile Include="CubeBezierModify.cs" />
-    <Compile Include="BezierNode.cs" />
+    <Compile Include="BezierNodes.cs" />
+    <Compile Include="Node.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>

@@ -3,18 +3,17 @@ namespace HelloMod
 {
     public class Main : IMod
     {
-        private GameObject _go;
-        
         public string Identifier { get; set; }
         
         public void onEnabled()
         {
-			 
-			var t = ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject.AddComponent <PreciseModify>();
-        }
+			ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject.AddComponent <PreciseModify>();
+
+		}
 
         public void onDisabled()
         {
+			UnityEngine.Object.Destroy (ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject.GetComponent<PreciseModify> ());
         }
 
         public string Name
