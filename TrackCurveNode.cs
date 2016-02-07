@@ -155,8 +155,6 @@ namespace HelloMod
 
 					Vector3 directionP0P1 = (TrackCurve.P1.GetGlobal () - TrackCurve.P0.GetGlobal ()).normalized * -1;
 					float magnitude = Mathf.Abs((previousSegment.GetLastCurve.P2.GetGlobal () - previousSegment.GetLastCurve.P3.GetGlobal ()).magnitude);
-
-
 					previousSegment.GetLastCurve.P2.SetPoint (previousSegment.GetLastCurve.P3.GetGlobal() + (directionP0P1 * magnitude));
 
 
@@ -203,7 +201,10 @@ namespace HelloMod
 
 			if(previousSegment != null)
 			previousSegment.TrackSegment.calculateLengthAndNormals (TrackSegmentModify.TrackSegment);
+
+			if(nextSegment != null)
 			TrackSegmentModify.TrackSegment.calculateLengthAndNormals (nextSegment.TrackSegment);
+
 			if(nextSegment != null)
 			nextSegment.TrackSegment.calculateLengthAndNormals (TrackSegmentModify.TrackSegment);
 
@@ -224,7 +225,10 @@ namespace HelloMod
 
 			if(previousSegment != null)
 			previousSegment.TrackSegment.calculateLengthAndNormals (TrackSegmentModify.TrackSegment);
+
+			if(nextSegment != null)
 			TrackSegmentModify.TrackSegment.calculateLengthAndNormals (nextSegment.TrackSegment);
+
 			if(nextSegment != null)
 			nextSegment.TrackSegment.calculateLengthAndNormals (TrackSegmentModify.TrackSegment);
 
