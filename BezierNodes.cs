@@ -34,9 +34,13 @@ namespace HelloMod
 
 		public void Destroy()
 		{
+			if(P0 != null)
 			UnityEngine.Object.Destroy (P0.gameObject);
+			if(P1 != null)
 			UnityEngine.Object.Destroy (P1.gameObject);
+			if(P2 != null)
 			UnityEngine.Object.Destroy (P2.gameObject);
+			if(P3 != null)
 			UnityEngine.Object.Destroy (P3.gameObject);
 
 		}
