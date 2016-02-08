@@ -114,28 +114,22 @@ namespace HelloMod
 
 		public void UpdatePosition()
 		{
-			if (_previousPos != Vector3.zero) {
 				switch (NodePoint) {
 				case NodeType.PO:
-					Curve.p0 = _previousPos;
 					this.transform.position = TrackSegmentModify.TrackSegment.transform.TransformPoint (Curve.p0) + offset;
 					break;
 				case NodeType.P1:
-					Curve.p1 = _previousPos;
 					this.transform.position = TrackSegmentModify.TrackSegment.transform.TransformPoint (Curve.p1) + offset;
 					break;
 				case NodeType.P2:
-					Curve.p2 = _previousPos ;
 					this.transform.position = TrackSegmentModify.TrackSegment.transform.TransformPoint (Curve.p2) + offset;
-
 					break;
 				case NodeType.P3:
-					Curve.p3 = _previousPos ;
 					this.transform.position = TrackSegmentModify.TrackSegment.transform.TransformPoint (Curve.p3) + offset;
 					break;
 				}
-				_previousPos = Vector3.zero;
-			}
+
+	
 		}
 
 
@@ -155,17 +149,16 @@ namespace HelloMod
 
 				if (previousSegment != null) {
 
-					Vector3 directionP0P1 = (TrackCurve.P1.GetGlobal () - TrackCurve.P0.GetGlobal ()).normalized * -1;
 					CalculateLenghtAndNormals ();
 
-				
+
 					float magnitude = Mathf.Abs((previousSegment.GetLastCurve.P2.GetGlobal () - previousSegment.GetLastCurve.P3.GetGlobal ()).magnitude);
 					previousSegment.GetLastCurve.P2.SetPoint (previousSegment.GetLastCurve.P3.GetGlobal() + (TrackSegmentModify.TrackSegment.getTangentPoint(0f) *-1f* magnitude));
 					previousSegment.Invalidate = true;
 					CalculateLenghtAndNormals ();
 
-
-					TrackSegmentModify.TrackSegment.upgradeSavegameRecalculateBinormal (previousSegment.TrackSegment);
+					TrackSegmentModify.CalculateBinormal ();
+					//TrackSegmentModify.TrackSegment.upgradeSavegameRecalculateBinormal (previousSegment.TrackSegment);
 
 
 				}
@@ -178,7 +171,6 @@ namespace HelloMod
 
 				if (nextSegment != null) {
 
-					Vector3 directionP2P3 = (TrackCurve.P2.GetGlobal () - TrackCurve.P3.GetGlobal ()).normalized * -1;
 					CalculateLenghtAndNormals ();
 
 
@@ -187,8 +179,7 @@ namespace HelloMod
 					nextSegment.Invalidate = true;
 					CalculateLenghtAndNormals ();
 
-					nextSegment.TrackSegment.upgradeSavegameRecalculateBinormal (TrackSegmentModify.TrackSegment);
-
+					nextSegment.CalculateBinormal ();
 
 				}
 
@@ -246,8 +237,6 @@ namespace HelloMod
 			var nextSegment = TrackSegmentModify.GetNextSegment ();
 			var previousSegment = TrackSegmentModify.GetPreviousSegment ();
 
-
-		
 			CalculateLenghtAndNormals ();
 
 			if (previousSegment != null) {

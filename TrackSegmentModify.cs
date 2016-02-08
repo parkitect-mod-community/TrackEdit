@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Reflection;
 
 namespace HelloMod
 {
@@ -11,6 +12,11 @@ namespace HelloMod
 		public TrackSegment4 TrackSegment{ get; private set; }
 		private List<TrackNodeCurve> _nodes = new List<TrackNodeCurve> ();
 		public TrackUIHandle TrackUIHandler{ get; private set; }
+
+		private Vector3 _previousBinormal;
+		private FieldInfo _biNormalField;
+
+
 		public TrackSegmentModify (TrackSegment4 segment,TrackUIHandle trackUIHandler)
 		{
 			this.TrackUIHandler = trackUIHandler;
@@ -28,9 +34,10 @@ namespace HelloMod
 				
 				_nodes.Add (new TrackNodeCurve(TrackSegment.curves[x],this,grouping));
 
-
 			}
 
+			BindingFlags flags = BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic;
+			_biNormalField = TrackSegment.GetType ().BaseType.GetField ("startBinormal", flags);
 		}
 
 		public List<TrackNodeCurve> GetTrackCurves{ get 
@@ -42,9 +49,24 @@ namespace HelloMod
 		public TrackNodeCurve GetLastCurve{ get { return _nodes [_nodes.Count - 1];} }
 		public TrackNodeCurve GetFirstCurve{ get { return _nodes [0];} }
 
+		public void CalculateBinormal()
+		{
+			_previousBinormal = (Vector3)_biNormalField.GetValue (TrackSegment);
+			var previousSegment = GetPreviousSegment ();
+			if (previousSegment != null) {
+				_biNormalField.SetValue (TrackSegment, TrackSegment.transform.InverseTransformDirection (Vector3.Cross (previousSegment.TrackSegment.getNormal (1f), previousSegment.TrackSegment.getTangentPoint (1f))));
+			}	
+
+
+		}
+
 
 		public void RollBackSegment()
 		{
+			if(_previousBinormal != Vector3.zero)
+			_biNormalField.SetValue (TrackSegment,_previousBinormal);
+
+
 			for (int x = 0; x < _nodes.Count; x++) {
 				_nodes [x].P0.RollBack ();
 				_nodes [x].P1.RollBack ();
@@ -90,6 +112,7 @@ namespace HelloMod
 		{
 			if (Invalidate) {
 				recalculate(TrackUIHandler.TrackRide.meshGenerator,TrackSegment);
+
 
 				Invalidate = false;
 			}
