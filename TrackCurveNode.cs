@@ -151,30 +151,47 @@ namespace HelloMod
 
 					break;
 			case NodeType.P1:
+				this.SetPoint (this.transform.position);
+
 				if (previousSegment != null) {
 
 					Vector3 directionP0P1 = (TrackCurve.P1.GetGlobal () - TrackCurve.P0.GetGlobal ()).normalized * -1;
+					CalculateLenghtAndNormals ();
+
+				
 					float magnitude = Mathf.Abs((previousSegment.GetLastCurve.P2.GetGlobal () - previousSegment.GetLastCurve.P3.GetGlobal ()).magnitude);
-					previousSegment.GetLastCurve.P2.SetPoint (previousSegment.GetLastCurve.P3.GetGlobal() + (directionP0P1 * magnitude));
-
-
+					previousSegment.GetLastCurve.P2.SetPoint (previousSegment.GetLastCurve.P3.GetGlobal() + (TrackSegmentModify.TrackSegment.getTangentPoint(0f) *-1f* magnitude));
 					previousSegment.Invalidate = true;
+					CalculateLenghtAndNormals ();
+
+
+					TrackSegmentModify.TrackSegment.upgradeSavegameRecalculateBinormal (previousSegment.TrackSegment);
+
+
 				}
+
 
 				break;
 			case NodeType.P2:
 
+				this.SetPoint (this.transform.position);
+
 				if (nextSegment != null) {
 
 					Vector3 directionP2P3 = (TrackCurve.P2.GetGlobal () - TrackCurve.P3.GetGlobal ()).normalized * -1;
+					CalculateLenghtAndNormals ();
+
+
 					float magnitude = Mathf.Abs((nextSegment.GetFirstCurve.P0.GetGlobal () - nextSegment.GetFirstCurve.P1.GetGlobal ()).magnitude);
-
-
-					nextSegment.GetFirstCurve.P1.SetPoint (nextSegment.GetFirstCurve.P0.GetGlobal() + (directionP2P3 * magnitude));
-
-
+					nextSegment.GetFirstCurve.P1.SetPoint (nextSegment.GetFirstCurve.P0.GetGlobal () + (TrackSegmentModify.TrackSegment.getTangentPoint(1f) * magnitude));
 					nextSegment.Invalidate = true;
+					CalculateLenghtAndNormals ();
+
+					nextSegment.TrackSegment.upgradeSavegameRecalculateBinormal (TrackSegmentModify.TrackSegment);
+
+
 				}
+
 
 					break;
 			case NodeType.P3:
@@ -193,46 +210,64 @@ namespace HelloMod
 
 						nextSegment.Invalidate = true;
 					}
+
 				}
+				this.SetPoint (this.transform.position);
+
 			break;
 			}
 
-			this.SetPoint (this.transform.position);
+
+
+			TrackSegmentModify.Invalidate = true;
+			Validate ();
+
+		}
+
+		private void CalculateLenghtAndNormals()
+		{
+			var nextSegment = TrackSegmentModify.GetNextSegment ();
+			var previousSegment = TrackSegmentModify.GetPreviousSegment ();
+
 
 			if(previousSegment != null)
-			previousSegment.TrackSegment.calculateLengthAndNormals (TrackSegmentModify.TrackSegment);
+				previousSegment.TrackSegment.calculateLengthAndNormals (TrackSegmentModify.TrackSegment);
 
 			if(nextSegment != null)
-			TrackSegmentModify.TrackSegment.calculateLengthAndNormals (nextSegment.TrackSegment);
+				TrackSegmentModify.TrackSegment.calculateLengthAndNormals (nextSegment.TrackSegment);
 
 			if(nextSegment != null)
-			nextSegment.TrackSegment.calculateLengthAndNormals (TrackSegmentModify.TrackSegment);
+				nextSegment.TrackSegment.calculateLengthAndNormals (TrackSegmentModify.TrackSegment);
+		}
 
+		private bool Validate()
+		{
+			bool isValid = true;
+			var nextSegment = TrackSegmentModify.GetNextSegment ();
+			var previousSegment = TrackSegmentModify.GetPreviousSegment ();
+
+
+		
+			CalculateLenghtAndNormals ();
 
 			if (previousSegment != null) {
 				if (!previousSegment.TrackSegment.isConnectedTo (TrackSegmentModify.TrackSegment)) {
 					previousSegment.RollBackSegment ();
 					TrackSegmentModify.RollBackSegment ();
-
+					isValid = false;
 				}
 			}
 			if (nextSegment != null) {
 				if (!TrackSegmentModify.TrackSegment.isConnectedTo (nextSegment.TrackSegment)) {
 					TrackSegmentModify.RollBackSegment ();
 					nextSegment.RollBackSegment ();
+					isValid = false;
+
 				}
 			}
 
-			if(previousSegment != null)
-			previousSegment.TrackSegment.calculateLengthAndNormals (TrackSegmentModify.TrackSegment);
-
-			if(nextSegment != null)
-			TrackSegmentModify.TrackSegment.calculateLengthAndNormals (nextSegment.TrackSegment);
-
-			if(nextSegment != null)
-			nextSegment.TrackSegment.calculateLengthAndNormals (TrackSegmentModify.TrackSegment);
-
-			TrackSegmentModify.Invalidate = true;
+			CalculateLenghtAndNormals ();
+			return isValid;
 
 		}
 

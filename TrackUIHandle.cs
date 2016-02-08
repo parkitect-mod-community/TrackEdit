@@ -15,6 +15,9 @@ namespace HelloMod
 		private Vector3 _offset;
 		private float _dist;
 
+		private bool _yShift = false;
+		private float _fixedY;
+
 		public TrackBuilder TrackBuilder{ get; private set; }
 		public TrackedRide TrackRide{ get; private set; }
 
@@ -85,7 +88,7 @@ namespace HelloMod
 							_selected = hit.transform;
 							_offset = hit.transform.position - hit.point;
 							_dist = (ray.origin - hit.point).magnitude;
-
+							_fixedY = hit.transform.position.y;
 						}
 					}
 				}
@@ -93,15 +96,33 @@ namespace HelloMod
 			{
 				if (_selected) {
 					_selected.gameObject.GetComponent<TrackCurveNode> ().UpdatePosition ();
-
+					_yShift = false;
 					_selected = null;
 				}
 			}
 
+			if(Input.GetKeyDown(KeyCode.LeftControl))
+			{
+				_yShift = true;
+			}
+			else if(Input.GetKeyUp(KeyCode.LeftControl))
+			{
+				if(_selected)
+				_offset = _selected.position - ray.GetPoint (_dist);
+				_yShift = false;
+			}
+
 			if (_selected) {
 				_selected.gameObject.GetComponent<TrackCurveNode> ().NodeUpdate ();
+				Vector3 point = ray.GetPoint (_dist);
 
-				_selected.position = ray.GetPoint (_dist) + _offset;
+				if (_yShift) {
+					_fixedY = ray.GetPoint (_dist).y;
+					_selected.position =new Vector3(_selected.position.x,  _fixedY,_selected.position.z);
+
+				} else {
+					_selected.position = new Vector3 (point.x, _fixedY, point.z) + _offset;
+				}
 			}
 				
 
