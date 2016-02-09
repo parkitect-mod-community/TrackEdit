@@ -21,8 +21,9 @@ namespace RollercoasterEdit
                         _stateData.Selected = hit.transform;
                         _stateData.FixedY = hit.transform.position.y;
                         _stateData.Offset = hit.transform.position - hit.point;
+                        
                         _stateData.Distance = (ray.origin - hit.point).magnitude;
-                       
+            
                         stateMachine.ChangeState(new HorizantalDragState(_stateData));
                     }
                 }
