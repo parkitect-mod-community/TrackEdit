@@ -5,10 +5,17 @@ namespace HelloMod
     {
         public string Identifier { get; set; }
 		public static AssetBundleManager AssetBundleManager = null;
+        public static Configuration Configeration = null;
+
+        private bool _yDragToggle = false;
 
         public void onEnabled()
         {
-			
+            if (Main.Configeration == null) {
+                Configeration = new Configuration ();
+                Configeration.Load (Path);
+            }
+
 			if (Main.AssetBundleManager == null) {
 
 				AssetBundleManager = new AssetBundleManager (this);
@@ -37,7 +44,32 @@ namespace HelloMod
 
 		public void onDrawSettingsUI()
 		{
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label ("Vertical Drag Key");
+            _yDragToggle = GUILayout.Toggle (_yDragToggle, Configeration.VerticalKey.ToString ());
+            if (_yDragToggle) {
+                KeyCode key;
+                if (FetchKey (out key)) {
+                    Configeration.VerticalKey = key;
+                }
+            }
+            
+           GUILayout.EndHorizontal();
+
 		}
+
+        private bool FetchKey(out KeyCode outKey)
+        {
+            foreach (KeyCode key in System.Enum.GetValues(typeof(KeyCode))) {
+                if (Input.GetKeyDown (key)) {
+                    outKey = key;
+                    return true;
+                }
+            }
+            outKey = KeyCode.A;
+            return false;
+        }
 
 		public void onSettingsOpened()
 		{
@@ -46,7 +78,7 @@ namespace HelloMod
 
 		public void onSettingsClosed()
 		{
-			
+            Main.Configeration.Save (Path);
 		}
     }
 }

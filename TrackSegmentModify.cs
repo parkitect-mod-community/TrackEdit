@@ -11,15 +11,15 @@ namespace HelloMod
 
 		public TrackSegment4 TrackSegment{ get; private set; }
 		private List<TrackNodeCurve> _nodes = new List<TrackNodeCurve> ();
-		public TrackUIHandle TrackUIHandler{ get; private set; }
+        public TrackSegmentManager TrackSegmentManager{ get; private set; }
 
 		private Vector3 _previousBinormal;
 		private FieldInfo _biNormalField;
 
 
-		public TrackSegmentModify (TrackSegment4 segment,TrackUIHandle trackUIHandler)
+        public TrackSegmentModify (TrackSegment4 segment,TrackSegmentManager trackSegmentManager)
 		{
-			this.TrackUIHandler = trackUIHandler;
+			this.TrackSegmentManager = trackSegmentManager;
 			this.TrackSegment = segment;
 
 			for (int x = 0; x < TrackSegment.curves.Count; x++) {
@@ -84,8 +84,8 @@ namespace HelloMod
 		public TrackSegmentModify GetNextSegment()
 		{
 			if (TrackSegment.isConnectedToNextSegment) {
-				var trackSegment =	TrackUIHandler.TrackRide.Track.trackSegments[TrackUIHandler.TrackRide.Track.getNextSegmentIndex (TrackUIHandler.TrackRide.Track.trackSegments.IndexOf (TrackSegment))];
-				return TrackUIHandler.GetSegment (trackSegment);
+				var trackSegment =	TrackSegmentManager.TrackRide.Track.trackSegments[TrackSegmentManager.TrackRide.Track.getNextSegmentIndex (TrackSegmentManager.TrackRide.Track.trackSegments.IndexOf (TrackSegment))];
+                return TrackSegmentManager.GetTrackSegmentModifyer (trackSegment);
 			}
 			return null;
 		}
@@ -93,8 +93,8 @@ namespace HelloMod
 		public TrackSegmentModify GetPreviousSegment()
 		{
 			if (TrackSegment.isConnectedToPreviousSegment) {
-				var trackSegment =	TrackUIHandler.TrackRide.Track.trackSegments[TrackUIHandler.TrackRide.Track.getPreviousSegmentIndex (TrackUIHandler.TrackRide.Track.trackSegments.IndexOf (TrackSegment))];
-				return TrackUIHandler.GetSegment (trackSegment);
+				var trackSegment =	TrackSegmentManager.TrackRide.Track.trackSegments[TrackSegmentManager.TrackRide.Track.getPreviousSegmentIndex (TrackSegmentManager.TrackRide.Track.trackSegments.IndexOf (TrackSegment))];
+                return TrackSegmentManager.GetTrackSegmentModifyer (trackSegment);
 			}
 			return null;
 
@@ -111,7 +111,7 @@ namespace HelloMod
 		public void Update()
 		{
 			if (Invalidate) {
-				recalculate(TrackUIHandler.TrackRide.meshGenerator,TrackSegment);
+				recalculate(TrackSegmentManager.TrackRide.meshGenerator,TrackSegment);
 
 
 				Invalidate = false;

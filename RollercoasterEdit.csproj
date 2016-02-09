@@ -62,6 +62,14 @@
     <Compile Include="TrackSegmentModify.cs" />
     <Compile Include="TrackUIHandle.cs" />
     <Compile Include="AssetBundleManager.cs" />
+    <Compile Include="Configuration.cs" />
+    <Compile Include="TrackSegmentManager.cs" />
+    <Compile Include="FiniteStateMachine.cs" />
+    <Compile Include="IState.cs" />
+    <Compile Include="IdleState.cs" />
+    <Compile Include="SharedStateData.cs" />
+    <Compile Include="VerticalDragState.cs" />
+    <Compile Include="HorizantalDragState.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>
