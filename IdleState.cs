@@ -19,10 +19,10 @@ namespace RollercoasterEdit
                 if (Physics.Raycast (ray, out hit, Mathf.Infinity, -1)) {
                     if (hit.transform.name == "BezierNode") {
                         _stateData.Selected = hit.transform;
-                        _stateData.Distance = (ray.origin - hit.point).magnitude;
                         _stateData.FixedY = hit.transform.position.y;
-
-                        _stateData.Offset = hit.transform.position - ray.GetPoint(_stateData.Distance);
+                        _stateData.Offset = hit.transform.position - hit.point;
+                        _stateData.Distance = (ray.origin - hit.point).magnitude;
+                       
                         stateMachine.ChangeState(new HorizantalDragState(_stateData));
                     }
                 }
