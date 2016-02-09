@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace HelloMod
+namespace RollercoasterEdit
 {
     public class IdleState : IState
     {
@@ -23,10 +23,10 @@ namespace HelloMod
                         _stateData.FixedY = hit.transform.position.y;
 
                         _stateData.Offset = hit.transform.position - ray.GetPoint(_stateData.Distance);
-             
+                        stateMachine.ChangeState(new HorizantalDragState(_stateData));
                     }
                 }
-                stateMachine.ChangeState (new HorizantalDragState (_stateData));
+              
             }
         }
     

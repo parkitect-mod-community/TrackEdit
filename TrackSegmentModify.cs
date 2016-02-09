@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Reflection;
 
-namespace HelloMod
+namespace RollercoasterEdit
 {
 	public class TrackSegmentModify
 	{

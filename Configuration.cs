@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-namespace HelloMod
+namespace RollercoasterEdit
 {
     public class Configuration
     {

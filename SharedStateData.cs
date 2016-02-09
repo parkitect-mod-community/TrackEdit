@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace HelloMod
+namespace RollercoasterEdit
 {
     public class SharedStateData
     {

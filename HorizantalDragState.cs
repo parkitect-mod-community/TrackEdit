@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace HelloMod
+namespace RollercoasterEdit
 {
     public class HorizantalDragState : IState
     {
@@ -16,6 +16,8 @@ namespace HelloMod
             var ray = Camera.main.ScreenPointToRay (Input.mousePosition);
             Vector3 point = ray.GetPoint (_stateData.Distance);
             _stateData.Selected.position = new Vector3 (point.x, _stateData.FixedY, point.y) + _stateData.Offset;
+
+            _stateData.Selected.gameObject.GetComponent<TrackCurveNode>().NodeUpdate();
 
             if (Input.GetKeyDown (Main.Configeration.VerticalKey)) {
                 stateMachine.ChangeState (new VerticalDragState (_stateData));

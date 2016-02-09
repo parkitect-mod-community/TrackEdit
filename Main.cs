@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-namespace HelloMod
+namespace RollercoasterEdit
 {
     public class Main : IMod
     {

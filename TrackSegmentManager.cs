@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace HelloMod
+namespace RollercoasterEdit
 {
     public class TrackSegmentManager
     {

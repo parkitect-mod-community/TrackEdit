@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HelloMod
+namespace RollercoasterEdit
 {
     public interface IState
     {

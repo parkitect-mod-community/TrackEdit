@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Reflection;
 using System.Collections.Generic;
 
-namespace HelloMod
+namespace RollercoasterEdit
 {
 	public class TrackUIHandle : MonoBehaviour
 	{
