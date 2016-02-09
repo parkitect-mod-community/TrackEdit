@@ -1,0 +1,23 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{1D0540C0-EC3A-1047-1488-F4BF09DC61D3}") = "TrackEditUnity", "Assembly-CSharp.csproj", "{264DC46D-C7ED-6E41-9C25-3FB969EF30EE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{264DC46D-C7ED-6E41-9C25-3FB969EF30EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{264DC46D-C7ED-6E41-9C25-3FB969EF30EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{264DC46D-C7ED-6E41-9C25-3FB969EF30EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{264DC46D-C7ED-6E41-9C25-3FB969EF30EE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+	EndGlobalSection
+EndGlobal
