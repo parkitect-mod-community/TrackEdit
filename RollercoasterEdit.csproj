@@ -61,6 +61,7 @@
     <Compile Include="TrackCurveNode.cs" />
     <Compile Include="TrackSegmentModify.cs" />
     <Compile Include="TrackUIHandle.cs" />
+    <Compile Include="AssetBundleManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>

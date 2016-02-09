@@ -5,7 +5,7 @@ namespace HelloMod
 {
 	public class TrackCurveNode : MonoBehaviour
 	{
-		private readonly Vector3 offset = new Vector3 (0, .5f, 0);
+		//private readonly Vector3 offset = new Vector3 (0, .5f, 0);
 
 
 		public enum NodeType  {
@@ -24,12 +24,12 @@ namespace HelloMod
 
 		public TrackCurveNode ()
 		{
-			this.transform.transform.localScale = new Vector3 (0.2f, 0.2f, 0.2f);
+			//this.transform.localPosition = new Vector3 (0, .5f, 0);
+
 		}
 
 		void Start()
 		{
-			this.transform.position += offset;
 
 		}
 
@@ -40,7 +40,7 @@ namespace HelloMod
 
 		public void SetPoint(Vector3 point)
 		{
-			Vector3 p = TrackSegmentModify.TrackSegment.transform.InverseTransformPoint (point) - offset;
+			Vector3 p = TrackSegmentModify.TrackSegment.transform.InverseTransformPoint (point) ;
 
 			switch (NodePoint) {
 			case NodeType.PO:
@@ -66,7 +66,6 @@ namespace HelloMod
 		public Vector3 GetLocal()
 		{
 			return TrackSegmentModify.TrackSegment.transform.InverseTransformPoint (this.transform.position);
-
 		}
 
 		public Vector3 GetGlobal()
@@ -75,16 +74,16 @@ namespace HelloMod
 			switch (NodePoint) {
 			case NodeType.PO:
 				
-				return TrackSegmentModify.TrackSegment.transform.TransformPoint(Curve.p0)+offset;
+				return TrackSegmentModify.TrackSegment.transform.TransformPoint(Curve.p0);
 		
 			case NodeType.P1:
-				return TrackSegmentModify.TrackSegment.transform.TransformPoint(Curve.p1)+offset;
+				return TrackSegmentModify.TrackSegment.transform.TransformPoint(Curve.p1);
 
 			case NodeType.P2:
-				return TrackSegmentModify.TrackSegment.transform.TransformPoint(Curve.p2)+offset;
+				return TrackSegmentModify.TrackSegment.transform.TransformPoint(Curve.p2);
 
 			case NodeType.P3:
-				return TrackSegmentModify.TrackSegment.transform.TransformPoint(Curve.p3)+offset;
+				return TrackSegmentModify.TrackSegment.transform.TransformPoint(Curve.p3);
 
 			}
 			return Vector3.zero;
@@ -103,7 +102,6 @@ namespace HelloMod
 					break;
 				case NodeType.P2:
 					Curve.p2 = _previousPos ;
-
 					break;
 				case NodeType.P3:
 					Curve.p3 = _previousPos ;
@@ -116,16 +114,16 @@ namespace HelloMod
 		{
 				switch (NodePoint) {
 				case NodeType.PO:
-					this.transform.position = TrackSegmentModify.TrackSegment.transform.TransformPoint (Curve.p0) + offset;
+					this.transform.position = TrackSegmentModify.TrackSegment.transform.TransformPoint (Curve.p0) ;
 					break;
 				case NodeType.P1:
-					this.transform.position = TrackSegmentModify.TrackSegment.transform.TransformPoint (Curve.p1) + offset;
+					this.transform.position = TrackSegmentModify.TrackSegment.transform.TransformPoint (Curve.p1) ;
 					break;
 				case NodeType.P2:
-					this.transform.position = TrackSegmentModify.TrackSegment.transform.TransformPoint (Curve.p2) + offset;
+					this.transform.position = TrackSegmentModify.TrackSegment.transform.TransformPoint (Curve.p2) ;
 					break;
 				case NodeType.P3:
-					this.transform.position = TrackSegmentModify.TrackSegment.transform.TransformPoint (Curve.p3) + offset;
+					this.transform.position = TrackSegmentModify.TrackSegment.transform.TransformPoint (Curve.p3) ;
 					break;
 				}
 

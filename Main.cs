@@ -4,9 +4,15 @@ namespace HelloMod
     public class Main : IMod
     {
         public string Identifier { get; set; }
-        
+		public static AssetBundleManager AssetBundleManager = null;
+
         public void onEnabled()
         {
+			
+			if (Main.AssetBundleManager == null) {
+
+				AssetBundleManager = new AssetBundleManager (this);
+			}
 			ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject.AddComponent <TrackUIHandle>();
 
 		}
@@ -25,5 +31,8 @@ namespace HelloMod
         {
             get { return "Allows the User to modify track Path"; }
         }
+
+
+		public string Path { get; set; }
     }
 }

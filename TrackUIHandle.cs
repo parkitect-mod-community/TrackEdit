@@ -86,9 +86,9 @@ namespace HelloMod
 					if (Physics.Raycast (ray, out hit, Mathf.Infinity,-1)) {
 						if (hit.transform.name == "BezierNode") {
 							_selected = hit.transform;
-							_offset = hit.transform.position - hit.point;
+							_offset = hit.transform.position - hit.point  ;
 							_dist = (ray.origin - hit.point).magnitude;
-							_fixedY = hit.transform.position.y;
+							_fixedY = hit.transform.position.y ;
 						}
 					}
 				}
@@ -108,7 +108,8 @@ namespace HelloMod
 			else if(Input.GetKeyUp(KeyCode.LeftControl))
 			{
 				if(_selected)
-				_offset = _selected.position - ray.GetPoint (_dist);
+					_offset = _selected.position - ray.GetPoint (_dist)  - new Vector3(0,.5f,0);
+
 				_yShift = false;
 			}
 
@@ -118,10 +119,10 @@ namespace HelloMod
 
 				if (_yShift) {
 					_fixedY = ray.GetPoint (_dist).y;
-					_selected.position =new Vector3(_selected.position.x,  _fixedY,_selected.position.z);
+					_selected.position =new Vector3(_selected.position.x,  _fixedY,_selected.position.z) - new Vector3(0,.5f,0);
 
 				} else {
-					_selected.position = new Vector3 (point.x, _fixedY, point.z) + _offset;
+					_selected.position = new Vector3 (point.x, _fixedY, point.z) + _offset + new Vector3(0,.5f,0);
 				}
 			}
 				
