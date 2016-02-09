@@ -6,18 +6,18 @@ namespace HelloMod
 {
 	public class AssetBundleManager
 	{
-		public Main Main {get;set;}
-		public GameObject Node;
+		private Main Main {get;set;}
+		public GameObject NodeGo;
 
 		public AssetBundleManager (Main main)
 		{
 			this.Main = main;
-			Node = LoadAsset<GameObject> ("Node");
+			NodeGo = LoadAsset<GameObject> ("Node");
 		}
 
 
 
-		public T  LoadAsset<T>(string prefabName) where T : UnityEngine.Object
+		private T  LoadAsset<T>(string prefabName) where T : UnityEngine.Object
 		{
 			try
 			{

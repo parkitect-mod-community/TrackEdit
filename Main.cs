@@ -34,5 +34,19 @@ namespace HelloMod
 
 
 		public string Path { get; set; }
+
+		public void onDrawSettingsUI()
+		{
+		}
+
+		public void onSettingsOpened()
+		{
+
+		}
+
+		public void onSettingsClosed()
+		{
+			
+		}
     }
 }

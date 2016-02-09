@@ -52,7 +52,7 @@ namespace HelloMod
 		private TrackCurveNode AddNode(Vector3 position, TrackCurveNode.NodeType type,bool IsActive)
 		{
 			
-			GameObject node = UnityEngine.Object.Instantiate( Main.AssetBundleManager.Node);//GameObject.CreatePrimitive(PrimitiveType.Sphere);
+			GameObject node = UnityEngine.Object.Instantiate( Main.AssetBundleManager.NodeGo);//GameObject.CreatePrimitive(PrimitiveType.Sphere);
 			node.layer = 900;
 			node.transform.transform.position = position;
 			node.name = "BezierNode";
