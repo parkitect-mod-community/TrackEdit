@@ -67,7 +67,6 @@
     <Compile Include="RollercosterEdit\StateMachine\FiniteStateMachine.cs" />
     <Compile Include="RollercosterEdit\StateMachine\IState.cs" />
     <Compile Include="RollercosterEdit\StateMachine\IdleState.cs" />
-    <Compile Include="RollercosterEdit\StateMachine\VerticalDragState.cs" />
     <Compile Include="RollercosterEdit\StateMachine\NodeAttachState.cs" />
     <Compile Include="RollercosterEdit\TrackNode.cs" />
     <Compile Include="RollercosterEdit\StateMachine\FreeDragState.cs" />
@@ -76,8 +75,5 @@
   <ProjectExtensions>
     <VisualStudio AllowExistingFolder="true" />
   </ProjectExtensions>
-  <ItemGroup>
-    <Folder Include="RollercosterEdit\" />
-    <Folder Include="RollercosterEdit\StateMachine\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

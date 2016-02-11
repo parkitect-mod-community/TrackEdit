@@ -5,7 +5,7 @@ namespace RollercoasterEdit
 {
     public class FreeDragState : IState
     {
-        private bool _verticalDrag = false;
+        private bool _verticalDragState;
         private SharedStateData _stateData;
         public FreeDragState (SharedStateData stateData)
         {
@@ -17,25 +17,23 @@ namespace RollercoasterEdit
             var ray = Camera.main.ScreenPointToRay (Input.mousePosition);
             Vector3 point = ray.GetPoint (_stateData.Distance);
             Vector3 position = Vector3.zero;
-            if (_verticalDrag) {
-                position = new Vector3 (point.x, _stateData.FixedY, point.z) + _stateData.Offset;// new Vector3 (_stateData.Offset.x, _stateData.OffsetFixedY, _stateData.Offset.z);
+            if (!_verticalDragState) {
+                position = new Vector3 (point.x, _stateData.FixedY, point.z) + new Vector3(_stateData.Offset.x, _stateData.Offset.y, _stateData.Offset.z);
 
             } else
             {
                 _stateData.FixedY = point.y;
-                position = new Vector3 (_stateData.Selected.position.x, _stateData.FixedY, _stateData.Selected.position.z) + _stateData.Offset;// new Vector3 (_stateData.Offset.x, _stateData.OffsetFixedY, _stateData.Offset.z);
+                position = new Vector3 (_stateData.Selected.position.x, _stateData.FixedY, _stateData.Selected.position.z) + new Vector3(0, _stateData.Offset.y, 0);
             }
 
             TrackNode trackNode = _stateData.Selected.gameObject.GetComponent<TrackNode> ();
 
             if (Input.GetKeyDown (Main.Configeration.VerticalKey)) {
-                _verticalDrag = true;
-                _stateData.OffsetFixedY = _stateData.Selected.transform.position.y - point.y;
-
-                stateMachine.ChangeState (new VerticalDragState (_stateData));
-            
+                _stateData.Offset = new Vector3(_stateData.Offset.x,_stateData.Selected.transform.position.y - point.y, _stateData.Offset.z);
+                _verticalDragState = true;
+ 
             } else if (Input.GetKeyUp (Main.Configeration.VerticalKey)) {
-                _verticalDrag = false;
+                _verticalDragState = false;
                 _stateData.Offset = (_stateData.Selected.transform.position - point);
 
             }
@@ -44,9 +42,9 @@ namespace RollercoasterEdit
             var previousSegment = trackNode.TrackSegmentModify.GetPreviousSegment ();
 
             switch (trackNode.NodePoint) {
-            case RollercoasterEdit.TrackNode.NodeType.PO:
+            case TrackNode.NodeType.PO:
                 break;
-            case RollercoasterEdit.TrackNode.NodeType.P1:
+            case TrackNode.NodeType.P1:
                 trackNode.SetPoint (position);
 
                 if (previousSegment != null) {
@@ -67,7 +65,7 @@ namespace RollercoasterEdit
 
 
                 break;
-            case RollercoasterEdit.TrackNode.NodeType.P2:
+            case TrackNode.NodeType.P2:
 
                 trackNode.SetPoint (position);
 
@@ -87,7 +85,7 @@ namespace RollercoasterEdit
 
 
                 break;
-            case RollercoasterEdit.TrackNode.NodeType.P3:
+            case TrackNode.NodeType.P3:
 
                 if (trackNode.TrackCurve.Group == TrackNodeCurve.Grouping.End || trackNode.TrackCurve.Group == TrackNodeCurve.Grouping.Both ) {
 
@@ -110,11 +108,11 @@ namespace RollercoasterEdit
                 break;
             }
 
+          //  _stateData.Selected.position = position;
 
             trackNode.TrackSegmentModify.Invalidate = true;
             trackNode.Validate ();
-
-			_stateData.Selected.position = position;
+            
            
 	//		var P0BaseNode = this._stateData.SegmentManager.GetFirstSegment ().GetFirstCurve.P0;
 	//		if (_stateData.Selected.gameObject.GetComponent<TrackNode> ().NodePoint == TrackNode.NodeType.P3 && (position - P0BaseNode.GetGlobal()).sqrMagnitude < .2f) {

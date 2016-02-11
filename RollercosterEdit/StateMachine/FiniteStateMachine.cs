@@ -11,6 +11,7 @@ namespace RollercoasterEdit
 
         public void ChangeState(IState newState)
         {
+
             _currentState = newState;
         }
 

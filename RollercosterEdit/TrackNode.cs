@@ -21,8 +21,7 @@ namespace RollercoasterEdit
 
 		public TrackNode ()
 		{
-			//this.transform.localPosition = new Vector3 (0, .5f, 0);
-
+		
 		}
 
 		void Start()
@@ -127,86 +126,6 @@ namespace RollercoasterEdit
 	
 		}
 
-
-		/*public void NodeUpdate()
-		{
-			var nextSegment = TrackSegmentModify.GetNextSegment ();
-			var previousSegment = TrackSegmentModify.GetPreviousSegment ();
-
-
-			switch (NodePoint) {
-			case NodeType.PO:
-
-
-					break;
-			case NodeType.P1:
-				this.SetPoint (this.transform.position);
-
-				if (previousSegment != null) {
-
-					CalculateLenghtAndNormals ();
-
-
-					float magnitude = Mathf.Abs((previousSegment.GetLastCurve.P2.GetGlobal () - previousSegment.GetLastCurve.P3.GetGlobal ()).magnitude);
-					previousSegment.GetLastCurve.P2.SetPoint (previousSegment.GetLastCurve.P3.GetGlobal() + (TrackSegmentModify.TrackSegment.getTangentPoint(0f) *-1f* magnitude));
-					previousSegment.Invalidate = true;
-					CalculateLenghtAndNormals ();
-
-					TrackSegmentModify.CalculateStartBinormal ();
-					//TrackSegmentModify.TrackSegment.upgradeSavegameRecalculateBinormal (previousSegment.TrackSegment);
-
-
-				}
-
-
-				break;
-			case NodeType.P2:
-
-				this.SetPoint (this.transform.position);
-
-				if (nextSegment != null) {
-
-					CalculateLenghtAndNormals ();
-
-
-					float magnitude = Mathf.Abs((nextSegment.GetFirstCurve.P0.GetGlobal () - nextSegment.GetFirstCurve.P1.GetGlobal ()).magnitude);
-					nextSegment.GetFirstCurve.P1.SetPoint (nextSegment.GetFirstCurve.P0.GetGlobal () + (TrackSegmentModify.TrackSegment.getTangentPoint(1f) * magnitude));
-					nextSegment.Invalidate = true;
-					CalculateLenghtAndNormals ();
-
-					nextSegment.CalculateStartBinormal ();
-
-				}
-
-
-					break;
-			case NodeType.P3:
-
-				if (TrackCurve.Group == TrackNodeCurve.Grouping.End || TrackCurve.Group == TrackNodeCurve.Grouping.Both ) {
-
-					if (nextSegment != null) {
-
-						var NextP1Offset = nextSegment.GetFirstCurve.P1.GetGlobal() -GetGlobal();
-						var P2Offset = TrackCurve.P2.GetGlobal () - GetGlobal ();
-
-
-						nextSegment.GetFirstCurve.P0.SetPoint (this.transform.position);
-						nextSegment.GetFirstCurve.P1.SetPoint (this.transform.position+ NextP1Offset);
-						TrackCurve.P2.SetPoint(this.transform.position+ P2Offset);
-
-						nextSegment.Invalidate = true;
-					}
-
-				}
-				this.SetPoint (this.transform.position);
-
-			break;
-			}
-
-			TrackSegmentModify.Invalidate = true;
-			Validate ();
-
-		}*/
 
         public void CalculateLenghtAndNormals()
 		{

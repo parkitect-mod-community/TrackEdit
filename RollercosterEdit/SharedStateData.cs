@@ -9,7 +9,6 @@ namespace RollercoasterEdit
 
         public Transform Selected;
         public Vector3 Offset;
-        public float OffsetFixedY;
 
         public float Distance;
 
