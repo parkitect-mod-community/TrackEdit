@@ -60,17 +60,17 @@
     <Compile Include="AssetBundleManager.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="RollercosterEdit\SharedStateData.cs" />
-    <Compile Include="RollercosterEdit\TrackCurveNode.cs" />
     <Compile Include="RollercosterEdit\TrackNodeCurve.cs" />
     <Compile Include="RollercosterEdit\TrackSegmentManager.cs" />
     <Compile Include="RollercosterEdit\TrackSegmentModify.cs" />
     <Compile Include="RollercosterEdit\TrackUIHandle.cs" />
     <Compile Include="RollercosterEdit\StateMachine\FiniteStateMachine.cs" />
-    <Compile Include="RollercosterEdit\StateMachine\HorizantalDragState.cs" />
     <Compile Include="RollercosterEdit\StateMachine\IState.cs" />
     <Compile Include="RollercosterEdit\StateMachine\IdleState.cs" />
     <Compile Include="RollercosterEdit\StateMachine\VerticalDragState.cs" />
     <Compile Include="RollercosterEdit\StateMachine\NodeAttachState.cs" />
+    <Compile Include="RollercosterEdit\TrackNode.cs" />
+    <Compile Include="RollercosterEdit\StateMachine\FreeDragState.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>

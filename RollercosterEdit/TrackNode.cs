@@ -3,11 +3,8 @@ using UnityEngine;
 
 namespace RollercoasterEdit
 {
-	public class TrackCurveNode : MonoBehaviour
+	public class TrackNode : MonoBehaviour
 	{
-		//private readonly Vector3 offset = new Vector3 (0, .5f, 0);
-
-
 		public enum NodeType  {
 			PO,
 			P1,
@@ -22,7 +19,7 @@ namespace RollercoasterEdit
 
 		private Vector3 _previousPos = new Vector3(); 
 
-		public TrackCurveNode ()
+		public TrackNode ()
 		{
 			//this.transform.localPosition = new Vector3 (0, .5f, 0);
 
@@ -131,7 +128,7 @@ namespace RollercoasterEdit
 		}
 
 
-		public void NodeUpdate()
+		/*public void NodeUpdate()
 		{
 			var nextSegment = TrackSegmentModify.GetNextSegment ();
 			var previousSegment = TrackSegmentModify.GetPreviousSegment ();
@@ -206,14 +203,12 @@ namespace RollercoasterEdit
 			break;
 			}
 
-
-
 			TrackSegmentModify.Invalidate = true;
 			Validate ();
 
-		}
+		}*/
 
-		private void CalculateLenghtAndNormals()
+        public void CalculateLenghtAndNormals()
 		{
 			var nextSegment = TrackSegmentModify.GetNextSegment ();
 			var previousSegment = TrackSegmentModify.GetPreviousSegment ();

@@ -17,10 +17,10 @@ namespace RollercoasterEdit
 		private CubicBezier _cubicBezier;
 		private TrackSegmentModify _segmentModify;
 
-		public TrackCurveNode P0{ get; private set; }
-		public TrackCurveNode P1{ get; private set; }
-		public TrackCurveNode P2{ get; private set; }
-		public TrackCurveNode P3{ get; private set; }
+		public TrackNode P0{ get; private set; }
+		public TrackNode P1{ get; private set; }
+		public TrackNode P2{ get; private set; }
+		public TrackNode P3{ get; private set; }
 		public Grouping Group { get; private set; }
 
 		public TrackNodeCurve (CubicBezier cubicBezier, TrackSegmentModify segmentModify,Grouping grouping)
@@ -35,10 +35,10 @@ namespace RollercoasterEdit
 				isEnable = false;
 			}
 
-			P0 = AddNode ( _segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p0),TrackCurveNode.NodeType.PO,isEnable && !(this.Group == Grouping.Start || this.Group == Grouping.Both));
-			P1 = AddNode (_segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p1),TrackCurveNode.NodeType.P1,isEnable && true);
-			P2 = AddNode (_segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p2),TrackCurveNode.NodeType.P2,isEnable && true);
-			P3 = AddNode (_segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p3),TrackCurveNode.NodeType.P3,isEnable && true);
+			P0 = AddNode ( _segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p0),TrackNode.NodeType.PO,isEnable && !(this.Group == Grouping.Start || this.Group == Grouping.Both));
+			P1 = AddNode (_segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p1),TrackNode.NodeType.P1,isEnable && true);
+			P2 = AddNode (_segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p2),TrackNode.NodeType.P2,isEnable && true);
+			P3 = AddNode (_segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p3),TrackNode.NodeType.P3,isEnable && true);
 
 		}
 
@@ -55,7 +55,7 @@ namespace RollercoasterEdit
 
 		}
 
-		private TrackCurveNode AddNode(Vector3 position, TrackCurveNode.NodeType type,bool IsActive)
+		private TrackNode AddNode(Vector3 position, TrackNode.NodeType type,bool IsActive)
 		{
 			
 			GameObject node = UnityEngine.Object.Instantiate( Main.AssetBundleManager.NodeGo);//GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -63,7 +63,7 @@ namespace RollercoasterEdit
 			node.transform.transform.position = position;
 			node.name = "BezierNode";
 
-			var n = node.AddComponent< TrackCurveNode>();
+			var n = node.AddComponent< TrackNode>();
 			n.gameObject.SetActive (IsActive);
 			n.TrackSegmentModify = _segmentModify;
 			n.Curve = _cubicBezier;

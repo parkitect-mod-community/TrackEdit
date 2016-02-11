@@ -20,7 +20,7 @@ namespace RollercoasterEdit
     
             _stateData.Selected.position = new Vector3 ( _stateData.Selected.position.x, _stateData.FixedY, _stateData.Selected.position.z) + new Vector3(0,_stateData.Offset.y,0) ;
             
-            _stateData.Selected.gameObject.GetComponent<TrackCurveNode>().NodeUpdate();
+           // _stateData.Selected.gameObject.GetComponent<TrackNode>().NodeUpdate();
 
 
             if (Input.GetKeyUp(Main.Configeration.VerticalKey)) {
@@ -28,7 +28,7 @@ namespace RollercoasterEdit
                 _stateData.Offset = (_stateData.Selected.transform.position - point);
                 _stateData.OffsetFixedY = _stateData.Selected.transform.position.y - point.y;
 
-                stateMachine.ChangeState (new HorizantalDragState (_stateData));
+                stateMachine.ChangeState (new FreeDragState (_stateData));
             }
             if (Input.GetMouseButtonUp (0)) {
 				stateMachine.ChangeState(new IdleState (_stateData.SegmentManager));

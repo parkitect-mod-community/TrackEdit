@@ -39,7 +39,7 @@ namespace RollercoasterEdit
                             stateMachine.ChangeState(new VerticalDragState(_stateData));
                         }
                         else
-                        stateMachine.ChangeState(new HorizantalDragState(_stateData));
+                        stateMachine.ChangeState(new FreeDragState(_stateData));
                     }
                 }
               
