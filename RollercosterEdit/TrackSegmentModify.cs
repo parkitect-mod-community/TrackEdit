@@ -49,7 +49,7 @@ namespace RollercoasterEdit
 		public TrackNodeCurve GetLastCurve{ get { return _nodes [_nodes.Count - 1];} }
 		public TrackNodeCurve GetFirstCurve{ get { return _nodes [0];} }
 
-		public void CalculateBinormal()
+		public void CalculateStartBinormal()
 		{
 			_previousBinormal = (Vector3)_biNormalField.GetValue (TrackSegment);
 			var previousSegment = GetPreviousSegment ();
@@ -57,8 +57,8 @@ namespace RollercoasterEdit
 				_biNormalField.SetValue (TrackSegment, TrackSegment.transform.InverseTransformDirection (Vector3.Cross (previousSegment.TrackSegment.getNormal (1f), previousSegment.TrackSegment.getTangentPoint (1f))));
 			}	
 
-
 		}
+			
 
 
 		public void RollBackSegment()

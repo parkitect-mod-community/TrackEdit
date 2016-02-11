@@ -7,10 +7,11 @@ namespace RollercoasterEdit
     {
         private bool _verticalState= false;
         private SharedStateData _stateData;
-        public IdleState ()
+		public IdleState (TrackSegmentManager segmentManager)
         {
             _stateData = new SharedStateData ();
-        }
+			_stateData.SegmentManager = segmentManager;
+		}
 
         public void Update(FiniteStateMachine stateMachine)
         {

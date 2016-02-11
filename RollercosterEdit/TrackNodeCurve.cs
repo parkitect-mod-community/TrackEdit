@@ -29,10 +29,16 @@ namespace RollercoasterEdit
 			this._cubicBezier = cubicBezier;
 			this._segmentModify = segmentModify;
 
-			P0 = AddNode ( _segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p0),TrackCurveNode.NodeType.PO,!(this.Group == Grouping.Start || this.Group == Grouping.Both));
-			P1 = AddNode (_segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p1),TrackCurveNode.NodeType.P1,true);
-			P2 = AddNode (_segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p2),TrackCurveNode.NodeType.P2,true);
-			P3 = AddNode (_segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p3),TrackCurveNode.NodeType.P3,true);
+			bool isEnable = true;
+
+			if (segmentModify.TrackSegment is Station) {
+				isEnable = false;
+			}
+
+			P0 = AddNode ( _segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p0),TrackCurveNode.NodeType.PO,isEnable && !(this.Group == Grouping.Start || this.Group == Grouping.Both));
+			P1 = AddNode (_segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p1),TrackCurveNode.NodeType.P1,isEnable && true);
+			P2 = AddNode (_segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p2),TrackCurveNode.NodeType.P2,isEnable && true);
+			P3 = AddNode (_segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p3),TrackCurveNode.NodeType.P3,isEnable && true);
 
 		}
 

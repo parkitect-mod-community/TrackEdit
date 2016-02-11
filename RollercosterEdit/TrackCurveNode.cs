@@ -17,7 +17,7 @@ namespace RollercoasterEdit
 
 		public NodeType NodePoint;
 		public CubicBezier Curve;
-		public TrackSegmentModify TrackSegmentModify;
+		public TrackSegmentModify TrackSegmentModify ;
 		public TrackNodeCurve TrackCurve;
 
 		private Vector3 _previousPos = new Vector3(); 
@@ -155,7 +155,7 @@ namespace RollercoasterEdit
 					previousSegment.Invalidate = true;
 					CalculateLenghtAndNormals ();
 
-					TrackSegmentModify.CalculateBinormal ();
+					TrackSegmentModify.CalculateStartBinormal ();
 					//TrackSegmentModify.TrackSegment.upgradeSavegameRecalculateBinormal (previousSegment.TrackSegment);
 
 
@@ -177,7 +177,7 @@ namespace RollercoasterEdit
 					nextSegment.Invalidate = true;
 					CalculateLenghtAndNormals ();
 
-					nextSegment.CalculateBinormal ();
+					nextSegment.CalculateStartBinormal ();
 
 				}
 
@@ -229,7 +229,7 @@ namespace RollercoasterEdit
 				nextSegment.TrackSegment.calculateLengthAndNormals (TrackSegmentModify.TrackSegment);
 		}
 
-		private bool Validate()
+		public bool Validate()
 		{
 			bool isValid = true;
 			var nextSegment = TrackSegmentModify.GetNextSegment ();

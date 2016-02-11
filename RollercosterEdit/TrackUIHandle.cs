@@ -31,7 +31,7 @@ namespace RollercoasterEdit
 			TrackRide = ((TrackedRide)_trackerRiderField.GetValue (TrackBuilder));
 			TrackBuilder = this.gameObject.GetComponent<TrackBuilder>();
             _trackSegmentManger = new TrackSegmentManager (TrackBuilder, TrackRide);
-            _stateMachine.ChangeState (new IdleState ());
+			_stateMachine.ChangeState (new IdleState (_trackSegmentManger));
 		}
 
 		void OnDestroy() {

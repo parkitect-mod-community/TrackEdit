@@ -31,7 +31,7 @@ namespace RollercoasterEdit
                 stateMachine.ChangeState (new HorizantalDragState (_stateData));
             }
             if (Input.GetMouseButtonUp (0)) {
-                stateMachine.ChangeState(new IdleState ());
+				stateMachine.ChangeState(new IdleState (_stateData.SegmentManager));
             }
         }
     }

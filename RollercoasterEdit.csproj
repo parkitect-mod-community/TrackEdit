@@ -57,22 +57,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
-    <Compile Include="TrackNodeCurve.cs" />
-    <Compile Include="TrackCurveNode.cs" />
-    <Compile Include="TrackSegmentModify.cs" />
-    <Compile Include="TrackUIHandle.cs" />
     <Compile Include="AssetBundleManager.cs" />
     <Compile Include="Configuration.cs" />
-    <Compile Include="TrackSegmentManager.cs" />
-    <Compile Include="FiniteStateMachine.cs" />
-    <Compile Include="IState.cs" />
-    <Compile Include="IdleState.cs" />
-    <Compile Include="SharedStateData.cs" />
-    <Compile Include="VerticalDragState.cs" />
-    <Compile Include="HorizantalDragState.cs" />
+    <Compile Include="RollercosterEdit\SharedStateData.cs" />
+    <Compile Include="RollercosterEdit\TrackCurveNode.cs" />
+    <Compile Include="RollercosterEdit\TrackNodeCurve.cs" />
+    <Compile Include="RollercosterEdit\TrackSegmentManager.cs" />
+    <Compile Include="RollercosterEdit\TrackSegmentModify.cs" />
+    <Compile Include="RollercosterEdit\TrackUIHandle.cs" />
+    <Compile Include="RollercosterEdit\StateMachine\FiniteStateMachine.cs" />
+    <Compile Include="RollercosterEdit\StateMachine\HorizantalDragState.cs" />
+    <Compile Include="RollercosterEdit\StateMachine\IState.cs" />
+    <Compile Include="RollercosterEdit\StateMachine\IdleState.cs" />
+    <Compile Include="RollercosterEdit\StateMachine\VerticalDragState.cs" />
+    <Compile Include="RollercosterEdit\StateMachine\NodeAttachState.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>
     <VisualStudio AllowExistingFolder="true" />
   </ProjectExtensions>
+  <ItemGroup>
+    <Folder Include="RollercosterEdit\" />
+    <Folder Include="RollercosterEdit\StateMachine\" />
+  </ItemGroup>
 </Project>
