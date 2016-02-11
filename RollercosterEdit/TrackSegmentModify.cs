@@ -37,7 +37,7 @@ namespace RollercoasterEdit
 			}
 
 			BindingFlags flags = BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic;
-			_biNormalField = TrackSegment.GetType ().BaseType.GetField ("startBinormal", flags);
+			_biNormalField = typeof(TrackSegment4).GetField ("startBinormal", flags);
 		}
 
 		public List<TrackNodeCurve> GetTrackCurves{ get 
