@@ -21,18 +21,26 @@ namespace RollercoasterEdit
 
 		public TrackNode ()
 		{
-		
+			
 		}
 
 		void Start()
 		{
-
+			if (NodePoint == NodeType.P3) {
+			} else if (NodePoint == NodeType.PO) {
+			}
 		}
 
 		public void Initialize()
 		{
 		}
 
+		void Update()
+		{
+			this.transform.FindChild("item").GetComponent<Renderer> ().material.color = new Color (1,1, 1, .5f);
+
+			this.transform.FindChild("item").LookAt(Camera.main.transform,Vector3.down) ;
+		}
 
 		public void SetPoint(Vector3 point)
 		{

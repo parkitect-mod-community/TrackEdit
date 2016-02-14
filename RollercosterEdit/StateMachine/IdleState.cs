@@ -19,10 +19,10 @@ namespace RollercoasterEdit
             var ray = Camera.main.ScreenPointToRay (Input.mousePosition);
             if (Input.GetMouseButtonDown (0)) {
                 RaycastHit hit;
-                if (Physics.Raycast (ray, out hit, Mathf.Infinity, -1)) {
+
+				if (Physics.Raycast (ray, out hit, Mathf.Infinity,LayerMasks.COASTER_TRACKS)) {
                     if (hit.transform.name == "BezierNode") {
 
-					
 
                         _stateData.Selected = hit.transform;
                         _stateData.FixedY = hit.transform.position.y;

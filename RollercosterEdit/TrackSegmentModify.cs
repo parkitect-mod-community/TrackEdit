@@ -30,6 +30,29 @@ namespace RollercoasterEdit
 			_biNormalField = typeof(TrackSegment4).GetField ("startBinormal", flags);
 		}
 
+		public TrackNodeCurve getNextCurve(TrackNodeCurve current)
+		{
+
+			int index = _nodes.IndexOf (current);
+			if (index + 1 >= _nodes.Count) {
+				var nextSegment = current.SegmentModify.GetNextSegment ();
+				if (nextSegment != null)
+					return nextSegment.GetFirstCurve;
+			}	
+			return _nodes [index + 1];
+		}
+
+		public TrackNodeCurve getPreviousCurve(TrackNodeCurve current)
+		{
+			int index = _nodes.IndexOf (current);
+			if (index - 1 < 0) {
+				var previousCurve = current.SegmentModify.GetPreviousSegment ();
+				if (previousCurve != null)
+					return previousCurve.GetLastCurve;
+			}	
+			return _nodes [index - 1];
+		}
+
 		public void Load()
 		{
 			for (int x = 0; x < TrackSegment.curves.Count; x++) {
