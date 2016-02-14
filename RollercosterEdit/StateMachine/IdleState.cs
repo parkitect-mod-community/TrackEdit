@@ -48,6 +48,10 @@ namespace RollercoasterEdit
               
             }
         }
+
+		public void Unload()
+		{
+		}
     
     }
 }

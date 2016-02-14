@@ -12,6 +12,10 @@ namespace HelloMod
 		{
 			
 		}
+
+		public void Unload()
+		{
+		}
 	}
 }
 

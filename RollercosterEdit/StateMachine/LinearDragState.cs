@@ -78,6 +78,9 @@ namespace RollercoasterEdit
 				stateMachine.ChangeState(new IdleState (_stateData.SegmentManager));
 			}
 		}
+		public void Unload()
+		{
+		}
 	}
 }
 

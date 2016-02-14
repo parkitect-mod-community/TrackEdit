@@ -5,11 +5,17 @@ namespace RollercoasterEdit
 {
     public class FreeDragState : IState
     {
+		private BuilderHeightMarker _heightMaker;
         private bool _verticalDragState;
         private SharedStateData _stateData;
         public FreeDragState (SharedStateData stateData)
         {
-            this._stateData = stateData;
+			
+			this._stateData = stateData;
+			_heightMaker = UnityEngine.Object.Instantiate<BuilderHeightMarker>(ScriptableSingleton<AssetManager>.Instance.builderHeightMarkerGO);
+			_heightMaker.attachedTo = stateData.Selected.transform;
+			_heightMaker.heightChangeDelta = 1f;
+
         }
 
         public void Update(FiniteStateMachine stateMachine)
@@ -151,6 +157,8 @@ namespace RollercoasterEdit
 				}
 			}
 
+
+
 	
 
 
@@ -159,6 +167,11 @@ namespace RollercoasterEdit
 				stateMachine.ChangeState(new IdleState (_stateData.SegmentManager));
             }
         }
+
+		public void Unload()
+		{
+			UnityEngine.Object.Destroy (_heightMaker.gameObject);
+		}
     }
 }
 
