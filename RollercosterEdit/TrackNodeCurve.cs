@@ -38,6 +38,10 @@ namespace RollercoasterEdit
 			P0 = AddNode ( _segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p0),TrackNode.NodeType.PO,isEnable && !(this.Group == Grouping.Start || this.Group == Grouping.Both));
 			P1 = AddNode (_segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p1),TrackNode.NodeType.P1,isEnable && true);
 			P2 = AddNode (_segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p2),TrackNode.NodeType.P2,isEnable && true);
+
+			if (segmentModify.GetNextSegment()  != null && segmentModify.GetNextSegment().TrackSegment is Station) {
+				isEnable = false;
+			}
 			P3 = AddNode (_segmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p3),TrackNode.NodeType.P3,isEnable && true);
 
 		}

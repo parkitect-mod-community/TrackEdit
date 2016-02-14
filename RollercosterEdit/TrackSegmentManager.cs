@@ -8,7 +8,7 @@ namespace RollercoasterEdit
     {
         public TrackBuilder TrackBuilder{ get; private set; }
         public TrackedRide TrackRide{ get; private set; }
-        private Dictionary<TrackSegment4,TrackSegmentModify> _trackSegments = new Dictionary<TrackSegment4, TrackSegmentModify>();
+		private Dictionary<string,TrackSegmentModify> _trackSegments = new Dictionary<string, TrackSegmentModify>();
 
         public TrackSegmentManager (TrackBuilder trackBuilder, TrackedRide trackRide)
         {
@@ -16,11 +16,19 @@ namespace RollercoasterEdit
             this.TrackRide = trackRide;
 
             TrackRide.Track.OnAddTrackSegment += (trackSegment) => {
-                _trackSegments.Add (trackSegment, new TrackSegmentModify (trackSegment, this));
+				foreach (var segment in _trackSegments.Values) {
+					segment.Destroy ();
+				}
+				_trackSegments.Clear();
+				//_trackSegments.Add (trackSegment.getId(), new TrackSegmentModify (trackSegment, this));
             };
-            TrackRide.Track.OnRemoveTrackSegment += (trackSegment) => {
-                _trackSegments [trackSegment].Destroy ();
-                _trackSegments.Remove (trackSegment);
+			TrackRide.Track.OnRemoveTrackSegment += (trackSegment) => {
+				foreach (var segment in _trackSegments.Values) {
+					segment.Destroy ();
+				}
+				_trackSegments.Clear();
+			//	_trackSegments [trackSegment.getId()].Destroy ();
+				//_trackSegments.Remove (trackSegment.getId());
             };  
 
         }
@@ -33,12 +41,12 @@ namespace RollercoasterEdit
 			next.TrackSegment.isConnectedToPreviousSegment = true;
 			previous.TrackSegment.isConnectedToPreviousSegment = true;
 
-
+		
 			float magnitude = Mathf.Abs((next.GetFirstCurve.P0.GetGlobal () - next.GetFirstCurve.P1.GetGlobal ()).magnitude);
 
 			previous.GetLastCurve.P2.SetPoint(previous.GetLastCurve.P3.GetGlobal() + (next.TrackSegment.getTangentPoint(0f) *-1f* magnitude));
-			previous.GetLastCurve.P2.UpdatePosition ();
 			previous.GetLastCurve.P2.Validate ();
+
 			previous.Invalidate = true;
 		}
 
@@ -52,7 +60,7 @@ namespace RollercoasterEdit
 
         public TrackSegmentModify GetTrackSegmentModifyer(TrackSegment4 segment)
         {
-            return _trackSegments [segment];
+			return _trackSegments [segment.getId()];
         }
 
 		public TrackSegmentModify GetLastSegment()
@@ -71,9 +79,12 @@ namespace RollercoasterEdit
             if (_trackSegments.Count == 0) {
 
                 for (int x = 0; x < TrackRide.Track.trackSegments.Count; x++) {
-                    _trackSegments.Add (TrackRide.Track.trackSegments [x], new TrackSegmentModify (TrackRide.Track.trackSegments [x], this));
+					_trackSegments.Add (TrackRide.Track.trackSegments [x].getId(), new TrackSegmentModify (TrackRide.Track.trackSegments [x], this));
 
                 }
+				foreach (var segment in _trackSegments.Values) {
+					segment.Load ();
+				}
             }
 
             foreach (var segment in _trackSegments.Values) {

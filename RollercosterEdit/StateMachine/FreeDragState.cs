@@ -110,21 +110,47 @@ namespace RollercoasterEdit
 
           //  _stateData.Selected.position = position;
 
-            trackNode.TrackSegmentModify.Invalidate = true;
-            trackNode.Validate ();
+           trackNode.Validate ();
+			trackNode.TrackSegmentModify.Invalidate = true;
+
             
-           
-	//		var P0BaseNode = this._stateData.SegmentManager.GetFirstSegment ().GetFirstCurve.P0;
-	//		if (_stateData.Selected.gameObject.GetComponent<TrackNode> ().NodePoint == TrackNode.NodeType.P3 && (position - P0BaseNode.GetGlobal()).sqrMagnitude < .2f) {
-	//			_stateData.Selected.position = P0BaseNode.GetGlobal ();
+			nextSegment = trackNode.TrackSegmentModify.GetNextSegment (false);
+			if (!_stateData.Selected.gameObject.GetComponent<TrackNode> ().TrackSegmentModify.TrackSegment.isConnectedToNextSegment) {
+			
+			
+				if (_stateData.Selected.gameObject.GetComponent<TrackNode> ().NodePoint == TrackNode.NodeType.P3 && (position - nextSegment.GetFirstCurve.P0.GetGlobal ()).sqrMagnitude < .2f) {
+					
+					float magnitude = Mathf.Abs ((nextSegment.GetFirstCurve.P0.GetGlobal () - nextSegment.GetFirstCurve.P1.GetGlobal ()).magnitude);
 
-	//			if (Input.GetMouseButtonUp (0)) {
 
-	//				this._stateData.SegmentManager.ConnectEndPieces (_stateData.Selected.gameObject.GetComponent<TrackNode> ().TrackSegmentModify, this._stateData.SegmentManager.GetFirstSegment ());
-					//P0BaseNode.TrackSegmentModify.TrackSegment.initiateFromPreviousSegment (_stateData.Selected.gameObject.GetComponent<TrackCurveNode> ().TrackSegmentModify.TrackSegment);
-	//				stateMachine.ChangeState(new IdleState (_stateData.SegmentManager));
-	//			}
-		//	}
+					_stateData.Selected.gameObject.GetComponent<TrackNode> ().TrackSegmentModify.GetFirstCurve.P0.TrackSegmentModify.CalculateStartBinormal (false);
+					
+			
+					_stateData.Selected.gameObject.GetComponent<TrackNode> ().SetPoint (nextSegment.GetFirstCurve.P0.GetGlobal ());
+					_stateData.Selected.gameObject.GetComponent<TrackNode> ().TrackSegmentModify.GetLastCurve.P2.SetPoint (_stateData.Selected.gameObject.GetComponent<TrackNode> ().TrackSegmentModify.GetLastCurve.P3.GetGlobal () + (nextSegment.TrackSegment.getTangentPoint (0f) * -1f * magnitude));
+
+
+
+					if (nextSegment.GetFirstCurve.P0.Validate ()) {
+						if (Input.GetMouseButtonUp (0)) {
+
+							if (nextSegment.TrackSegment is Station) {
+								_stateData.Selected.gameObject.SetActive (false);
+							}
+
+							this._stateData.SegmentManager.ConnectEndPieces (_stateData.Selected.gameObject.GetComponent<TrackNode> ().TrackSegmentModify,nextSegment);
+							stateMachine.ChangeState (new IdleState (_stateData.SegmentManager));
+						}
+						nextSegment.Invalidate = true;
+
+						_stateData.Selected.gameObject.GetComponent<TrackNode> ().TrackSegmentModify.Invalidate = true;
+					}
+
+
+				}
+			}
+
+	
 
 
 

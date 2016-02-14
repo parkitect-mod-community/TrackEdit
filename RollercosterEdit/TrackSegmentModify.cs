@@ -16,28 +16,35 @@ namespace RollercoasterEdit
 		private Vector3 _previousBinormal;
 		private FieldInfo _biNormalField;
 
+		private bool _isRotationSet = false;
+		private float  _previousDelta = 0;
+		private float _previousTotalRotation = 0;
+
 
         public TrackSegmentModify (TrackSegment4 segment,TrackSegmentManager trackSegmentManager)
 		{
 			this.TrackSegmentManager = trackSegmentManager;
 			this.TrackSegment = segment;
 
+			BindingFlags flags = BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic;
+			_biNormalField = typeof(TrackSegment4).GetField ("startBinormal", flags);
+		}
+
+		public void Load()
+		{
 			for (int x = 0; x < TrackSegment.curves.Count; x++) {
 				TrackNodeCurve.Grouping grouping = TrackNodeCurve.Grouping.Middle;
-			
+
 				if (x == 0)
 					grouping = TrackNodeCurve.Grouping.Start;
 				if (x == TrackSegment.curves.Count - 1)
 					grouping = TrackNodeCurve.Grouping.End;
 				if (TrackSegment.curves.Count == 1)
 					grouping = TrackNodeCurve.Grouping.Both;
-				
+
 				_nodes.Add (new TrackNodeCurve(TrackSegment.curves[x],this,grouping));
 
 			}
-
-			BindingFlags flags = BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic;
-			_biNormalField = typeof(TrackSegment4).GetField ("startBinormal", flags);
 		}
 
 		public List<TrackNodeCurve> GetTrackCurves{ get 
@@ -49,12 +56,28 @@ namespace RollercoasterEdit
 		public TrackNodeCurve GetLastCurve{ get { return _nodes [_nodes.Count - 1];} }
 		public TrackNodeCurve GetFirstCurve{ get { return _nodes [0];} }
 
-		public void CalculateStartBinormal()
+		public void CalculateStartBinormal(bool hasToBeconnected = true)
 		{
 			_previousBinormal = (Vector3)_biNormalField.GetValue (TrackSegment);
 			var previousSegment = GetPreviousSegment ();
 			if (previousSegment != null) {
+
+				var nextSegment = GetNextSegment (hasToBeconnected);
+				if (nextSegment != null) {
+
+					_isRotationSet = true;
+					_previousTotalRotation = TrackSegment.totalRotation; 
+					_previousTotalRotation = TrackSegment.totalRotation;
+
+					TrackSegment.deltaRotation = Mathf.DeltaAngle (previousSegment.TrackSegment.totalRotation, nextSegment.TrackSegment.totalRotation - nextSegment.TrackSegment.deltaRotation);  ;
+					TrackSegment.totalRotation = previousSegment.TrackSegment.totalRotation + TrackSegment.deltaRotation + TrackSegment.getAdditionalRotation();
+					TrackSegment.calculateLengthAndNormals (previousSegment.TrackSegment);
+				}
+
 				_biNormalField.SetValue (TrackSegment, TrackSegment.transform.InverseTransformDirection (Vector3.Cross (previousSegment.TrackSegment.getNormal (1f), previousSegment.TrackSegment.getTangentPoint (1f))));
+				GetLastCurve.P0.CalculateLenghtAndNormals ();
+
+
 			}	
 
 		}
@@ -66,6 +89,12 @@ namespace RollercoasterEdit
 			if(_previousBinormal != Vector3.zero)
 			_biNormalField.SetValue (TrackSegment,_previousBinormal);
 
+			if (_isRotationSet == true) {
+				TrackSegment.deltaRotation =_previousDelta  ;
+				TrackSegment.totalRotation = _previousTotalRotation;
+
+			}
+			_isRotationSet = false;
 
 			for (int x = 0; x < _nodes.Count; x++) {
 				_nodes [x].P0.RollBack ();
@@ -81,9 +110,9 @@ namespace RollercoasterEdit
 			}
 		}
 
-		public TrackSegmentModify GetNextSegment()
+		public TrackSegmentModify GetNextSegment(bool hasToBeconnected = true)
 		{
-			if (TrackSegment.isConnectedToNextSegment) {
+			if (TrackSegment.isConnectedToNextSegment || !hasToBeconnected) {
 				var trackSegment =	TrackSegmentManager.TrackRide.Track.trackSegments[TrackSegmentManager.TrackRide.Track.getNextSegmentIndex (TrackSegmentManager.TrackRide.Track.trackSegments.IndexOf (TrackSegment))];
                 return TrackSegmentManager.GetTrackSegmentModifyer (trackSegment);
 			}
