@@ -164,6 +164,8 @@ namespace RollercoasterEdit
 			}
 
 
+
+
 			if (segment.getLength() <= 0f)
 			{
 				Debug.LogWarning("Can't extrude this segment! Has a length of 0.");
@@ -243,6 +245,9 @@ namespace RollercoasterEdit
 
 			MouseCollider mouseCollider = segment.gameObject.GetComponent<MouseCollider>();
 			mouseCollider.colliderObject = track_mouse_collider;
+
+
+			segment.applyCustomColors ((Color[])segment.track.TrackedRide.trackColors.Clone ());
 
 		}
 
