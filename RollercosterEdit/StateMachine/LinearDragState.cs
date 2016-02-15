@@ -22,8 +22,8 @@ namespace RollercoasterEdit
 
 
 			TrackNode trackNode = _stateData.Selected.gameObject.GetComponent<TrackNode> ();
-			var nextSegment = trackNode.TrackSegmentModify.GetNextSegment ();
-			var previousSegment = trackNode.TrackSegmentModify.GetPreviousSegment ();
+			var nextSegment = trackNode.TrackSegmentModify.GetNextSegment (true);
+			var previousSegment = trackNode.TrackSegmentModify.GetPreviousSegment (true);
 
 			switch (trackNode.NodePoint) {
 
@@ -40,7 +40,7 @@ namespace RollercoasterEdit
 					previousSegment.Invalidate = true;
 					trackNode.CalculateLenghtAndNormals ();
 
-					trackNode.TrackSegmentModify.CalculateStartBinormal ();
+					trackNode.TrackSegmentModify.CalculateStartBinormal (true);
 					//TrackSegmentModify.TrackSegment.upgradeSavegameRecalculateBinormal (previousSegment.TrackSegment);
 
 
@@ -62,7 +62,7 @@ namespace RollercoasterEdit
 					nextSegment.Invalidate = true;
 					trackNode.CalculateLenghtAndNormals ();
 
-					nextSegment.CalculateStartBinormal ();
+					nextSegment.CalculateStartBinormal (true);
 				}
 
 				break;

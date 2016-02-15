@@ -218,8 +218,8 @@ namespace RollercoasterEdit
 
         public void CalculateLenghtAndNormals()
 		{
-			var nextSegment = TrackSegmentModify.GetNextSegment ();
-			var previousSegment = TrackSegmentModify.GetPreviousSegment ();
+			var nextSegment = TrackSegmentModify.GetNextSegment (true);
+			var previousSegment = TrackSegmentModify.GetPreviousSegment (true);
 
 
 			if(previousSegment != null)
@@ -235,8 +235,8 @@ namespace RollercoasterEdit
 		public bool Validate()
 		{
 			bool isValid = true;
-			var nextSegment = TrackSegmentModify.GetNextSegment ();
-			var previousSegment = TrackSegmentModify.GetPreviousSegment ();
+			var nextSegment = TrackSegmentModify.GetNextSegment (true);
+			var previousSegment = TrackSegmentModify.GetPreviousSegment (true);
 
 			CalculateLenghtAndNormals ();
 

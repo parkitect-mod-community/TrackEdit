@@ -37,7 +37,7 @@ namespace RollercoasterEdit
 			P1 = AddTrackCurveNode (SegmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p1), TrackNode.NodeType.P1);
 			P2 = AddTrackCurveNode (SegmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p2),TrackNode.NodeType.P2);
 			P3 = AddTrackCurveNode (SegmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p3),TrackNode.NodeType.P3);
-			if ((grouping == Grouping.End || grouping == Grouping.Both) && SegmentModify.GetNextSegment() == null) {
+			if ((grouping == Grouping.End || grouping == Grouping.Both) && SegmentModify.GetNextSegment(true) == null) {
 				extrudeNode = AddExtrudeNode (SegmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p3) + SegmentModify.TrackSegment.getTangentPoint(1f)*.3f);
 			}
 		}
@@ -94,8 +94,8 @@ namespace RollercoasterEdit
 			if (type == TrackNode.NodeType.PO)
 				n.ActiveState = TrackNode.Activestate.NeverActive;
 
-			var previousSegment = SegmentModify.GetPreviousSegment ();
-			var nextSegment = SegmentModify.GetNextSegment ();
+			var previousSegment = SegmentModify.GetPreviousSegment (true);
+			var nextSegment = SegmentModify.GetNextSegment (true);
 
 			if (this.SegmentModify.TrackSegment is Station)
 				n.ActiveState = TrackNode.Activestate.NeverActive;

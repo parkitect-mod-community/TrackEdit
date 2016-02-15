@@ -20,7 +20,7 @@ namespace RollercoasterEdit
 			refresh = new TrackSegmentManager.TrackSegmentManagerRefresh (delegate() {
 
 				var segment = _stateData.SegmentManager.GetTrackSegmentModifyer(trackSegment);
-				_stateData.SegmentManager.ConnectEndPieces(segment.GetPreviousSegment(),segment);
+				_stateData.SegmentManager.ConnectEndPieces(segment.GetPreviousSegment(true),segment);
 
 				_stateData.Selected = segment.GetLastCurve.P3.gameObject.transform;
 				stateMachine.ChangeState(new FreeDragState(_stateData));

@@ -43,8 +43,8 @@ namespace RollercoasterEdit
 
 						TrackNode node = hit.transform.GetComponent<TrackNode> ();
 
-						var nextSegment = node.TrackSegmentModify.GetNextSegment ();
-						var previousSegment = node.TrackSegmentModify.GetPreviousSegment ();
+						var nextSegment = node.TrackSegmentModify.GetNextSegment (true);
+						var previousSegment = node.TrackSegmentModify.GetPreviousSegment (true);
 
 						if (node.NodePoint == TrackNode.NodeType.P1 && previousSegment != null && previousSegment.TrackSegment is Station) {
 							stateMachine.ChangeState (new LinearDragState (_stateData));

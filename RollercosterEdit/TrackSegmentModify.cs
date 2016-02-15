@@ -35,7 +35,7 @@ namespace RollercoasterEdit
 
 			int index = _nodes.IndexOf (current);
 			if (index + 1 >= _nodes.Count) {
-				var nextSegment = current.SegmentModify.GetNextSegment ();
+				var nextSegment = current.SegmentModify.GetNextSegment (true);
 				if (nextSegment != null)
 					return nextSegment.GetFirstCurve;
 				return null;
@@ -52,7 +52,7 @@ namespace RollercoasterEdit
 		{
 			int index = _nodes.IndexOf (current);
 			if (index - 1 < 0) {
-				var previousCurve = current.SegmentModify.GetPreviousSegment ();
+				var previousCurve = current.SegmentModify.GetPreviousSegment (true);
 				if (previousCurve != null)
 					return previousCurve.GetLastCurve;
 			}	
@@ -85,10 +85,10 @@ namespace RollercoasterEdit
 		public TrackNodeCurve GetLastCurve{ get { return _nodes [_nodes.Count - 1];} }
 		public TrackNodeCurve GetFirstCurve{ get { return _nodes [0];} }
 
-		public void CalculateStartBinormal(bool hasToBeconnected = true)
+		public void CalculateStartBinormal(bool hasToBeconnected )
 		{
 			_previousBinormal = (Vector3)_biNormalField.GetValue (TrackSegment);
-			var previousSegment = GetPreviousSegment ();
+			var previousSegment = GetPreviousSegment (true);
 			if (previousSegment != null) {
 
 				var nextSegment = GetNextSegment (hasToBeconnected);
@@ -139,7 +139,7 @@ namespace RollercoasterEdit
 			}
 		}
 
-		public TrackSegmentModify GetNextSegment(bool hasToBeconnected = true)
+		public TrackSegmentModify GetNextSegment(bool hasToBeconnected)
 		{
 			if (TrackSegment.isConnectedToNextSegment || !hasToBeconnected) {
 				var trackSegment =	TrackSegmentManager.TrackRide.Track.trackSegments[TrackSegmentManager.TrackRide.Track.getNextSegmentIndex (TrackSegmentManager.TrackRide.Track.trackSegments.IndexOf (TrackSegment))];
@@ -148,7 +148,7 @@ namespace RollercoasterEdit
 			return null;
 		}
 
-		public TrackSegmentModify GetPreviousSegment(bool hasToBeconnected = true)
+		public TrackSegmentModify GetPreviousSegment(bool hasToBeconnected)
 		{
 			if (TrackSegment.isConnectedToPreviousSegment || !hasToBeconnected) {
 				var trackSegment =	TrackSegmentManager.TrackRide.Track.trackSegments[TrackSegmentManager.TrackRide.Track.getPreviousSegmentIndex (TrackSegmentManager.TrackRide.Track.trackSegments.IndexOf (TrackSegment))];
