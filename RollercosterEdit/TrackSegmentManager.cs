@@ -62,6 +62,8 @@ namespace RollercoasterEdit
 
         public TrackSegmentModify GetTrackSegmentModifyer(TrackSegment4 segment)
         {
+			if (!_trackSegments.ContainsKey (segment.getId ()))
+				this.Update ();
 			return _trackSegments [segment.getId()];
         }
 
@@ -81,6 +83,7 @@ namespace RollercoasterEdit
 			if (_trackSegments.Count == 0) {
 
 				for (int x = 0; x < TrackRide.Track.trackSegments.Count; x++) {
+					
 					_trackSegments.Add (TrackRide.Track.trackSegments [x].getId (), new TrackSegmentModify (TrackRide.Track.trackSegments [x], this));
 
 				}
@@ -88,13 +91,12 @@ namespace RollercoasterEdit
 					segment.Load ();
 				}
 				OnRefresh.Invoke ();
-			} else {
-
-				foreach (var segment in _trackSegments.Values) {
-					segment.Update ();
-				}
 			}
-        }
+
+			foreach (var segment in _trackSegments.Values) {
+				segment.Update ();
+			}
+		}      
     }
 }
 

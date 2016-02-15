@@ -68,7 +68,7 @@ namespace RollercoasterEdit
 			GameObject node = UnityEngine.Object.Instantiate( Main.AssetBundleManager.NodeGo);//GameObject.CreatePrimitive(PrimitiveType.Sphere);
 			node.layer = LayerMasks.COASTER_TRACKS;
 			node.transform.transform.position = position;
-			node.name = "ExtureNode";
+			node.name = "ExtrudeNode";
 
 			var n = node.AddComponent<ExtrudeNode>();
 			n.TrackSegmentModify = SegmentModify;

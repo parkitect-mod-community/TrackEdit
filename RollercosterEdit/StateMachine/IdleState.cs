@@ -55,7 +55,7 @@ namespace RollercoasterEdit
 							stateMachine.ChangeState (new FreeDragState (_stateData));
 						}
                     }
-					if (hit.transform.name == "ExtureNode") {
+					else if (hit.transform.name == "ExtrudeNode") {
 						stateMachine.ChangeState (new ConsumeExtrudeNodeState (_stateData));
 					}
                 }

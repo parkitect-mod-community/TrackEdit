@@ -17,7 +17,6 @@ namespace RollercoasterEdit
 			_stateData.SegmentManager.TrackRide.Track.addSegment (trackSegment, _stateData.Selected.GetComponent<ExtrudeNode> ().TrackSegmentModify.GetIndexOfSegment ()+1);
 			trackSegment.Initialize ();
 			TrackSegmentManager.TrackSegmentManagerRefresh refresh = null; 
-
 			refresh = new TrackSegmentManager.TrackSegmentManagerRefresh (delegate() {
 
 				var segment = _stateData.SegmentManager.GetTrackSegmentModifyer(trackSegment);
@@ -28,8 +27,6 @@ namespace RollercoasterEdit
 
 				_stateData.SegmentManager.OnRefresh -= refresh;
 			});
-
-		
 			_stateData.SegmentManager.OnRefresh += refresh;
 
 			stateMachine.ChangeState (new IdleState (_stateData));
