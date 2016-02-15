@@ -71,6 +71,9 @@
     <Compile Include="RollercosterEdit\TrackNode.cs" />
     <Compile Include="RollercosterEdit\StateMachine\FreeDragState.cs" />
     <Compile Include="RollercosterEdit\StateMachine\LinearDragState.cs" />
+    <Compile Include="RollercosterEdit\ExtrudeNode.cs" />
+    <Compile Include="RollercosterEdit\INode.cs" />
+    <Compile Include="RollercosterEdit\StateMachine\ConsumeExtrudeNodeState.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>

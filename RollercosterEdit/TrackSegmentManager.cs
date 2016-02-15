@@ -6,6 +6,9 @@ namespace RollercoasterEdit
 {
     public class TrackSegmentManager
     {
+		public delegate void TrackSegmentManagerRefresh();
+		public event TrackSegmentManagerRefresh OnRefresh;
+
         public TrackBuilder TrackBuilder{ get; private set; }
         public TrackedRide TrackRide{ get; private set; }
 		private Dictionary<string,TrackSegmentModify> _trackSegments = new Dictionary<string, TrackSegmentModify>();
@@ -35,11 +38,9 @@ namespace RollercoasterEdit
 
 		public void ConnectEndPieces(TrackSegmentModify previous,TrackSegmentModify next)
 		{
-			next.TrackSegment.isConnectedToNextSegment = true;
+	
 			previous.TrackSegment.isConnectedToNextSegment = true;
-
 			next.TrackSegment.isConnectedToPreviousSegment = true;
-			previous.TrackSegment.isConnectedToPreviousSegment = true;
 
 		
 			float magnitude = Mathf.Abs((next.GetFirstCurve.P0.GetGlobal () - next.GetFirstCurve.P1.GetGlobal ()).magnitude);
@@ -56,6 +57,7 @@ namespace RollercoasterEdit
             foreach (var segment in _trackSegments.Values) {
                 segment.Destroy ();
             }
+			_trackSegments.Clear ();
         }
 
         public TrackSegmentModify GetTrackSegmentModifyer(TrackSegment4 segment)
@@ -85,6 +87,7 @@ namespace RollercoasterEdit
 				foreach (var segment in _trackSegments.Values) {
 					segment.Load ();
 				}
+				OnRefresh.Invoke ();
             }
 
             foreach (var segment in _trackSegments.Values) {

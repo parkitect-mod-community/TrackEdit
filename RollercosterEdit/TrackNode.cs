@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace RollercoasterEdit
 {
-	public class TrackNode : MonoBehaviour
+	public class TrackNode : MonoBehaviour, INode
 	{
 		public enum NodeType  {
 			PO,
@@ -17,7 +17,53 @@ namespace RollercoasterEdit
 		public TrackSegmentModify TrackSegmentModify ;
 		public TrackNodeCurve TrackCurve;
 
+		private LineRenderer _lineSegment;
+
 		private Vector3 _previousPos = new Vector3(); 
+
+		public void ActivateNeighbors(bool active)
+		{
+			TrackNodeCurve nextCurve = TrackSegmentModify.getNextCurve (TrackCurve);
+			TrackNodeCurve previousCurve = TrackSegmentModify.getPreviousCurve (TrackCurve);
+			if(NodePoint != NodeType.P3)
+				this.SetActiveState (active);
+
+			switch (NodePoint) {
+			case NodeType.PO:
+				//P0 Node is never active
+				break;
+			case NodeType.P1:
+					//TrackCurve.P0.gameObject.SetActive (active);
+				if (previousCurve != null) {
+					previousCurve.P2.SetActiveState (active);
+					previousCurve.P3.SetActiveState (true);
+				}
+
+				break;
+			case NodeType.P2:
+				TrackCurve.P3.SetActiveState (true);
+				if (nextCurve != null) {
+					if (nextCurve.SegmentModify.TrackSegment is Station) {
+						nextCurve.P1.SetActiveState (true);
+					} else {
+						nextCurve.P1.SetActiveState (active);
+					}
+				}
+				break;
+			case NodeType.P3:
+				TrackCurve.P2.SetActiveState (active);
+				if (nextCurve != null) {
+					if (nextCurve.SegmentModify.TrackSegment is Station) {
+						nextCurve.P1.SetActiveState (true);
+					} else {
+						nextCurve.P1.SetActiveState (active);
+					}
+				}
+				break;
+
+			}
+			
+		}
 
 		public TrackNode ()
 		{
@@ -26,8 +72,10 @@ namespace RollercoasterEdit
 
 		void Start()
 		{
-			if (NodePoint == NodeType.P3) {
-			} else if (NodePoint == NodeType.PO) {
+			
+			if (NodePoint == NodeType.P3 ) {
+				_lineSegment = this.gameObject.transform.Find("item").gameObject.GetComponent<LineRenderer> ();
+
 			}
 		}
 
@@ -37,9 +85,41 @@ namespace RollercoasterEdit
 
 		void Update()
 		{
-			this.transform.FindChild("item").GetComponent<Renderer> ().material.color = new Color (1,1, 1, .5f);
+			if (NodePoint == NodeType.P3) 
+			{
+				var nextCurve = TrackSegmentModify.getNextCurve (TrackCurve);
 
+				Vector3 v1 = this.transform.Find ("item").position;
+				Vector3 v2 = this.transform.Find ("item").position;
+				Vector3 v3 = this.transform.Find ("item").position;
+
+				if (nextCurve != null && nextCurve.P1.isActiveAndEnabled) {
+					v1 = nextCurve.P1.transform.Find ("item").position;
+
+				}
+				if(TrackCurve.P2.isActiveAndEnabled) {
+					v3 = TrackCurve.P2.transform.Find ("item").position;
+				}
+
+				_lineSegment.SetPositions (new Vector3[] {
+					v1,
+					v2,
+					v3
+				});
+					
+			}
+			this.transform.FindChild("item").GetComponent<Renderer> ().material.color = new Color (1,1, 1, .5f);
 			this.transform.FindChild("item").LookAt(Camera.main.transform,Vector3.down) ;
+		}
+
+		public void SetActiveState(bool active)
+		{
+			
+			if (!(TrackSegmentModify.TrackSegment  is Station)) {
+				this.gameObject.SetActive (active);
+			} else {
+				this.gameObject.SetActive (false);
+			}
 		}
 
 		public void SetPoint(Vector3 point)

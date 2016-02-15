@@ -75,7 +75,7 @@ namespace RollercoasterEdit
 
 
 			if (Input.GetMouseButtonUp (0)) {
-				stateMachine.ChangeState(new IdleState (_stateData.SegmentManager));
+				stateMachine.ChangeState(new IdleState (_stateData));
 			}
 		}
 		public void Unload()

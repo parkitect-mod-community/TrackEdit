@@ -38,8 +38,14 @@ namespace RollercoasterEdit
 				var nextSegment = current.SegmentModify.GetNextSegment ();
 				if (nextSegment != null)
 					return nextSegment.GetFirstCurve;
+				return null;
 			}	
 			return _nodes [index + 1];
+		}
+
+		public int GetIndexOfSegment()
+		{
+			return TrackSegment.track.trackSegments.IndexOf (TrackSegment);
 		}
 
 		public TrackNodeCurve getPreviousCurve(TrackNodeCurve current)
@@ -142,9 +148,9 @@ namespace RollercoasterEdit
 			return null;
 		}
 
-		public TrackSegmentModify GetPreviousSegment()
+		public TrackSegmentModify GetPreviousSegment(bool hasToBeconnected = true)
 		{
-			if (TrackSegment.isConnectedToPreviousSegment) {
+			if (TrackSegment.isConnectedToPreviousSegment || !hasToBeconnected) {
 				var trackSegment =	TrackSegmentManager.TrackRide.Track.trackSegments[TrackSegmentManager.TrackRide.Track.getPreviousSegmentIndex (TrackSegmentManager.TrackRide.Track.trackSegments.IndexOf (TrackSegment))];
                 return TrackSegmentManager.GetTrackSegmentModifyer (trackSegment);
 			}

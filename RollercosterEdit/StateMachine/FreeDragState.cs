@@ -14,7 +14,7 @@ namespace RollercoasterEdit
 			this._stateData = stateData;
 			_heightMaker = UnityEngine.Object.Instantiate<BuilderHeightMarker>(ScriptableSingleton<AssetManager>.Instance.builderHeightMarkerGO);
 			_heightMaker.attachedTo = stateData.Selected.transform;
-			_heightMaker.heightChangeDelta = 1f;
+			_heightMaker.heightChangeDelta = .01f;
 
         }
 
@@ -95,16 +95,16 @@ namespace RollercoasterEdit
 
                 if (trackNode.TrackCurve.Group == TrackNodeCurve.Grouping.End || trackNode.TrackCurve.Group == TrackNodeCurve.Grouping.Both ) {
 
+					var P2Offset = trackNode.TrackCurve.P2.GetGlobal () - trackNode.GetGlobal ();
+					trackNode.TrackCurve.P2.SetPoint(position+ P2Offset);
+
                     if (nextSegment != null) {
 
                         var NextP1Offset = nextSegment.GetFirstCurve.P1.GetGlobal() -trackNode.GetGlobal();
-                        var P2Offset = trackNode.TrackCurve.P2.GetGlobal () - trackNode.GetGlobal ();
-
-
+                      
                         nextSegment.GetFirstCurve.P0.SetPoint (position);
                         nextSegment.GetFirstCurve.P1.SetPoint (position+ NextP1Offset);
-                        trackNode.TrackCurve.P2.SetPoint(position+ P2Offset);
-
+                       
                         nextSegment.Invalidate = true;
                     }
 
@@ -136,6 +136,7 @@ namespace RollercoasterEdit
 
 					_stateData.Selected.gameObject.GetComponent<TrackNode> ().TrackSegmentModify.GetFirstCurve.P0.TrackSegmentModify.CalculateStartBinormal (false);
 
+					_stateData.Selected.gameObject.GetComponent<TrackNode> ().TrackSegmentModify.GetLastCurve.ClearExtrudeNode ();
 
 
 					if (nextSegment.GetFirstCurve.P0.Validate ()) {
@@ -146,7 +147,7 @@ namespace RollercoasterEdit
 							}
 
 							this._stateData.SegmentManager.ConnectEndPieces (_stateData.Selected.gameObject.GetComponent<TrackNode> ().TrackSegmentModify,nextSegment);
-							stateMachine.ChangeState (new IdleState (_stateData.SegmentManager));
+							stateMachine.ChangeState (new IdleState (_stateData));
 						}
 						nextSegment.Invalidate = true;
 
@@ -157,14 +158,8 @@ namespace RollercoasterEdit
 				}
 			}
 
-
-
-	
-
-
-
             if (Input.GetMouseButtonUp (0)) {
-				stateMachine.ChangeState(new IdleState (_stateData.SegmentManager));
+				stateMachine.ChangeState(new IdleState (_stateData));
             }
         }
 

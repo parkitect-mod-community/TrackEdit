@@ -16,10 +16,14 @@ namespace RollercoasterEdit
         private TrackSegmentManager _trackSegmentManger;
         private FiniteStateMachine _stateMachine = new FiniteStateMachine ();
 
+
+
 		public TrackUIHandle ()
 		{
 			
 		}
+
+
 
 		void Awake()
 		{
@@ -31,7 +35,9 @@ namespace RollercoasterEdit
 			TrackRide = ((TrackedRide)_trackerRiderField.GetValue (TrackBuilder));
 			TrackBuilder = this.gameObject.GetComponent<TrackBuilder>();
             _trackSegmentManger = new TrackSegmentManager (TrackBuilder, TrackRide);
-			_stateMachine.ChangeState (new IdleState (_trackSegmentManger));
+			var sharedStateData = new SharedStateData ();
+			sharedStateData.SegmentManager = _trackSegmentManger;
+			_stateMachine.ChangeState (new IdleState (sharedStateData));
 		}
 
 		void OnDestroy() {
@@ -39,9 +45,10 @@ namespace RollercoasterEdit
 		}
 		void Update()
 		{
-            _trackSegmentManger.Update ();
 
-            _stateMachine.Update ();
+				_trackSegmentManger.Update ();
+
+				_stateMachine.Update ();
 
 		}
 	
