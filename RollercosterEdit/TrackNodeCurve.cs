@@ -32,27 +32,14 @@ namespace RollercoasterEdit
 			this._cubicBezier = cubicBezier;
 			this.SegmentModify = segmentModify;
 
-			bool isEnable = true;
 
-			if (segmentModify.TrackSegment is Station) {
-				isEnable = false;
-			}
-
-			P0 = AddTrackCurveNode ( SegmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p0),TrackNode.NodeType.PO,isEnable && !(this.Group == Grouping.Start || this.Group == Grouping.Both));
-
-
-			P1 = AddTrackCurveNode (SegmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p1), TrackNode.NodeType.P1, false);//isEnable && true);
-			P2 = AddTrackCurveNode (SegmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p2),TrackNode.NodeType.P2,false);//isEnable && true);
-
-			if (segmentModify.GetNextSegment()  != null && segmentModify.GetNextSegment().TrackSegment is Station) {
-				isEnable = false;
-			}
-			P3 = AddTrackCurveNode (SegmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p3),TrackNode.NodeType.P3,isEnable && true);
-
+			P0 = AddTrackCurveNode ( SegmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p0),TrackNode.NodeType.PO );
+			P1 = AddTrackCurveNode (SegmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p1), TrackNode.NodeType.P1);
+			P2 = AddTrackCurveNode (SegmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p2),TrackNode.NodeType.P2);
+			P3 = AddTrackCurveNode (SegmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p3),TrackNode.NodeType.P3);
 			if ((grouping == Grouping.End || grouping == Grouping.Both) && SegmentModify.GetNextSegment() == null) {
 				extrudeNode = AddExtrudeNode (SegmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p3) + SegmentModify.TrackSegment.getTangentPoint(1f)*.3f);
 			}
-
 		}
 
 		public void Destroy()
@@ -92,7 +79,7 @@ namespace RollercoasterEdit
 
 		}
 
-		private TrackNode AddTrackCurveNode(Vector3 position, TrackNode.NodeType type,bool IsActive)
+		private TrackNode AddTrackCurveNode(Vector3 position, TrackNode.NodeType type)
 		{
 			
 			GameObject node = UnityEngine.Object.Instantiate( Main.AssetBundleManager.NodeGo);//GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -101,7 +88,33 @@ namespace RollercoasterEdit
 			node.name = "BezierNode";
 
 			var n = node.AddComponent< TrackNode>();
-			n.gameObject.SetActive (IsActive);
+
+			if (type == TrackNode.NodeType.P3)
+				n.ActiveState = TrackNode.Activestate.AlwaysActive;
+			if (type == TrackNode.NodeType.PO)
+				n.ActiveState = TrackNode.Activestate.NeverActive;
+
+			var previousSegment = SegmentModify.GetPreviousSegment ();
+			var nextSegment = SegmentModify.GetNextSegment ();
+
+			if (this.SegmentModify.TrackSegment is Station)
+				n.ActiveState = TrackNode.Activestate.NeverActive;
+			else {
+
+				if (nextSegment != null) {
+					if (nextSegment.TrackSegment is Station && type == TrackNode.NodeType.P3)
+						n.ActiveState = TrackNode.Activestate.NeverActive;
+					if (nextSegment.TrackSegment is Station && type == TrackNode.NodeType.P2)
+						n.ActiveState = TrackNode.Activestate.AlwaysActive;
+				}
+				if (previousSegment != null) {
+					if (previousSegment.TrackSegment is Station && type == TrackNode.NodeType.P1) {
+						n.ActiveState = TrackNode.Activestate.AlwaysActive;
+					}
+				}
+			}
+
+			n.SetActiveState (false);
 			n.TrackSegmentModify = SegmentModify;
 			n.Curve = _cubicBezier;
 			n.NodePoint = type;

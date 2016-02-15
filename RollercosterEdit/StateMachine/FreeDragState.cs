@@ -141,12 +141,9 @@ namespace RollercoasterEdit
 
 					if (nextSegment.GetFirstCurve.P0.Validate ()) {
 						if (Input.GetMouseButtonUp (0)) {
-
-							if (nextSegment.TrackSegment is Station) {
-								_stateData.Selected.gameObject.SetActive (false);
-							}
-
+							
 							this._stateData.SegmentManager.ConnectEndPieces (_stateData.Selected.gameObject.GetComponent<TrackNode> ().TrackSegmentModify,nextSegment);
+							this._stateData.SegmentManager.OnDestroy ();
 							stateMachine.ChangeState (new IdleState (_stateData));
 						}
 						nextSegment.Invalidate = true;

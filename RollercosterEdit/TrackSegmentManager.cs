@@ -7,7 +7,7 @@ namespace RollercoasterEdit
     public class TrackSegmentManager
     {
 		public delegate void TrackSegmentManagerRefresh();
-		public event TrackSegmentManagerRefresh OnRefresh;
+		public event TrackSegmentManagerRefresh OnRefresh ;
 
         public TrackBuilder TrackBuilder{ get; private set; }
         public TrackedRide TrackRide{ get; private set; }
@@ -78,21 +78,22 @@ namespace RollercoasterEdit
 
         public void Update()
         {
-            if (_trackSegments.Count == 0) {
+			if (_trackSegments.Count == 0) {
 
-                for (int x = 0; x < TrackRide.Track.trackSegments.Count; x++) {
-					_trackSegments.Add (TrackRide.Track.trackSegments [x].getId(), new TrackSegmentModify (TrackRide.Track.trackSegments [x], this));
+				for (int x = 0; x < TrackRide.Track.trackSegments.Count; x++) {
+					_trackSegments.Add (TrackRide.Track.trackSegments [x].getId (), new TrackSegmentModify (TrackRide.Track.trackSegments [x], this));
 
-                }
+				}
 				foreach (var segment in _trackSegments.Values) {
 					segment.Load ();
 				}
 				OnRefresh.Invoke ();
-            }
+			} else {
 
-            foreach (var segment in _trackSegments.Values) {
-                segment.Update ();
-            }
+				foreach (var segment in _trackSegments.Values) {
+					segment.Update ();
+				}
+			}
         }
     }
 }

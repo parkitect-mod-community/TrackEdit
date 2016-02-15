@@ -12,6 +12,13 @@ namespace RollercoasterEdit
 			P3
 		};
 
+		public enum Activestate{
+			AlwaysActive,
+			Default,
+			NeverActive
+		}
+
+		public Activestate ActiveState = Activestate.Default;
 		public NodeType NodePoint;
 		public CubicBezier Curve;
 		public TrackSegmentModify TrackSegmentModify ;
@@ -36,28 +43,20 @@ namespace RollercoasterEdit
 					//TrackCurve.P0.gameObject.SetActive (active);
 				if (previousCurve != null) {
 					previousCurve.P2.SetActiveState (active);
-					previousCurve.P3.SetActiveState (true);
+					previousCurve.P3.SetActiveState (active);
 				}
 
 				break;
 			case NodeType.P2:
-				TrackCurve.P3.SetActiveState (true);
+				TrackCurve.P3.SetActiveState (active);
 				if (nextCurve != null) {
-					if (nextCurve.SegmentModify.TrackSegment is Station) {
-						nextCurve.P1.SetActiveState (true);
-					} else {
-						nextCurve.P1.SetActiveState (active);
-					}
+					nextCurve.P1.SetActiveState (active);
 				}
 				break;
 			case NodeType.P3:
 				TrackCurve.P2.SetActiveState (active);
 				if (nextCurve != null) {
-					if (nextCurve.SegmentModify.TrackSegment is Station) {
-						nextCurve.P1.SetActiveState (true);
-					} else {
-						nextCurve.P1.SetActiveState (active);
-					}
+					nextCurve.P1.SetActiveState (active);
 				}
 				break;
 
@@ -88,24 +87,25 @@ namespace RollercoasterEdit
 			if (NodePoint == NodeType.P3) 
 			{
 				var nextCurve = TrackSegmentModify.getNextCurve (TrackCurve);
+				if (nextCurve != null) {
+					Vector3 v1 = this.transform.Find ("item").position;
+					Vector3 v2 = this.transform.Find ("item").position;
+					Vector3 v3 = this.transform.Find ("item").position;
 
-				Vector3 v1 = this.transform.Find ("item").position;
-				Vector3 v2 = this.transform.Find ("item").position;
-				Vector3 v3 = this.transform.Find ("item").position;
+					if (nextCurve != null && nextCurve.P1.isActiveAndEnabled) {
+						v1 = nextCurve.P1.transform.Find ("item").position;
 
-				if (nextCurve != null && nextCurve.P1.isActiveAndEnabled) {
-					v1 = nextCurve.P1.transform.Find ("item").position;
+					}
+					if (TrackCurve.P2.isActiveAndEnabled) {
+						v3 = TrackCurve.P2.transform.Find ("item").position;
+					}
 
+					_lineSegment.SetPositions (new Vector3[] {
+						v1,
+						v2,
+						v3
+					});
 				}
-				if(TrackCurve.P2.isActiveAndEnabled) {
-					v3 = TrackCurve.P2.transform.Find ("item").position;
-				}
-
-				_lineSegment.SetPositions (new Vector3[] {
-					v1,
-					v2,
-					v3
-				});
 					
 			}
 			this.transform.FindChild("item").GetComponent<Renderer> ().material.color = new Color (1,1, 1, .5f);
@@ -114,11 +114,12 @@ namespace RollercoasterEdit
 
 		public void SetActiveState(bool active)
 		{
-			
-			if (!(TrackSegmentModify.TrackSegment  is Station)) {
-				this.gameObject.SetActive (active);
-			} else {
+			if (this.ActiveState == Activestate.AlwaysActive) {
+				this.gameObject.SetActive (true);
+			} else if (this.ActiveState == Activestate.NeverActive) {
 				this.gameObject.SetActive (false);
+			} else if (this.ActiveState == Activestate.Default) {
+				this.gameObject.SetActive (active);
 			}
 		}
 
