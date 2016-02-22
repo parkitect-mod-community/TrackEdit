@@ -12,7 +12,7 @@ namespace RollercoasterEdit
 
         public Configuration()
         {
-            VerticalKey = UnityEngine.KeyCode.LeftControl;
+			VerticalKey = UnityEngine.KeyCode.LeftShift;
         }
 
         public void Save(string path)
