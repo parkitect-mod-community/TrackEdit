@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 namespace RollercoasterEdit
 {
-    public class Main : IMod
+	public class Main : IMod, IModSettings
     {
         public string Identifier { get; set; }
 		public static AssetBundleManager AssetBundleManager = null;
@@ -52,6 +52,7 @@ namespace RollercoasterEdit
                 KeyCode key;
                 if (FetchKey (out key)) {
                     Configeration.VerticalKey = key;
+					_yDragToggle = false;
                 }
             }
             
