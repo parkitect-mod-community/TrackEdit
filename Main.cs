@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 namespace RollercoasterEdit
 {
-	public class Main : IMod, IModSettings
+	public class Main : IMod
     {
         public string Identifier { get; set; }
 		public static AssetBundleManager AssetBundleManager = null;
@@ -14,6 +14,8 @@ namespace RollercoasterEdit
             if (Main.Configeration == null) {
                 Configeration = new Configuration ();
                 Configeration.Load (Path);
+                Configeration.Save (Path);
+
             }
 
 			if (Main.AssetBundleManager == null) {
@@ -42,44 +44,5 @@ namespace RollercoasterEdit
 
 		public string Path { get; set; }
 
-		public void onDrawSettingsUI()
-		{
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label ("Vertical Drag Key");
-            _yDragToggle = GUILayout.Toggle (_yDragToggle, Configeration.VerticalKey.ToString ());
-            if (_yDragToggle) {
-                KeyCode key;
-                if (FetchKey (out key)) {
-                    Configeration.VerticalKey = key;
-					_yDragToggle = false;
-                }
-            }
-            
-           GUILayout.EndHorizontal();
-
-		}
-
-        private bool FetchKey(out KeyCode outKey)
-        {
-            foreach (KeyCode key in System.Enum.GetValues(typeof(KeyCode))) {
-                if (Input.GetKeyDown (key)) {
-                    outKey = key;
-                    return true;
-                }
-            }
-            outKey = KeyCode.A;
-            return false;
-        }
-
-		public void onSettingsOpened()
-		{
-
-		}
-
-		public void onSettingsClosed()
-		{
-            Main.Configeration.Save (Path);
-		}
     }
 }

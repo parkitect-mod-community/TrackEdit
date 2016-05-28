@@ -10,7 +10,6 @@ namespace RollercoasterEdit
         {
             _stateData = new SharedStateData ();
 			_stateData.SetActiveNode(stateData.ActiveNode);
-			_stateData.SegmentManager = stateData.SegmentManager;
 		}
 
         public void Update(FiniteStateMachine stateMachine)

@@ -5,8 +5,6 @@ namespace RollercoasterEdit
 {
     public class SharedStateData
     {
-		public TrackSegmentManager SegmentManager;
-
 		public Transform ActiveNode{ get;private set;}
 		public void SetActiveNode(Transform active)
 		{

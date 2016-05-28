@@ -9,6 +9,8 @@
     <AssemblyName>ClassLibrary</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -61,7 +63,6 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="RollercosterEdit\SharedStateData.cs" />
     <Compile Include="RollercosterEdit\TrackNodeCurve.cs" />
-    <Compile Include="RollercosterEdit\TrackSegmentManager.cs" />
     <Compile Include="RollercosterEdit\TrackSegmentModify.cs" />
     <Compile Include="RollercosterEdit\TrackUIHandle.cs" />
     <Compile Include="RollercosterEdit\StateMachine\FiniteStateMachine.cs" />
