@@ -13,19 +13,19 @@ namespace RollercoasterEdit
 
 		public void Update(FiniteStateMachine stateMachine)
 		{
+            
 			var trackSegment = UnityEngine.Object.Instantiate<TrackSegment4>( ScriptableSingleton<AssetManager>.Instance.getPrefab<TrackSegment4>(Prefabs.Straight));
 
             TrackUIHandle.instance.TrackRide.Track.addSegment (trackSegment, _stateData.Selected.GetComponent<ExtrudeNode> ().TrackSegmentModify.GetIndexOfSegment ()+1);
 			trackSegment.Initialize ();
 
             var modify = trackSegment.gameObject.AddComponent<TrackSegmentModify> ();
-
-                modify.GetPreviousSegment (true).ConnectWithForwardSegment (modify);
+            _stateData.Selected.GetComponent<ExtrudeNode> ().TrackSegmentModify.ConnectWithForwardSegment(modify);
 
             _stateData.Selected = modify.GetLastCurve.P3.gameObject.transform;
-				stateMachine.ChangeState(new FreeDragState(_stateData));
+			stateMachine.ChangeState(new FreeDragState(_stateData));
 
-			stateMachine.ChangeState (new IdleState (_stateData));
+			//stateMachine.ChangeState (new IdleState (_stateData));
 		}
 
 

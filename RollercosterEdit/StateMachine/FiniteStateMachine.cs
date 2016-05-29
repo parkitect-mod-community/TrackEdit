@@ -12,7 +12,7 @@ namespace RollercoasterEdit
         public void ChangeState(IState newState)
         {
 			if(_currentState != null)
-			_currentState.Unload ();
+			    _currentState.Unload ();
             _currentState = newState;
         }
 

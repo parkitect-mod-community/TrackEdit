@@ -50,7 +50,6 @@ namespace RollercoasterEdit
 						} else if (node.NodePoint == TrackNode.NodeType.P2 && nextSegment != null && nextSegment.TrackSegment is Station) {
 							stateMachine.ChangeState (new LinearDragState (_stateData));
 						} else {
-
 							stateMachine.ChangeState (new FreeDragState (_stateData));
 						}
                     }

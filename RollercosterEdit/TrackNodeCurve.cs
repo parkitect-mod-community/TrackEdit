@@ -42,6 +42,15 @@ namespace RollercoasterEdit
 			}
 		}
 
+        public void Update()
+        {
+            if ((this.Group == Grouping.End || this.Group == Grouping.Both) && SegmentModify.GetNextSegment (true) != null && extrudeNode != null) {
+                UnityEngine.GameObject.Destroy (extrudeNode.gameObject);
+            } else if ((this.Group == Grouping.End || this.Group == Grouping.Both) && SegmentModify.GetNextSegment (true) == null && extrudeNode == null) {
+                extrudeNode = AddExtrudeNode (SegmentModify.TrackSegment.transform.TransformPoint (_cubicBezier.p3) + SegmentModify.TrackSegment.getTangentPoint(1f)*.3f);
+            }
+        }
+
 		public void Destroy()
 		{
 			if(P0 != null)

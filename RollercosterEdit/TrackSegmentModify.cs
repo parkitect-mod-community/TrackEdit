@@ -20,7 +20,7 @@ namespace RollercoasterEdit
 		private float _previousTotalRotation = 0;
 
 
-        void Start()
+        void Awake()
         {
             this.TrackSegment = this.GetComponent<TrackSegment4> ();
 
@@ -42,7 +42,6 @@ namespace RollercoasterEdit
             }
             
         }
-
 
 		public TrackNodeCurve getNextCurve(TrackNodeCurve current)
 		{
@@ -104,12 +103,9 @@ namespace RollercoasterEdit
 
 				_biNormalField.SetValue (TrackSegment, TrackSegment.transform.InverseTransformDirection (Vector3.Cross (previousSegment.TrackSegment.getNormal (1f), previousSegment.TrackSegment.getTangentPoint (1f))));
 				GetLastCurve.P0.CalculateLenghtAndNormals ();
-
-
 			}	
 
 		}
-			
 
 
 		public void RollBackSegment()
@@ -188,6 +184,10 @@ namespace RollercoasterEdit
                 recalculate(TrackUIHandle.instance.TrackRide.meshGenerator,TrackSegment);
 				Invalidate = false;
 			}
+            foreach (TrackNodeCurve curves in _nodes) {
+                curves.Update ();
+            }
+
 		}
 
 
