@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 2780134796
+CRC: 2109170798
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: ec2d7f3797ee89c9b56a4ea1526948fc
+    Hash: bba63775e63978eed84405ca97d8368e
   TypeTreeHash:
     serializedVersion: 2
     Hash: 2377aea815b869ca3a55cf91d1682549
@@ -31,4 +31,5 @@ ClassTypes:
   Script: {instanceID: 0}
 Assets:
 - Assets/Node.prefab
+- Assets/Node_Rotate.prefab
 Dependencies: []
