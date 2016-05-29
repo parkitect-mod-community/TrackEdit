@@ -68,9 +68,7 @@ namespace RollercoasterEdit
 				break;
 			}
 
-			//  _stateData.Selected.position = position;
-
-			trackNode.Validate ();
+            trackNode.CalculateLenghtAndNormals ();
 			trackNode.TrackSegmentModify.Invalidate = true;
 
 

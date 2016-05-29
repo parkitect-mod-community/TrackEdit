@@ -23,10 +23,7 @@ namespace RollercoasterEdit
 		public CubicBezier Curve;
 		public TrackSegmentModify TrackSegmentModify ;
 		public TrackNodeCurve TrackCurve;
-
-		private LineRenderer _lineSegment;
-
-		private Vector3 _previousPos = new Vector3(); 
+        private LineRenderer _lineSegment;
 
 		public void ActivateNeighbors(bool active)
 		{
@@ -61,11 +58,6 @@ namespace RollercoasterEdit
 				break;
 
 			}
-			
-		}
-
-		public TrackNode ()
-		{
 			
 		}
 
@@ -108,7 +100,21 @@ namespace RollercoasterEdit
 				}
 					
 			}
-			this.transform.FindChild("item").GetComponent<Renderer> ().material.color = new Color (1,1, 1, .5f);
+
+            //error checking to mark bad nodes
+            TrackSegmentModify next = this.TrackSegmentModify.GetNextSegment (true);
+            if(next != null)
+            {
+                if (!this.TrackSegmentModify.TrackSegment.isConnectedTo (next.TrackSegment)) {
+                    this.transform.FindChild("item").GetComponent<Renderer> ().material.color = new Color (1,0, 0, .5f);
+                }
+                else
+                    this.transform.FindChild("item").GetComponent<Renderer> ().material.color = new Color (1,1, 1, .5f);
+
+            }
+            else
+                this.transform.FindChild("item").GetComponent<Renderer> ().material.color = new Color (1,1, 1, .5f);
+            
 			this.transform.FindChild("item").LookAt(Camera.main.transform,Vector3.down) ;
 		}
 
@@ -129,19 +135,15 @@ namespace RollercoasterEdit
 
 			switch (NodePoint) {
 			case NodeType.PO:
-				_previousPos = Curve.p0;
 				Curve.p0 = p;
 				break;
 			case NodeType.P1:
-				_previousPos = Curve.p1;
 				Curve.p1 =p;
 				break;
 			case NodeType.P2:
-				_previousPos = Curve.p2;
 				Curve.p2 =p;
 				break;
 			case NodeType.P3:
-				_previousPos = Curve.p3;
 				Curve.p3 =p;
 				break;
 			}
@@ -172,27 +174,6 @@ namespace RollercoasterEdit
 
 			}
 			return Vector3.zero;
-		}
-
-		public void RollBack()
-		{
-			if (_previousPos != Vector3.zero) {
-				switch (NodePoint) {
-				case NodeType.PO:
-					Curve.p0 = _previousPos ;
-
-					break;
-				case NodeType.P1:
-					Curve.p1 = _previousPos;
-					break;
-				case NodeType.P2:
-					Curve.p2 = _previousPos ;
-					break;
-				case NodeType.P3:
-					Curve.p3 = _previousPos ;
-					break;
-				}
-			}
 		}
 
 		public void UpdatePosition()
@@ -230,35 +211,6 @@ namespace RollercoasterEdit
 
 			if(nextSegment != null)
 				nextSegment.TrackSegment.calculateLengthAndNormals (TrackSegmentModify.TrackSegment);
-		}
-
-		public bool Validate()
-		{
-			bool isValid = true;
-			var nextSegment = TrackSegmentModify.GetNextSegment (true);
-			var previousSegment = TrackSegmentModify.GetPreviousSegment (true);
-
-			CalculateLenghtAndNormals ();
-
-			if (previousSegment != null) {
-				if (!previousSegment.TrackSegment.isConnectedTo (TrackSegmentModify.TrackSegment)) {
-					previousSegment.RollBackSegment ();
-					TrackSegmentModify.RollBackSegment ();
-					isValid = false;
-				}
-			}
-			if (nextSegment != null) {
-				if (!TrackSegmentModify.TrackSegment.isConnectedTo (nextSegment.TrackSegment)) {
-					TrackSegmentModify.RollBackSegment ();
-					nextSegment.RollBackSegment ();
-					isValid = false;
-
-				}
-			}
-
-			CalculateLenghtAndNormals ();
-			return isValid;
-
 		}
 
 

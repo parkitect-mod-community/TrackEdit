@@ -55,18 +55,12 @@ namespace RollercoasterEdit
 
                 if (previousSegment != null) {
 
-                    trackNode.CalculateLenghtAndNormals ();
-
-
                     float magnitude = Mathf.Abs((previousSegment.GetLastCurve.P2.GetGlobal () - previousSegment.GetLastCurve.P3.GetGlobal ()).magnitude);
                     previousSegment.GetLastCurve.P2.SetPoint (previousSegment.GetLastCurve.P3.GetGlobal() + (trackNode.TrackSegmentModify.TrackSegment.getTangentPoint(0f) *-1f* magnitude));
                     previousSegment.Invalidate = true;
+
                     trackNode.CalculateLenghtAndNormals ();
-
-					trackNode.TrackSegmentModify.CalculateStartBinormal (true);
-                    //TrackSegmentModify.TrackSegment.upgradeSavegameRecalculateBinormal (previousSegment.TrackSegment);
-
-
+                    trackNode.TrackSegmentModify.CalculateStartBinormal (true);
                 }
 
 
@@ -76,16 +70,12 @@ namespace RollercoasterEdit
                 trackNode.SetPoint (position);
 
                 if (nextSegment != null) {
-
-                    trackNode.CalculateLenghtAndNormals ();
-
-
                     float magnitude = Mathf.Abs((nextSegment.GetFirstCurve.P0.GetGlobal () - nextSegment.GetFirstCurve.P1.GetGlobal ()).magnitude);
                     nextSegment.GetFirstCurve.P1.SetPoint (nextSegment.GetFirstCurve.P0.GetGlobal () + (trackNode.TrackSegmentModify.TrackSegment.getTangentPoint(1f) * magnitude));
                     nextSegment.Invalidate = true;
-                    trackNode.CalculateLenghtAndNormals ();
 
-					nextSegment.CalculateStartBinormal (true);
+                    trackNode.CalculateLenghtAndNormals ();
+                    nextSegment.CalculateStartBinormal (true);
 
                 }
 
@@ -114,9 +104,7 @@ namespace RollercoasterEdit
                 break;
             }
 
-          //  _stateData.Selected.position = position;
-
-           trackNode.Validate ();
+            trackNode.CalculateLenghtAndNormals ();
 			trackNode.TrackSegmentModify.Invalidate = true;
 
             
@@ -131,26 +119,19 @@ namespace RollercoasterEdit
 
 					_stateData.Selected.gameObject.GetComponent<TrackNode> ().SetPoint (nextSegment.GetFirstCurve.P0.GetGlobal ());
 					_stateData.Selected.gameObject.GetComponent<TrackNode> ().TrackSegmentModify.GetLastCurve.P2.SetPoint (_stateData.Selected.gameObject.GetComponent<TrackNode> ().TrackSegmentModify.GetLastCurve.P3.GetGlobal () + (nextSegment.TrackSegment.getTangentPoint (0f) * -1f * magnitude));
-
 					_stateData.Selected.gameObject.GetComponent<TrackNode> ().CalculateLenghtAndNormals ();
-
 					_stateData.Selected.gameObject.GetComponent<TrackNode> ().TrackSegmentModify.GetFirstCurve.P0.TrackSegmentModify.CalculateStartBinormal (false);
-
 					_stateData.Selected.gameObject.GetComponent<TrackNode> ().TrackSegmentModify.GetLastCurve.ClearExtrudeNode ();
 
 
-					if (nextSegment.GetFirstCurve.P0.Validate ()) {
-						if (Input.GetMouseButtonUp (0)) {
-                            _stateData.Selected.gameObject.GetComponent<TrackNode> ().TrackSegmentModify.ConnectWithForwardSegment (nextSegment);
-							//this._stateData.SegmentManager.ConnectEndPieces (_stateData.Selected.gameObject.GetComponent<TrackNode> ().TrackSegmentModify,nextSegment);
-							//this._stateData.SegmentManager.OnDestroy ();
-							stateMachine.ChangeState (new IdleState (_stateData));
-						}
-						nextSegment.Invalidate = true;
-
-						_stateData.Selected.gameObject.GetComponent<TrackNode> ().TrackSegmentModify.Invalidate = true;
+                    nextSegment.GetFirstCurve.P0.CalculateLenghtAndNormals ();
+					if (Input.GetMouseButtonUp (0)) {
+                        _stateData.Selected.gameObject.GetComponent<TrackNode> ().TrackSegmentModify.ConnectWithForwardSegment (nextSegment);
+						stateMachine.ChangeState (new IdleState (_stateData));
 					}
+					nextSegment.Invalidate = true;
 
+					_stateData.Selected.gameObject.GetComponent<TrackNode> ().TrackSegmentModify.Invalidate = true;
 
 				}
 			}

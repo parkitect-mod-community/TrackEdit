@@ -12,13 +12,7 @@ namespace RollercoasterEdit
 		public TrackSegment4 TrackSegment{ get; private set; }
 		private List<TrackNodeCurve> _nodes = new List<TrackNodeCurve> ();
 
-		private Vector3 _previousBinormal;
 		private FieldInfo _biNormalField;
-
-		private bool _isRotationSet = false;
-		private float  _previousDelta = 0;
-		private float _previousTotalRotation = 0;
-
 
         void Awake()
         {
@@ -85,18 +79,13 @@ namespace RollercoasterEdit
 
 		public void CalculateStartBinormal(bool hasToBeconnected )
 		{
-			_previousBinormal = (Vector3)_biNormalField.GetValue (TrackSegment);
 			var previousSegment = GetPreviousSegment (true);
 			if (previousSegment != null) {
 
 				var nextSegment = GetNextSegment (hasToBeconnected);
 				if (nextSegment != null) {
 
-					_isRotationSet = true;
-					_previousTotalRotation = TrackSegment.totalRotation; 
-					_previousTotalRotation = TrackSegment.totalRotation;
-
-					TrackSegment.deltaRotation = Mathf.DeltaAngle (previousSegment.TrackSegment.totalRotation, nextSegment.TrackSegment.totalRotation - nextSegment.TrackSegment.deltaRotation);  ;
+					TrackSegment.deltaRotation = Mathf.DeltaAngle (previousSegment.TrackSegment.totalRotation, nextSegment.TrackSegment.totalRotation - nextSegment.TrackSegment.deltaRotation);
 					TrackSegment.totalRotation = previousSegment.TrackSegment.totalRotation + TrackSegment.deltaRotation + TrackSegment.getAdditionalRotation();
 					TrackSegment.calculateLengthAndNormals (previousSegment.TrackSegment);
 				}
@@ -108,31 +97,7 @@ namespace RollercoasterEdit
 		}
 
 
-		public void RollBackSegment()
-		{
-			if(_previousBinormal != Vector3.zero)
-			_biNormalField.SetValue (TrackSegment,_previousBinormal);
 
-			if (_isRotationSet == true) {
-				TrackSegment.deltaRotation =_previousDelta  ;
-				TrackSegment.totalRotation = _previousTotalRotation;
-
-			}
-			_isRotationSet = false;
-
-			for (int x = 0; x < _nodes.Count; x++) {
-				_nodes [x].P0.RollBack ();
-				_nodes [x].P1.RollBack ();
-				_nodes [x].P2.RollBack ();
-				_nodes [x].P3.RollBack ();
-
-				_nodes [x].P0.UpdatePosition();
-				_nodes [x].P1.UpdatePosition();
-				_nodes [x].P2.UpdatePosition();
-				_nodes [x].P3.UpdatePosition();
-
-			}
-		}
 
 		public TrackSegmentModify GetNextSegment(bool hasToBeconnected)
 		{
@@ -163,7 +128,7 @@ namespace RollercoasterEdit
             float magnitude = Mathf.Abs((next.GetFirstCurve.P0.GetGlobal () - next.GetFirstCurve.P1.GetGlobal ()).magnitude);
 
             GetLastCurve.P2.SetPoint(GetLastCurve.P3.GetGlobal() + (next.TrackSegment.getTangentPoint(0f) *-1f* magnitude));
-            GetLastCurve.P2.Validate ();
+            GetLastCurve.P2.CalculateLenghtAndNormals ();
 
             Invalidate = true;
             return true;
