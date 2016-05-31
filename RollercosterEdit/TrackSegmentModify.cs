@@ -13,6 +13,7 @@ namespace RollercoasterEdit
 		private List<TrackNodeCurve> _nodes = new List<TrackNodeCurve> ();
 
 		private FieldInfo _biNormalField;
+        private FieldInfo _directionAngleField;
 
         void Awake()
         {
@@ -20,6 +21,10 @@ namespace RollercoasterEdit
 
             BindingFlags flags = BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic;
             _biNormalField = typeof(TrackSegment4).GetField ("startBinormal", flags);
+
+            flags = BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic;
+            _directionAngleField = typeof(TrackSegment4).GetField ("startBinormal", flags);
+
 
             for (int x = 0; x < TrackSegment.curves.Count; x++) {
                 TrackNodeCurve.Grouping grouping = TrackNodeCurve.Grouping.Middle;
@@ -78,23 +83,25 @@ namespace RollercoasterEdit
 		public TrackNodeCurve GetFirstCurve{ get { return _nodes [0];} }
 
 		public void CalculateStartBinormal(bool hasToBeconnected )
-		{
-			var previousSegment = GetPreviousSegment (true);
-			if (previousSegment != null) {
+        {
+            var previousSegment = GetPreviousSegment (true);
+            if (previousSegment != null) {
+                var nextSegment = GetNextSegment (hasToBeconnected);
 
-				var nextSegment = GetNextSegment (hasToBeconnected);
-				if (nextSegment != null) {
+                _biNormalField.SetValue (TrackSegment, TrackSegment.transform.InverseTransformDirection (Vector3.Cross (previousSegment.TrackSegment.getNormal (1f), previousSegment.TrackSegment.getTangentPoint (1f))));
+                GetLastCurve.P0.CalculateLenghtAndNormals ();
 
-					TrackSegment.deltaRotation = Mathf.DeltaAngle (previousSegment.TrackSegment.totalRotation, nextSegment.TrackSegment.totalRotation - nextSegment.TrackSegment.deltaRotation);
-					TrackSegment.totalRotation = previousSegment.TrackSegment.totalRotation + TrackSegment.deltaRotation + TrackSegment.getAdditionalRotation();
-					TrackSegment.calculateLengthAndNormals (previousSegment.TrackSegment);
-				}
+                if (nextSegment != null) {
 
-				_biNormalField.SetValue (TrackSegment, TrackSegment.transform.InverseTransformDirection (Vector3.Cross (previousSegment.TrackSegment.getNormal (1f), previousSegment.TrackSegment.getTangentPoint (1f))));
-				GetLastCurve.P0.CalculateLenghtAndNormals ();
-			}	
+                    TrackSegment.deltaRotation = Mathf.DeltaAngle (previousSegment.TrackSegment.totalRotation, nextSegment.TrackSegment.totalRotation - nextSegment.TrackSegment.deltaRotation);
+                    TrackSegment.totalRotation = previousSegment.TrackSegment.totalRotation + TrackSegment.deltaRotation + TrackSegment.getAdditionalRotation ();
+                    TrackSegment.calculateLengthAndNormals (previousSegment.TrackSegment);
+                }
 
-		}
+     
+            }	
+
+        }
 
 
 
