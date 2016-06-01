@@ -23,7 +23,7 @@ namespace RollercoasterEdit
 		public TrackNode P3{ get; private set; }
 		public ExtrudeNode extrudeNode{ get; private set; }
 		public Grouping Group { get; private set; }
-
+        public RotationNode Rotation { get; private set; }
 	
 
 		public TrackNodeCurve (CubicBezier cubicBezier, TrackSegmentModify segmentModify,Grouping grouping)
@@ -72,6 +72,7 @@ namespace RollercoasterEdit
 				UnityEngine.Object.Destroy (extrudeNode.gameObject);
 		}
 
+
 		private ExtrudeNode AddExtrudeNode(Vector3 position)
 		{
 			GameObject node = UnityEngine.Object.Instantiate( Main.AssetBundleManager.NodeGo);//GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -103,6 +104,18 @@ namespace RollercoasterEdit
 			if (type == TrackNode.NodeType.PO)
 				n.ActiveState = TrackNode.Activestate.NeverActive;
 
+            if (type == TrackNode.NodeType.P3) {
+                GameObject nodeRotate = UnityEngine.Object.Instantiate (Main.AssetBundleManager.NodeRotateGo);
+                nodeRotate.name = "MainRotate";
+                nodeRotate.transform.SetParent (node.transform);
+                nodeRotate.transform.position = node.transform.position;
+
+                GameObject mainRotate = nodeRotate.transform.Find ("Rotate").gameObject;
+                mainRotate.layer = LayerMasks.ID_COASTER_TRACKS;
+                n.Rotate =  mainRotate.AddComponent<RotationNode> ();
+
+            }
+
 			var previousSegment = SegmentModify.GetPreviousSegment (true);
 			var nextSegment = SegmentModify.GetNextSegment (true);
 
@@ -122,6 +135,7 @@ namespace RollercoasterEdit
 					}
 				}
 			}
+           
 
 			n.SetActiveState (false);
 			n.TrackSegmentModify = SegmentModify;

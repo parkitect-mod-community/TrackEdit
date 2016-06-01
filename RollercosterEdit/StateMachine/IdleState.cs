@@ -37,25 +37,26 @@ namespace RollercoasterEdit
 
 					_stateData.Distance = (ray.origin - hit.point).magnitude;
 
-					if (hit.transform.name == "BezierNode") {
-						_stateData.SetActiveNode(hit.transform);
+                    if (hit.transform.name == "BezierNode") {
+                        _stateData.SetActiveNode (hit.transform);
 
-						TrackNode node = hit.transform.GetComponent<TrackNode> ();
+                        TrackNode node = hit.transform.GetComponent<TrackNode> ();
 
-						var nextSegment = node.TrackSegmentModify.GetNextSegment (true);
-						var previousSegment = node.TrackSegmentModify.GetPreviousSegment (true);
+                        var nextSegment = node.TrackSegmentModify.GetNextSegment (true);
+                        var previousSegment = node.TrackSegmentModify.GetPreviousSegment (true);
 
-						if (node.NodePoint == TrackNode.NodeType.P1 && previousSegment != null && previousSegment.TrackSegment is Station) {
-							stateMachine.ChangeState (new LinearDragState (_stateData));
-						} else if (node.NodePoint == TrackNode.NodeType.P2 && nextSegment != null && nextSegment.TrackSegment is Station) {
-							stateMachine.ChangeState (new LinearDragState (_stateData));
-						} else {
-							stateMachine.ChangeState (new FreeDragState (_stateData));
-						}
+                        if (node.NodePoint == TrackNode.NodeType.P1 && previousSegment != null && previousSegment.TrackSegment is Station) {
+                            stateMachine.ChangeState (new LinearDragState (_stateData));
+                        } else if (node.NodePoint == TrackNode.NodeType.P2 && nextSegment != null && nextSegment.TrackSegment is Station) {
+                            stateMachine.ChangeState (new LinearDragState (_stateData));
+                        } else {
+                            stateMachine.ChangeState (new FreeDragState (_stateData));
+                        }
+                    } else if (hit.transform.name == "ExtrudeNode") {
+                        stateMachine.ChangeState (new ConsumeExtrudeNodeState (_stateData));
+                    } else if (hit.transform.name == "Rotate") {
+                        stateMachine.ChangeState (new RotationState (_stateData));
                     }
-					else if (hit.transform.name == "ExtrudeNode") {
-						stateMachine.ChangeState (new ConsumeExtrudeNodeState (_stateData));
-					}
                 }
               
             }

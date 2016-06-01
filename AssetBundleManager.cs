@@ -8,10 +8,12 @@ namespace RollercoasterEdit
 	{
 		private Main Main {get;set;}
 		public GameObject NodeGo;
+        public GameObject NodeRotateGo;
 
 		public AssetBundleManager (Main main)
 		{
 			this.Main = main;
+            NodeRotateGo = LoadAsset<GameObject> ("Node_Rotate");
 			NodeGo = LoadAsset<GameObject> ("Node");
 		}
 

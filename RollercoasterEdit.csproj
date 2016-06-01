@@ -75,6 +75,8 @@
     <Compile Include="RollercosterEdit\ExtrudeNode.cs" />
     <Compile Include="RollercosterEdit\INode.cs" />
     <Compile Include="RollercosterEdit\StateMachine\ConsumeExtrudeNodeState.cs" />
+    <Compile Include="RollercosterEdit\RotationNode.cs" />
+    <Compile Include="RollercosterEdit\StateMachine\RotationState.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>

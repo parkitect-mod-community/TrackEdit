@@ -13,7 +13,6 @@ namespace RollercoasterEdit
 		private List<TrackNodeCurve> _nodes = new List<TrackNodeCurve> ();
 
 		private FieldInfo _biNormalField;
-        private FieldInfo _directionAngleField;
 
         void Awake()
         {
@@ -21,9 +20,6 @@ namespace RollercoasterEdit
 
             BindingFlags flags = BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic;
             _biNormalField = typeof(TrackSegment4).GetField ("startBinormal", flags);
-
-            flags = BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic;
-            _directionAngleField = typeof(TrackSegment4).GetField ("startBinormal", flags);
 
 
             for (int x = 0; x < TrackSegment.curves.Count; x++) {
@@ -86,7 +82,7 @@ namespace RollercoasterEdit
         {
             var previousSegment = GetPreviousSegment (true);
             if (previousSegment != null) {
-                var nextSegment = GetNextSegment (hasToBeconnected);
+                var nextSegment = GetNextSegment (true);
 
                 _biNormalField.SetValue (TrackSegment, TrackSegment.transform.InverseTransformDirection (Vector3.Cross (previousSegment.TrackSegment.getNormal (1f), previousSegment.TrackSegment.getTangentPoint (1f))));
                 GetLastCurve.P0.CalculateLenghtAndNormals ();
@@ -103,6 +99,22 @@ namespace RollercoasterEdit
 
         }
 
+
+        public void CalculateWithNewTotalRotation(float newRotation)
+        {
+            var nextSegment = GetNextSegment (true);
+            var previousSegment = GetPreviousSegment (true);
+
+            float diff = newRotation - TrackSegment.totalRotation;
+            if (previousSegment != null) {
+                TrackSegment.deltaRotation += diff;
+                TrackSegment.totalRotation += diff;
+               
+                TrackSegment.calculateLengthAndNormals (previousSegment.TrackSegment);
+            }
+            if (nextSegment != null) {
+            }
+        }
 
 
 
