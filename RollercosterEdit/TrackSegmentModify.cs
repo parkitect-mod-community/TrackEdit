@@ -85,18 +85,30 @@ namespace RollercoasterEdit
                 var nextSegment = GetNextSegment (true);
 
                 _biNormalField.SetValue (TrackSegment, TrackSegment.transform.InverseTransformDirection (Vector3.Cross (previousSegment.TrackSegment.getNormal (1f), previousSegment.TrackSegment.getTangentPoint (1f))));
-                GetLastCurve.P0.CalculateLenghtAndNormals ();
+                //TrackSegment.calculateLengthAndNormals (previousSegment.TrackSegment);
+                //GetLastCurve.P0.CalculateLenghtAndNormals ();
 
                 if (nextSegment != null) {
 
-                    TrackSegment.deltaRotation = Mathf.DeltaAngle (previousSegment.TrackSegment.totalRotation, nextSegment.TrackSegment.totalRotation - nextSegment.TrackSegment.deltaRotation);
-                    TrackSegment.totalRotation = previousSegment.TrackSegment.totalRotation + TrackSegment.deltaRotation + TrackSegment.getAdditionalRotation ();
-                    TrackSegment.calculateLengthAndNormals (previousSegment.TrackSegment);
-                }
+                    TrackSegment.deltaRotation -= AngleSigned(Quaternion.AngleAxis (0, nextSegment.TrackSegment.getTangentPoint (0.0f)) * nextSegment.TrackSegment.getNormalPoint (0.0f), Quaternion.AngleAxis ( TrackSegment.deltaRotation ,TrackSegment.getTangentPoint (1.0f)) * TrackSegment.getNormalPoint (1.0f),TrackSegment.getTangentPoint(1.0f)) ;
 
-     
+                    //Vector3 normalPoint = TrackSegment.getNormalPoint (1.0f);
+
+
+                    //TrackSegment.deltaRotation = Mathf.DeltaAngle( previousSegment.TrackSegment.totalRotation,nextSegment.TrackSegment.totalRotation - nextSegment.TrackSegment.deltaRotation -nextSegment.TrackSegment.getAdditionalRotation()) - TrackSegment.getAdditionalRotation();
+
+                }
+                TrackSegment.totalRotation = previousSegment.TrackSegment.totalRotation + TrackSegment.deltaRotation + TrackSegment.getAdditionalRotation ();
+                TrackSegment.calculateLengthAndNormals (previousSegment.TrackSegment);
             }	
 
+        }
+
+        public static float AngleSigned(Vector3 v1, Vector3 v2, Vector3 n)
+        {
+            return Mathf.Atan2(
+                Vector3.Dot(n, Vector3.Cross(v1, v2)),
+                Vector3.Dot(v1, v2)) * Mathf.Rad2Deg;
         }
 
 

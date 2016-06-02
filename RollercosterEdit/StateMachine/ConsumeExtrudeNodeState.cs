@@ -19,9 +19,11 @@ namespace RollercoasterEdit
             TrackUIHandle.instance.TrackRide.Track.addSegment (trackSegment, _stateData.Selected.GetComponent<ExtrudeNode> ().TrackSegmentModify.GetIndexOfSegment ()+1);
 			trackSegment.Initialize ();
 
+
             var modify = trackSegment.gameObject.AddComponent<TrackSegmentModify> ();
             _stateData.Selected.GetComponent<ExtrudeNode> ().TrackSegmentModify.ConnectWithForwardSegment(modify);
-
+            modify.CalculateStartBinormal (true);
+                
             _stateData.Selected = modify.GetLastCurve.P3.gameObject.transform;
 			stateMachine.ChangeState(new FreeDragState(_stateData));
 
