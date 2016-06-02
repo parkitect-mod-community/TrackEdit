@@ -26,7 +26,7 @@ namespace RollercoasterEdit
             float t = (-l + r) / (planeNormal.x * ray.direction.x + planeNormal.y * ray.direction.y + planeNormal.z * ray.direction.z);
 
             Vector3 loc = ray.origin + ray.direction * t;
-            float diff = -AngleSigned(rotationNode.AttachedNode.TrackSegmentModify.TrackSegment.getNormal (1.0f),Vector3.Normalize (planeCenter- loc),planeNormal);
+            float diff = AngleSigned(rotationNode.AttachedNode.TrackSegmentModify.TrackSegment.getNormal (1.0f),Vector3.Normalize (planeCenter- loc),planeNormal);
 
             rotationNode.AttachedNode.TrackSegmentModify.CalculateWithNewTotalRotation (diff + rotationNode.AttachedNode.TrackSegmentModify.TrackSegment.totalRotation);
             rotationNode.AttachedNode.TrackSegmentModify.Invalidate = true;

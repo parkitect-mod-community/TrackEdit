@@ -109,10 +109,12 @@ namespace RollercoasterEdit
             if (previousSegment != null) {
                 TrackSegment.deltaRotation += diff;
                 TrackSegment.totalRotation += diff;
-               
                 TrackSegment.calculateLengthAndNormals (previousSegment.TrackSegment);
+
             }
             if (nextSegment != null) {
+                nextSegment.CalculateStartBinormal (true);
+                //TrackSegment.calculateLengthAndNormals (previousSegment.TrackSegment);
             }
         }
 

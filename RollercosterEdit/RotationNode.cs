@@ -16,7 +16,7 @@ namespace RollercoasterEdit
         void Update()
         {
             this.transform.parent.position =  AttachedNode.transform.position;
-            this.transform.parent.rotation =  Quaternion.LookRotation( AttachedNode.TrackSegmentModify.TrackSegment.getTangentPoint (1f) * -1.0f);
+            this.transform.parent.rotation =  Quaternion.LookRotation( AttachedNode.TrackSegmentModify.TrackSegment.getTangentPoint (1f));
 
             this.transform.localEulerAngles = new Vector3( 0,0,AttachedNode.TrackSegmentModify.TrackSegment.totalRotation);
         }
