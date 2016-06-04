@@ -90,27 +90,23 @@ namespace RollercoasterEdit
 
                 if (nextSegment != null) {
 
-                    TrackSegment.deltaRotation -= AngleSigned(Quaternion.AngleAxis (0, nextSegment.TrackSegment.getTangentPoint (0.0f)) * nextSegment.TrackSegment.getNormalPoint (0.0f), Quaternion.AngleAxis ( TrackSegment.deltaRotation ,TrackSegment.getTangentPoint (1.0f)) * TrackSegment.getNormalPoint (1.0f),TrackSegment.getTangentPoint(1.0f)) ;
-
-                    //Vector3 normalPoint = TrackSegment.getNormalPoint (1.0f);
-
-
-                    //TrackSegment.deltaRotation = Mathf.DeltaAngle( previousSegment.TrackSegment.totalRotation,nextSegment.TrackSegment.totalRotation - nextSegment.TrackSegment.deltaRotation -nextSegment.TrackSegment.getAdditionalRotation()) - TrackSegment.getAdditionalRotation();
-
+                    //try to match the curve 
+                    for (int x = 0; x < 10; x++) {
+                        TrackSegment.deltaRotation -= MathHelper.AngleSigned (Quaternion.AngleAxis (0, nextSegment.TrackSegment.getTangentPoint (0.0f)) * nextSegment.TrackSegment.getNormalPoint (0.0f), Quaternion.AngleAxis (TrackSegment.deltaRotation, TrackSegment.getTangentPoint (1.0f)) * TrackSegment.getNormalPoint (1.0f), TrackSegment.getTangentPoint (1.0f));
+                        TrackSegment.totalRotation = previousSegment.TrackSegment.totalRotation + TrackSegment.deltaRotation;// + TrackSegment.getAdditionalRotation ();
+                        TrackSegment.calculateLengthAndNormals (previousSegment.TrackSegment);
+                        if (previousSegment.TrackSegment.isConnectedTo (nextSegment.TrackSegment))
+                            break;
+                    }
+                } else {
+                    TrackSegment.totalRotation = previousSegment.TrackSegment.totalRotation + TrackSegment.deltaRotation;// + TrackSegment.getAdditionalRotation ();
+                    TrackSegment.calculateLengthAndNormals (previousSegment.TrackSegment);
                 }
-                TrackSegment.totalRotation = previousSegment.TrackSegment.totalRotation + TrackSegment.deltaRotation + TrackSegment.getAdditionalRotation ();
-                TrackSegment.calculateLengthAndNormals (previousSegment.TrackSegment);
             }	
 
         }
 
-        public static float AngleSigned(Vector3 v1, Vector3 v2, Vector3 n)
-        {
-            return Mathf.Atan2(
-                Vector3.Dot(n, Vector3.Cross(v1, v2)),
-                Vector3.Dot(v1, v2)) * Mathf.Rad2Deg;
-        }
-
+       
 
         public void CalculateWithNewTotalRotation(float newRotation)
         {
@@ -161,7 +157,11 @@ namespace RollercoasterEdit
             float magnitude = Mathf.Abs((next.GetFirstCurve.P0.GetGlobal () - next.GetFirstCurve.P1.GetGlobal ()).magnitude);
 
             GetLastCurve.P2.SetPoint(GetLastCurve.P3.GetGlobal() + (next.TrackSegment.getTangentPoint(0f) *-1f* magnitude));
-            GetLastCurve.P2.CalculateLenghtAndNormals ();
+
+
+            next.TrackSegment.calculateLengthAndNormals (GetLastCurve.SegmentModify.TrackSegment);
+            next.CalculateStartBinormal (false);
+            //GetLastCurve.P2.CalculateLenghtAndNormals ();
 
             Invalidate = true;
             return true;

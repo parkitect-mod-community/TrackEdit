@@ -77,6 +77,9 @@
     <Compile Include="RollercosterEdit\StateMachine\ConsumeExtrudeNodeState.cs" />
     <Compile Include="RollercosterEdit\RotationNode.cs" />
     <Compile Include="RollercosterEdit\StateMachine\RotationState.cs" />
+    <Compile Include="RollercosterEdit\MathHelper.cs" />
+    <Compile Include="RollercosterEdit\StateMachine\FreeDragWithSmoothing.cs" />
+    <Compile Include="RollercosterEdit\TrackNodeHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>
