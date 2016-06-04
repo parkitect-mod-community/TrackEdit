@@ -10,7 +10,7 @@ namespace RollercoasterEdit
         void Start()
         {
             AttachedNode = this.transform.parent.parent.GetComponent<TrackNode> ();
-            this.gameObject.SetActive (false);
+            this.transform.parent.gameObject.SetActive (false);
         }
 
         void Update()
@@ -19,6 +19,8 @@ namespace RollercoasterEdit
             this.transform.parent.rotation =  Quaternion.LookRotation( AttachedNode.TrackSegmentModify.TrackSegment.getTangentPoint (1f));
 
             this.transform.localEulerAngles = new Vector3( 0,0,AttachedNode.TrackSegmentModify.TrackSegment.totalRotation);
+            this.transform.parent.Find ("Angle").GetComponent<TextMesh> ().text = (AttachedNode.TrackSegmentModify.TrackSegment.totalRotation % 360) + "\u00B0"; 
+            this.transform.parent.Find("Angle").LookAt(Camera.main.transform,Vector3.up) ;
         }
     }
 }

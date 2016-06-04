@@ -80,6 +80,7 @@
     <Compile Include="RollercosterEdit\MathHelper.cs" />
     <Compile Include="RollercosterEdit\StateMachine\FreeDragWithSmoothing.cs" />
     <Compile Include="RollercosterEdit\TrackNodeHelper.cs" />
+    <Compile Include="RollercosterEdit\StateMachine\DraggableState.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>

@@ -28,9 +28,13 @@ namespace RollercoasterEdit
             Vector3 loc = ray.origin + ray.direction * t;
             float diff = MathHelper.AngleSigned(rotationNode.AttachedNode.TrackSegmentModify.TrackSegment.getNormal (1.0f),Vector3.Normalize (planeCenter- loc),planeNormal);
 
-            rotationNode.AttachedNode.TrackSegmentModify.CalculateWithNewTotalRotation (diff + rotationNode.AttachedNode.TrackSegmentModify.TrackSegment.totalRotation);
+            rotationNode.AttachedNode.TrackSegmentModify.CalculateWithNewTotalRotation ( Mathf.Round(diff + rotationNode.AttachedNode.TrackSegmentModify.TrackSegment.totalRotation));
             rotationNode.AttachedNode.TrackSegmentModify.Invalidate = true;
-            rotationNode.AttachedNode.TrackSegmentModify.GetNextSegment (true).Invalidate = true;
+
+            TrackSegmentModify nextSegment = rotationNode.AttachedNode.TrackSegmentModify.GetNextSegment (true);
+
+            if(nextSegment != null)
+                nextSegment.Invalidate = true;
        
             if (Input.GetMouseButtonUp (0)) {
                 stateMachine.ChangeState(new IdleState (_stateData));

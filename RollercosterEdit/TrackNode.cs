@@ -61,7 +61,7 @@ namespace RollercoasterEdit
 
 			}
             if (Rotate != null)
-                Rotate.gameObject.SetActive (active);
+                Rotate.transform.parent.gameObject.SetActive (active);
 
             
 			
@@ -130,7 +130,7 @@ namespace RollercoasterEdit
 				this.gameObject.SetActive (active);
 			}
             if (Rotate != null)
-                Rotate.gameObject.SetActive (active);
+                Rotate.transform.parent.gameObject.SetActive (active);
 		}
 
 		public void SetPoint(Vector3 point)

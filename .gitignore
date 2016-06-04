@@ -263,3 +263,5 @@ sysinfo.txt
 
 # Builds
 *.apk
+
+Config.json
