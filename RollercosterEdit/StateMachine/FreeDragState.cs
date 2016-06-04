@@ -6,8 +6,8 @@ namespace RollercoasterEdit
     public class FreeDragState : DraggableState
     {
 		private BuilderHeightMarker _heightMaker;
-    
-       private SharedStateData _stateData;
+        private BuilderHeightMarker _p3HeightMarker;
+        private SharedStateData _stateData;
 
         public FreeDragState (SharedStateData stateData) : base(stateData)
         {
@@ -16,6 +16,25 @@ namespace RollercoasterEdit
 			_heightMaker = UnityEngine.Object.Instantiate<BuilderHeightMarker>(ScriptableSingleton<AssetManager>.Instance.builderHeightMarkerGO);
 			_heightMaker.attachedTo = stateData.Selected.transform;
 			_heightMaker.heightChangeDelta = .1f;
+
+
+            TrackNode trackNode = _stateData.Selected.gameObject.GetComponent<TrackNode> ();
+            var previousSegment = trackNode.TrackSegmentModify.GetPreviousSegment (true);
+            Transform p3hook = null;
+
+            if (trackNode.NodePoint == TrackNode.NodeType.P1) {
+                p3hook = previousSegment.GetLastCurve.P3.transform;
+
+            } else if (trackNode.NodePoint == TrackNode.NodeType.P2) {   
+                p3hook = trackNode.TrackCurve.P3.transform;
+            }
+
+            if (p3hook != stateData.Selected.transform && p3hook != null) {
+                _p3HeightMarker = UnityEngine.Object.Instantiate<BuilderHeightMarker> (ScriptableSingleton<AssetManager>.Instance.builderHeightMarkerGO);
+                _p3HeightMarker.attachedTo = p3hook;
+                _p3HeightMarker.heightChangeDelta = .01f;
+            }
+            
 
 
         }
@@ -69,6 +88,8 @@ namespace RollercoasterEdit
 		{
             base.Unload ();
 			UnityEngine.Object.Destroy (_heightMaker.gameObject);
+            if (_p3HeightMarker != null)
+                UnityEngine.Object.Destroy (_p3HeightMarker.gameObject);
 		}
 
     }

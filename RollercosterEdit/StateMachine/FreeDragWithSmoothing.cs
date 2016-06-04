@@ -3,53 +3,28 @@ using UnityEngine;
 
 namespace RollercoasterEdit
 {
-    public class FreeDragWithSmoothing : IState
+    public class FreeDragWithSmoothing : DraggableState
     {
-        private bool _verticalDragState;
         private SharedStateData _stateData;
         private BuilderHeightMarker _heightMaker;
-        public FreeDragWithSmoothing (SharedStateData stateData)
+
+        public FreeDragWithSmoothing (SharedStateData stateData) : base(stateData)
         {
             this._stateData = stateData;
 
             _heightMaker = UnityEngine.Object.Instantiate<BuilderHeightMarker>(ScriptableSingleton<AssetManager>.Instance.builderHeightMarkerGO);
-            _heightMaker.attachedTo = stateData.Selected.transform;
+            _heightMaker.attachedTo = _stateData.Selected.transform;
             _heightMaker.heightChangeDelta = .01f;
 
         }
 
-
-        public void Update (FiniteStateMachine stateMachine)
+        public override void Update (FiniteStateMachine stateMachine)
         {
             TrackNode trackNode = _stateData.Selected.gameObject.GetComponent<TrackNode> ();
-
-
-            var ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-            Vector3 point = ray.GetPoint (_stateData.Distance);
-            Vector3 position = Vector3.zero;
-
-            if (!_verticalDragState) {
-                position = new Vector3 (point.x, _stateData.FixedY, point.z) + new Vector3(_stateData.Offset.x, _stateData.Offset.y, _stateData.Offset.z);
-
-            } else
-            {
-                _stateData.FixedY = point.y;
-                position = new Vector3 (_stateData.Selected.position.x, _stateData.FixedY, _stateData.Selected.position.z) + new Vector3(0, _stateData.Offset.y, 0);
-            }
-
-            if (Input.GetKeyDown (Main.Configeration.VerticalKey)) {
-                _stateData.Offset = new Vector3(_stateData.Offset.x,_stateData.Selected.transform.position.y - point.y, _stateData.Offset.z);
-                _verticalDragState = true;
-
-            } else if (Input.GetKeyUp (Main.Configeration.VerticalKey)) {
-                _verticalDragState = false;
-                _stateData.Offset = (_stateData.Selected.transform.position - point);
-
-            }
-
+            base.Update (stateMachine);
 
             //calculate the match for the node segment
-            TrackNodeHelper.CalculateMatch (trackNode, position);
+            TrackNodeHelper.CalculateMatch (trackNode, dragPosition);
             TrackNodeCurve previousCurve = trackNode.TrackSegmentModify.getPreviousCurve (trackNode.TrackCurve);
 
             float dist = Vector3.Distance (previousCurve.P3.GetGlobal (), trackNode.TrackCurve.P3.GetGlobal ());
@@ -70,7 +45,7 @@ namespace RollercoasterEdit
             if (!_stateData.Selected.gameObject.GetComponent<TrackNode> ().TrackSegmentModify.TrackSegment.isConnectedToNextSegment) {
 
 
-                if (_stateData.Selected.gameObject.GetComponent<TrackNode> ().NodePoint == TrackNode.NodeType.P3 && (position - nextSegment.GetFirstCurve.P0.GetGlobal ()).sqrMagnitude < .2f) {
+                if (_stateData.Selected.gameObject.GetComponent<TrackNode> ().NodePoint == TrackNode.NodeType.P3 && (dragPosition - nextSegment.GetFirstCurve.P0.GetGlobal ()).sqrMagnitude < .2f) {
 
                     float magnitude = Mathf.Abs ((nextSegment.GetFirstCurve.P0.GetGlobal () - nextSegment.GetFirstCurve.P1.GetGlobal ()).magnitude);
 
@@ -94,15 +69,15 @@ namespace RollercoasterEdit
                 }
             }
 
-
             if (Input.GetMouseButtonUp (0)) {
                 stateMachine.ChangeState(new IdleState (_stateData));
             }
 
         }
 
-        public void Unload ()
+        public override void Unload ()
         {
+            base.Unload ();
             UnityEngine.Object.Destroy (_heightMaker.gameObject);
         }
 

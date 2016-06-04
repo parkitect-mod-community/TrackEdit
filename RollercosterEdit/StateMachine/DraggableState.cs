@@ -71,7 +71,7 @@ namespace RollercoasterEdit
                 isGridActive = false;
             } 
 
-            dragPosition = position;
+            dragPosition = new Vector3 (Mathf.Round (position.x * 10.0f) /  10.0f, Mathf.Round (position.y *  10.0f) / 10.0f, Mathf.Round (position.z * 10.0f) /  10.0f);
             if (isGridActive) {
                 dragPosition = new Vector3 (Mathf.Round (position.x * gridSubdivision) / gridSubdivision, Mathf.Round (position.y * gridSubdivision) / gridSubdivision, Mathf.Round (position.z * gridSubdivision) / gridSubdivision);
 

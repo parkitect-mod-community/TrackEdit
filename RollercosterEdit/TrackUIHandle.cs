@@ -46,6 +46,7 @@ namespace RollercoasterEdit
 		}
 
 		void OnDestroy() {
+            _stateMachine.Unload ();
             for (int x = 0; x < TrackRide.Track.trackSegments.Count; x++) {
                 Destroy(TrackRide.Track.trackSegments [x].gameObject.GetComponent<TrackSegmentModify> ());
             }

@@ -18,7 +18,14 @@ namespace RollercoasterEdit
 
         public void Update()
         {
+            if(_currentState != null)
             _currentState.Update (this);
+        }
+
+        public void Unload()
+        {
+            _currentState.Unload ();
+            _currentState = null;
         }
     }
 }
