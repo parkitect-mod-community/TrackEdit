@@ -14,6 +14,10 @@ namespace RollercoasterEdit
 
 		private FieldInfo _biNormalField;
 
+        private bool _isSupportsInvalid = false;
+        private float _supportRegnerateTime = 0.0f;
+        private float _meshGenerationTime = 0.0f;
+
         void Awake()
         {
             this.TrackSegment = this.GetComponent<TrackSegment4> ();
@@ -174,121 +178,61 @@ namespace RollercoasterEdit
 				_nodes [x].Destroy ();
 			}
 		}
+        private void ResetMeshForTrackSegment(MeshGenerator meshGenerator, TrackSegment4 segment)
+        {
+            FieldInfo generatedMesh = typeof(TrackSegment4).GetField ("generatedMeshes", BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic);
+            List<Mesh> meshes =  (List<Mesh>)generatedMesh.GetValue (segment);
+            foreach (Mesh m in meshes) {
+                UnityEngine.Object.Destroy (m);
+            }
+            meshes.Clear ();
+
+            foreach(Transform child in segment.gameObject.transform) {
+                var mesh_filter = child.gameObject.GetComponent<MeshFilter> ();
+                if (mesh_filter != null) {
+                    UnityEngine.Object.DestroyImmediate (mesh_filter.mesh);
+                    UnityEngine.Object.DestroyImmediate (mesh_filter.sharedMesh);
+                }
+                UnityEngine.Object.DestroyImmediate (child.gameObject);
+
+            }
+            UnityEngine.Object.DestroyImmediate( segment.gameObject.GetComponent<MouseCollider> ());
+            UnityEngine.Object.DestroyImmediate( segment.gameObject.GetComponent<MeshCollider> ());
+            UnityEngine.Object.DestroyImmediate( segment.gameObject.GetComponent<BoundingMesh> ());
+
+        }
 
 		void Update()
 		{
-			if (Invalidate) {
-                
-                recalculate(TrackUIHandle.instance.TrackRide.meshGenerator,TrackSegment);
+            if(Invalidate)
+                _supportRegnerateTime = Time.time;
+
+            if (Invalidate && (Time.time - _meshGenerationTime) > .05f) {
+                _isSupportsInvalid = true;
+
+                ResetMeshForTrackSegment (TrackUIHandle.instance.TrackRide.meshGenerator, TrackSegment);
+                TrackSegment.generateMesh (TrackUIHandle.instance.TrackRide.meshGenerator);
+
+                _meshGenerationTime = Time.time;
 				Invalidate = false;
 			}
+            if (_isSupportsInvalid && (Time.time - _supportRegnerateTime) > .1f) {
+               
+                for (int x = 0; x < 5; x++) {
+                    ResetMeshForTrackSegment (TrackUIHandle.instance.TrackRide.meshGenerator, TrackSegment);
+                    FieldInfo localCrossTile = typeof(TrackSegment4).GetField ("localCrossedTiles", BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic);
+                    localCrossTile.SetValue (TrackSegment, null);
+
+                    TrackSegment.generateMesh (TrackUIHandle.instance.TrackRide.meshGenerator);
+                }
+                _isSupportsInvalid = false;
+            }
             foreach (TrackNodeCurve curves in _nodes) {
                 curves.Update ();
             }
 
 		}
 
-
-		private void recalculate(MeshGenerator meshGenerator, TrackSegment4 segment)
-		{
-
-            foreach(Transform child in segment.gameObject.transform) {
-                if (child.name != "BetweenTracksMouseCollider" && !child.name.Contains("StationPlatformTrackTile") && child.name != "MouseSelectionCollider") {
-                    var mesh_filter = child.gameObject.GetComponent<MeshFilter> ();
-                    if (mesh_filter != null) {
-                        UnityEngine.Object.Destroy (mesh_filter.mesh);
-                        UnityEngine.Object.Destroy (mesh_filter.sharedMesh);
-                    }
-                    UnityEngine.Object.Destroy (child.gameObject);
-
-                }
-            }
-
-
-            if (segment.getLength() <= 0f)
-            {
-                Debug.LogWarning("Can't extrude this segment! Has a length of 0.");
-            }
-            meshGenerator.prepare(segment, segment.gameObject);
-            float num = 0f;
-            float num2 = 0f;
-            meshGenerator.sampleAt(segment, 0f);
-            int num3 = 0;
-            int num4 = 0;
-            Vector3 b = segment.getStartpoint();
-            do
-            {
-                float num5 = 1f - num2;
-                if (Vector3.Angle(segment.getDirection(), segment.getPoint(num2 + num5) - segment.getPoint(num2)) > 5f)
-                {
-                    num5 /= 2f;
-                }
-                int num6 = 0;
-                Vector3 point = segment.getPoint(num2 + num5);
-                float num7 = Vector3.Angle(segment.getTangentPoint(num2), segment.getTangentPoint(num2 + num5));
-                num7 = Mathf.Max(num7, Vector3.Angle(segment.getNormal(num2), segment.getNormal(num2 + num5)));
-                while (num5 > 0.01f && (num7 > 10f || (num7 > 2f && (point - b).magnitude > 0.225f)))
-                {
-                    num4++;
-                    num5 /= 2f;
-                    point = segment.getPoint(num2 + num5);
-                    num7 = Vector3.Angle(segment.getTangentPoint(num2), segment.getTangentPoint(num2 + num5));
-                    num7 = Mathf.Max(num7, Vector3.Angle(segment.getNormal(num2), segment.getNormal(num2 + num5)));
-                    num6++;
-                    if (num6 > 50)
-                    {
-                        break;
-                    }
-                }
-                num += (point - b).magnitude;
-                num2 += num5;
-                b = point;
-                if (num2 > 1f)
-                {
-                    break;
-                }
-                meshGenerator.sampleAt(segment, num2);
-                num3++;
-            }
-            while (num2 < 1f && num3 < 300);
-            if (!Mathf.Approximately(num2, 1f))
-            {
-                meshGenerator.sampleAt(segment, 1f);
-            }
-
-            meshGenerator.afterExtrusion(segment, segment.gameObject);
-            MeshFilter component = segment.gameObject.GetComponent<MeshFilter>();
-            Mesh mesh = meshGenerator.getMesh(segment.gameObject);
-            UnityEngine.Object.Destroy (component.sharedMesh);
-            UnityEngine.Object.Destroy (component.mesh);
-
-            component.sharedMesh = mesh;
-            meshGenerator.afterMeshGeneration(segment, segment.gameObject);
-
-            Extruder buildVolumeMeshExtruder = meshGenerator.getBuildVolumeMeshExtruder();
-            buildVolumeMeshExtruder.transform(segment.gameObject.transform.worldToLocalMatrix);
-            BoundingMesh boundingMesh = segment.gameObject.GetComponent<BoundingMesh>();
-            boundingMesh.layers = BoundingVolume.Layers.Buildvolume;
-            boundingMesh.setMesh(buildVolumeMeshExtruder.vertices.ToArray(), buildVolumeMeshExtruder.indizes.ToArray());
-
-            GameObject track_mouse_collider = segment.transform.Find ("BetweenTracksMouseCollider").gameObject;// new GameObject("BetweenTracksMouseCollider");
-            track_mouse_collider.transform.parent = segment.gameObject.transform;
-            track_mouse_collider.transform.localPosition = Vector3.zero;
-            track_mouse_collider.transform.localRotation = Quaternion.identity;
-            track_mouse_collider.layer = LayerMasks.ID_MOUSECOLLIDERS;
-            MeshCollider meshCollider = track_mouse_collider.GetComponent<MeshCollider>();
-            Mesh collisionMesh = meshGenerator.getCollisionMesh(segment.gameObject);
-
-            UnityEngine.Object.Destroy (meshCollider.sharedMesh);
-            meshCollider.sharedMesh = collisionMesh;
-
-            MouseCollider mouseCollider = segment.gameObject.GetComponent<MouseCollider>();
-            mouseCollider.colliderObject = track_mouse_collider;
-
-
-            segment.applyCustomColors ((Color[])segment.track.TrackedRide.trackColors.Clone ());
-
-		}
 
 
 

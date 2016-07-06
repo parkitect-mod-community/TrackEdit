@@ -17,6 +17,16 @@ namespace RollercoasterEdit
         public DraggableState (SharedStateData stateData)
         {
             this._stateData = stateData;
+
+            var ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+            Vector3 point = ray.GetPoint (_stateData.Distance);
+            Vector3 position = Vector3.zero;
+
+            if (Input.GetKey (Main.Configeration.VerticalKey)) {
+                _stateData.Offset = new Vector3(_stateData.Offset.x,_stateData.Selected.transform.position.y - point.y, _stateData.Offset.z);
+                verticalDragState = true;
+
+            }
         }
 
         public virtual void Update (FiniteStateMachine stateMachine)
