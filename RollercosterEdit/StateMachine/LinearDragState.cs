@@ -6,26 +6,26 @@ namespace RollercoasterEdit
 {
 	public class LinearDragState  : IState
 	{
-		private SharedStateData _stateData;
+        private SharedStateData stateData;
 		public LinearDragState (SharedStateData stateData)
 		{
-			this._stateData = stateData;
+			this.stateData = stateData;
 		}
 
 		public void Update(FiniteStateMachine stateMachine)
 		{
 			var ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-			Vector3 point = ray.GetPoint (_stateData.Distance);
+			Vector3 point = ray.GetPoint (stateData.Distance);
 			Vector3 position = Vector3.zero;
 
-			position = new Vector3 (point.x, _stateData.FixedY, point.z) + new Vector3(_stateData.Offset.x, _stateData.Offset.y, _stateData.Offset.z);
+			position = new Vector3 (point.x, stateData.FixedY, point.z) + new Vector3(stateData.Offset.x, stateData.Offset.y, stateData.Offset.z);
 
 
-			TrackNode trackNode = _stateData.Selected.gameObject.GetComponent<TrackNode> ();
-			var nextSegment = trackNode.TrackSegmentModify.GetNextSegment (true);
-			var previousSegment = trackNode.TrackSegmentModify.GetPreviousSegment (true);
+			TrackNode trackNode = stateData.Selected.gameObject.GetComponent<TrackNode> ();
+			var nextSegment = trackNode.trackSegmentModify.GetNextSegment (true);
+			var previousSegment = trackNode.trackSegmentModify.GetPreviousSegment (true);
 
-			switch (trackNode.NodePoint) {
+			switch (trackNode.nodePoint) {
 
 			case TrackNode.NodeType.P1:
 				
@@ -37,10 +37,10 @@ namespace RollercoasterEdit
 					float magnitude = Mathf.Abs((position - previousSegment.GetLastCurve.P3.GetGlobal ()).magnitude);
 					trackNode.SetPoint (previousSegment.GetLastCurve.P3.GetGlobal() + (previousSegment.TrackSegment.getTangentPoint(1f) * magnitude));
 
-					previousSegment.Invalidate = true;
+					previousSegment.invalidate = true;
 					trackNode.CalculateLenghtAndNormals ();
 
-					trackNode.TrackSegmentModify.CalculateStartBinormal (true);
+					trackNode.trackSegmentModify.CalculateStartBinormal (true);
 					//TrackSegmentModify.TrackSegment.upgradeSavegameRecalculateBinormal (previousSegment.TrackSegment);
 
 
@@ -59,7 +59,7 @@ namespace RollercoasterEdit
 
 					trackNode.SetPoint (nextSegment.GetFirstCurve.P0.GetGlobal () + (nextSegment.TrackSegment.getTangentPoint (0.0f) * -1.0f * magnitude));
 
-					nextSegment.Invalidate = true;
+					nextSegment.invalidate = true;
 					trackNode.CalculateLenghtAndNormals ();
 
 					nextSegment.CalculateStartBinormal (true);
@@ -69,11 +69,11 @@ namespace RollercoasterEdit
 			}
 
             trackNode.CalculateLenghtAndNormals ();
-			trackNode.TrackSegmentModify.Invalidate = true;
+			trackNode.trackSegmentModify.invalidate = true;
 
 
 			if (Input.GetMouseButtonUp (0)) {
-				stateMachine.ChangeState(new IdleState (_stateData));
+				stateMachine.ChangeState(new IdleState (stateData));
 			}
 		}
 		public void Unload()

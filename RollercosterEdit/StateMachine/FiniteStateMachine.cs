@@ -4,28 +4,28 @@ namespace RollercoasterEdit
 {
     public class FiniteStateMachine
     {
-        private IState _currentState;
+        private IState currentState;
         public FiniteStateMachine ()
         {
         }
 
         public void ChangeState(IState newState)
         {
-			if(_currentState != null)
-			    _currentState.Unload ();
-            _currentState = newState;
+			if(currentState != null)
+			    currentState.Unload ();
+            currentState = newState;
         }
 
         public void Update()
         {
-            if(_currentState != null)
-            _currentState.Update (this);
+            if(currentState != null)
+            currentState.Update (this);
         }
 
         public void Unload()
         {
-            _currentState.Unload ();
-            _currentState = null;
+            currentState.Unload ();
+            currentState = null;
         }
     }
 }

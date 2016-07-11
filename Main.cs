@@ -7,7 +7,6 @@ namespace RollercoasterEdit
 		public static AssetBundleManager AssetBundleManager = null;
         public static Configuration Configeration = null;
 
-        private bool _yDragToggle = false;
 
         public void onEnabled()
         {

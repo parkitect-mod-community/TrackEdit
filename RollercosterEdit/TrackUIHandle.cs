@@ -7,65 +7,64 @@ namespace RollercoasterEdit
 {
 	public class TrackUIHandle : MonoBehaviour
 	{
-		public TrackBuilder TrackBuilder{ get; private set; }
-		public TrackedRide TrackRide{ get; private set; }
-        private FieldInfo _trackerRiderField;
+		public TrackBuilder trackBuilder{ get; private set; }
+		public TrackedRide trackRide{ get; private set; }
+        private FieldInfo trackerRiderField;
 
-        private FiniteStateMachine _stateMachine = new FiniteStateMachine ();
+        private FiniteStateMachine stateMachine = new FiniteStateMachine ();
 
         public static TrackUIHandle instance = null;
-        private bool _isDirty = true;
+        private bool isDirty = true;
 
 
 		void Awake()
 		{
             TrackUIHandle.instance = this;
 
-            TrackBuilder = this.gameObject.GetComponent<TrackBuilder>();
+            trackBuilder = this.gameObject.GetComponent<TrackBuilder>();
             BindingFlags flags = BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic;
-			_trackerRiderField = TrackBuilder.GetType ().GetField ("trackedRide", flags);
+			trackerRiderField = trackBuilder.GetType ().GetField ("trackedRide", flags);
 		}
 
 		void Start() {
-			TrackRide = ((TrackedRide)_trackerRiderField.GetValue (TrackBuilder));
-			TrackBuilder = this.gameObject.GetComponent<TrackBuilder>();
+			trackRide = ((TrackedRide)trackerRiderField.GetValue (trackBuilder));
+			trackBuilder = this.gameObject.GetComponent<TrackBuilder>();
            // _trackSegmentManger = new TrackSegmentManager (TrackBuilder, TrackRide);
 			
             var sharedStateData = new SharedStateData ();
 			//sharedStateData.SegmentManager = _trackSegmentManger;
-			_stateMachine.ChangeState (new IdleState (sharedStateData));
+			stateMachine.ChangeState (new IdleState (sharedStateData));
 
-            TrackRide.Track.OnAddTrackSegment += (trackSegment) => {
-                _isDirty = true;
+            trackRide.Track.OnAddTrackSegment += (trackSegment) => {
+                isDirty = true;
             };
-            TrackRide.Track.OnRemoveTrackSegment += (trackSegment) => {
-                _isDirty = true;
+            trackRide.Track.OnRemoveTrackSegment += (trackSegment) => {
+                isDirty = true;
             };  
 
 
 		}
 
 		void OnDestroy() {
-            _stateMachine.Unload ();
-            for (int x = 0; x < TrackRide.Track.trackSegments.Count; x++) {
-                Destroy(TrackRide.Track.trackSegments [x].gameObject.GetComponent<TrackSegmentModify> ());
+            stateMachine.Unload ();
+            for (int x = 0; x < trackRide.Track.trackSegments.Count; x++) {
+                Destroy(trackRide.Track.trackSegments [x].gameObject.GetComponent<TrackSegmentModify> ());
             }
-            //_trackSegmentManger.OnDestroy ();
 		}
 
 		void Update()
 		{
-            if (_isDirty) {
-                for (int x = 0; x <  TrackRide.Track.trackSegments.Count; x++) {
-                    if (!TrackRide.Track.trackSegments [x].gameObject.GetComponent<TrackSegmentModify> ()) {
-                        TrackRide.Track.trackSegments [x].gameObject.AddComponent<TrackSegmentModify> ();
+            if (isDirty) {
+                for (int x = 0; x <  trackRide.Track.trackSegments.Count; x++) {
+                    if (!trackRide.Track.trackSegments [x].gameObject.GetComponent<TrackSegmentModify> ()) {
+                        trackRide.Track.trackSegments [x].gameObject.AddComponent<TrackSegmentModify> ();
                     }
                 }
-                _isDirty = false;
+                isDirty = false;
             }
 
 			//_trackSegmentManger.Update ();
-			_stateMachine.Update ();
+			stateMachine.Update ();
 
 		}
 

@@ -5,19 +5,19 @@ namespace RollercoasterEdit
 {
     public class RotationState : IState
     {
-        private SharedStateData _stateData;
+        private SharedStateData stateData;
         public RotationState (SharedStateData stateData)
         {
-            this._stateData = stateData;
+            this.stateData = stateData;
         }
 
         public void Update (FiniteStateMachine stateMachine)
         {
             var ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 
-            RotationNode rotationNode = _stateData.Selected.GetComponent<RotationNode>();
+            RotationNode rotationNode = stateData.Selected.GetComponent<RotationNode>();
 
-            Vector3 planeNormal = rotationNode.AttachedNode.TrackSegmentModify.TrackSegment.getTangentPoint (1.0f);
+            Vector3 planeNormal = rotationNode.AttachedNode.trackSegmentModify.TrackSegment.getTangentPoint (1.0f);
             Vector3 planeCenter = rotationNode.transform.position;
 
             float l = planeNormal.x * ray.origin.x + planeNormal.y * ray.origin.y + planeNormal.z * ray.origin.z;
@@ -26,18 +26,18 @@ namespace RollercoasterEdit
             float t = (-l + r) / (planeNormal.x * ray.direction.x + planeNormal.y * ray.direction.y + planeNormal.z * ray.direction.z);
 
             Vector3 loc = ray.origin + ray.direction * t;
-            float diff = MathHelper.AngleSigned(rotationNode.AttachedNode.TrackSegmentModify.TrackSegment.getNormal (1.0f),Vector3.Normalize (planeCenter- loc),planeNormal);
+            float diff = MathHelper.AngleSigned(rotationNode.AttachedNode.trackSegmentModify.TrackSegment.getNormal (1.0f),Vector3.Normalize (planeCenter- loc),planeNormal);
 
-            rotationNode.AttachedNode.TrackSegmentModify.CalculateWithNewTotalRotation ( Mathf.Round(diff + rotationNode.AttachedNode.TrackSegmentModify.TrackSegment.totalRotation));
-            rotationNode.AttachedNode.TrackSegmentModify.Invalidate = true;
+            rotationNode.AttachedNode.trackSegmentModify.CalculateWithNewTotalRotation ( Mathf.Round(diff + rotationNode.AttachedNode.trackSegmentModify.TrackSegment.totalRotation));
+            rotationNode.AttachedNode.trackSegmentModify.invalidate = true;
 
-            TrackSegmentModify nextSegment = rotationNode.AttachedNode.TrackSegmentModify.GetNextSegment (true);
+            TrackSegmentModify nextSegment = rotationNode.AttachedNode.trackSegmentModify.GetNextSegment (true);
 
             if(nextSegment != null)
-                nextSegment.Invalidate = true;
+                nextSegment.invalidate = true;
        
             if (Input.GetMouseButtonUp (0)) {
-                stateMachine.ChangeState(new IdleState (_stateData));
+                stateMachine.ChangeState(new IdleState (stateData));
             }
         }
 

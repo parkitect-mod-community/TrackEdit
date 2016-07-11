@@ -7,11 +7,10 @@ namespace RollercoasterEdit
     {
         public static void CalculateMatch(TrackNode trackNode,Vector3 position)
         {
-            var nextSegment = trackNode.TrackSegmentModify.GetNextSegment (true);
-            var previousSegment = trackNode.TrackSegmentModify.GetPreviousSegment (true);
+            var nextSegment = trackNode.trackSegmentModify.GetNextSegment (true);
+            var previousSegment = trackNode.trackSegmentModify.GetPreviousSegment (true);
 
-
-            switch (trackNode.NodePoint) {
+            switch (trackNode.nodePoint) {
             case TrackNode.NodeType.PO:
                 break;
             case TrackNode.NodeType.P1:
@@ -20,11 +19,11 @@ namespace RollercoasterEdit
                 if (previousSegment != null) {
 
                     float magnitude = Mathf.Abs((previousSegment.GetLastCurve.P2.GetGlobal () - previousSegment.GetLastCurve.P3.GetGlobal ()).magnitude);
-                    previousSegment.GetLastCurve.P2.SetPoint (previousSegment.GetLastCurve.P3.GetGlobal() + (trackNode.TrackSegmentModify.TrackSegment.getTangentPoint(0f) *-1f* magnitude));
-                    previousSegment.Invalidate = true;
+                    previousSegment.GetLastCurve.P2.SetPoint (previousSegment.GetLastCurve.P3.GetGlobal() + (trackNode.trackSegmentModify.TrackSegment.getTangentPoint(0f) *-1f* magnitude));
+                    previousSegment.invalidate = true;
 
                     trackNode.CalculateLenghtAndNormals ();
-                    trackNode.TrackSegmentModify.CalculateStartBinormal (true);
+                    trackNode.trackSegmentModify.CalculateStartBinormal (true);
                 }
 
 
@@ -35,8 +34,8 @@ namespace RollercoasterEdit
 
                 if (nextSegment != null) {
                     float magnitude = Mathf.Abs((nextSegment.GetFirstCurve.P0.GetGlobal () - nextSegment.GetFirstCurve.P1.GetGlobal ()).magnitude);
-                    nextSegment.GetFirstCurve.P1.SetPoint (nextSegment.GetFirstCurve.P0.GetGlobal () + (trackNode.TrackSegmentModify.TrackSegment.getTangentPoint(1f) * magnitude));
-                    nextSegment.Invalidate = true;
+                    nextSegment.GetFirstCurve.P1.SetPoint (nextSegment.GetFirstCurve.P0.GetGlobal () + (trackNode.trackSegmentModify.TrackSegment.getTangentPoint(1f) * magnitude));
+                    nextSegment.invalidate = true;
 
                     trackNode.CalculateLenghtAndNormals ();
                     nextSegment.CalculateStartBinormal (true);
@@ -47,19 +46,19 @@ namespace RollercoasterEdit
                 break;
             case TrackNode.NodeType.P3:
 
-                if (trackNode.TrackCurve.Group == TrackNodeCurve.Grouping.End || trackNode.TrackCurve.Group == TrackNodeCurve.Grouping.Both ) {
+                if (trackNode.trackCurve.Group == TrackNodeCurve.Grouping.End || trackNode.trackCurve.Group == TrackNodeCurve.Grouping.Both ) {
 
-                    var P2Offset = trackNode.TrackCurve.P2.GetGlobal () - trackNode.GetGlobal ();
-                    trackNode.TrackCurve.P2.SetPoint(position+ P2Offset);
+                    var P2Offset = trackNode.trackCurve.P2.GetGlobal () - trackNode.GetGlobal ();
+                    trackNode.trackCurve.P2.SetPoint(position+ P2Offset);
 
                     if (nextSegment != null) {
 
-                        var NextP1Offset = nextSegment.GetFirstCurve.P1.GetGlobal() -trackNode.GetGlobal();
+                        var nextP1Offset = nextSegment.GetFirstCurve.P1.GetGlobal() -trackNode.GetGlobal();
 
                         nextSegment.GetFirstCurve.P0.SetPoint (position);
-                        nextSegment.GetFirstCurve.P1.SetPoint (position+ NextP1Offset);
+                        nextSegment.GetFirstCurve.P1.SetPoint (position+ nextP1Offset);
 
-                        nextSegment.Invalidate = true;
+                        nextSegment.invalidate = true;
                     }
 
                 }
@@ -69,7 +68,7 @@ namespace RollercoasterEdit
             }
 
             trackNode.CalculateLenghtAndNormals ();
-            trackNode.TrackSegmentModify.Invalidate = true;
+            trackNode.trackSegmentModify.invalidate = true;
         }
         
     }

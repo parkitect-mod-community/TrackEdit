@@ -18,23 +18,23 @@ namespace RollercoasterEdit
 			NeverActive
 		}
 
-		public Activestate ActiveState = Activestate.Default;
-		public NodeType NodePoint;
-		public CubicBezier Curve;
-		public TrackSegmentModify TrackSegmentModify ;
-		public TrackNodeCurve TrackCurve;
-        private LineRenderer _lineSegment;
-        public RotationNode Rotate;
+		public Activestate activeState = Activestate.Default;
+		public NodeType nodePoint;
+		public CubicBezier curve;
+		public TrackSegmentModify trackSegmentModify ;
+		public TrackNodeCurve trackCurve;
+        private LineRenderer lineSegment;
+        public RotationNode rotate;
 
 		public void ActivateNeighbors(bool active)
 		{
-			TrackNodeCurve nextCurve = TrackSegmentModify.getNextCurve (TrackCurve);
-			TrackNodeCurve previousCurve = TrackSegmentModify.getPreviousCurve (TrackCurve);
-            if (NodePoint != NodeType.P3) {
+			TrackNodeCurve nextCurve = trackSegmentModify.getNextCurve (trackCurve);
+            TrackNodeCurve previousCurve = trackSegmentModify.getPreviousCurve (trackCurve);
+            if (nodePoint != NodeType.P3) {
                 this.SetActiveState (active);
 
             }
-			switch (NodePoint) {
+			switch (nodePoint) {
 			case NodeType.PO:
 				//P0 Node is never active
 				break;
@@ -47,21 +47,21 @@ namespace RollercoasterEdit
 
 				break;
 			case NodeType.P2:
-				TrackCurve.P3.SetActiveState (active);
+				trackCurve.P3.SetActiveState (active);
 				if (nextCurve != null) {
 					nextCurve.P1.SetActiveState (active);
 				}
 				break;
             case NodeType.P3:
-                TrackCurve.P2.SetActiveState (active);
+                trackCurve.P2.SetActiveState (active);
                 if (nextCurve != null) {
                     nextCurve.P1.SetActiveState (active);
                 }
 				break;
 
 			}
-            if (Rotate != null)
-                Rotate.transform.parent.gameObject.SetActive (active);
+            if (rotate != null)
+                rotate.transform.parent.gameObject.SetActive (active);
 
             
 			
@@ -70,8 +70,8 @@ namespace RollercoasterEdit
 		void Start()
 		{
 			
-			if (NodePoint == NodeType.P3 ) {
-                _lineSegment = this.gameObject.transform.FindChild("item").gameObject.GetComponent<LineRenderer> ();
+			if (nodePoint == NodeType.P3 ) {
+                lineSegment = this.gameObject.transform.FindChild("item").gameObject.GetComponent<LineRenderer> ();
 
 			}
 		}
@@ -82,9 +82,9 @@ namespace RollercoasterEdit
 
 		void Update()
 		{
-			if (NodePoint == NodeType.P3) 
+			if (nodePoint == NodeType.P3) 
 			{
-				var nextCurve = TrackSegmentModify.getNextCurve (TrackCurve);
+				var nextCurve = trackSegmentModify.getNextCurve (trackCurve);
 				if (nextCurve != null) {
                     Vector3 v1 = this.transform.FindChild ("item").position;
                     Vector3 v2 = this.transform.FindChild ("item").position;
@@ -94,12 +94,12 @@ namespace RollercoasterEdit
                         v1 = nextCurve.P1.transform.FindChild ("item").position;
 
 					}
-					if (TrackCurve.P2.isActiveAndEnabled) {
-                        v3 = TrackCurve.P2.transform.FindChild ("item").position;
+					if (trackCurve.P2.isActiveAndEnabled) {
+                        v3 = trackCurve.P2.transform.FindChild ("item").position;
 					}
 
 
-					_lineSegment.SetPositions (new Vector3[] {
+					lineSegment.SetPositions (new Vector3[] {
 						v1,
 						v2,
 						v3
@@ -109,8 +109,8 @@ namespace RollercoasterEdit
 			}
 
             //error checking to mark bad nodes
-            TrackSegmentModify next = this.TrackSegmentModify.GetNextSegment (true);
-            if (next != null && !this.TrackSegmentModify.TrackSegment.isConnectedTo (next.TrackSegment)) 
+            TrackSegmentModify next = this.trackSegmentModify.GetNextSegment (true);
+            if (next != null && !this.trackSegmentModify.TrackSegment.isConnectedTo (next.TrackSegment)) 
                 this.transform.FindChild("item").GetComponent<Renderer> ().material.color = new Color (1,0, 0, .5f);
             else
                 this.transform.FindChild("item").GetComponent<Renderer> ().material.color = new Color (1,1, 1, .5f);
@@ -122,33 +122,33 @@ namespace RollercoasterEdit
 		{
            
             
-			if (this.ActiveState == Activestate.AlwaysActive) {
+			if (this.activeState == Activestate.AlwaysActive) {
 				this.gameObject.SetActive (true);
-			} else if (this.ActiveState == Activestate.NeverActive) {
+			} else if (this.activeState == Activestate.NeverActive) {
                 this.gameObject.SetActive (false);
-			} else if (this.ActiveState == Activestate.Default) {
+			} else if (this.activeState == Activestate.Default) {
 				this.gameObject.SetActive (active);
 			}
-            if (Rotate != null)
-                Rotate.transform.parent.gameObject.SetActive (active);
+            if (rotate != null)
+                rotate.transform.parent.gameObject.SetActive (active);
 		}
 
 		public void SetPoint(Vector3 point)
 		{
-			Vector3 p = TrackSegmentModify.TrackSegment.transform.InverseTransformPoint (point) ;
+			Vector3 p = trackSegmentModify.TrackSegment.transform.InverseTransformPoint (point) ;
 
-			switch (NodePoint) {
+			switch (nodePoint) {
 			case NodeType.PO:
-				Curve.p0 = p;
+				curve.p0 = p;
 				break;
 			case NodeType.P1:
-				Curve.p1 =p;
+				curve.p1 =p;
 				break;
 			case NodeType.P2:
-				Curve.p2 =p;
+				curve.p2 =p;
 				break;
 			case NodeType.P3:
-				Curve.p3 =p;
+				curve.p3 =p;
 				break;
 			}
 			this.transform.position = point;
@@ -156,25 +156,25 @@ namespace RollercoasterEdit
 
 		public Vector3 GetLocal()
 		{
-			return TrackSegmentModify.TrackSegment.transform.InverseTransformPoint (this.transform.position);
+			return trackSegmentModify.TrackSegment.transform.InverseTransformPoint (this.transform.position);
 		}
 
 		public Vector3 GetGlobal()
 		{
 
-			switch (NodePoint) {
+			switch (nodePoint) {
 			case NodeType.PO:
 				
-				return TrackSegmentModify.TrackSegment.transform.TransformPoint(Curve.p0);
+				return trackSegmentModify.TrackSegment.transform.TransformPoint(curve.p0);
 		
 			case NodeType.P1:
-				return TrackSegmentModify.TrackSegment.transform.TransformPoint(Curve.p1);
+				return trackSegmentModify.TrackSegment.transform.TransformPoint(curve.p1);
 
 			case NodeType.P2:
-				return TrackSegmentModify.TrackSegment.transform.TransformPoint(Curve.p2);
+				return trackSegmentModify.TrackSegment.transform.TransformPoint(curve.p2);
 
 			case NodeType.P3:
-				return TrackSegmentModify.TrackSegment.transform.TransformPoint(Curve.p3);
+				return trackSegmentModify.TrackSegment.transform.TransformPoint(curve.p3);
 
 			}
 			return Vector3.zero;
@@ -182,18 +182,18 @@ namespace RollercoasterEdit
 
 		public void UpdatePosition()
 		{
-				switch (NodePoint) {
+				switch (nodePoint) {
 				case NodeType.PO:
-					this.transform.position = TrackSegmentModify.TrackSegment.transform.TransformPoint (Curve.p0) ;
+					this.transform.position = trackSegmentModify.TrackSegment.transform.TransformPoint (curve.p0) ;
 					break;
 				case NodeType.P1:
-					this.transform.position = TrackSegmentModify.TrackSegment.transform.TransformPoint (Curve.p1) ;
+					this.transform.position = trackSegmentModify.TrackSegment.transform.TransformPoint (curve.p1) ;
 					break;
 				case NodeType.P2:
-					this.transform.position = TrackSegmentModify.TrackSegment.transform.TransformPoint (Curve.p2) ;
+					this.transform.position = trackSegmentModify.TrackSegment.transform.TransformPoint (curve.p2) ;
 					break;
 				case NodeType.P3:
-					this.transform.position = TrackSegmentModify.TrackSegment.transform.TransformPoint (Curve.p3) ;
+					this.transform.position = trackSegmentModify.TrackSegment.transform.TransformPoint (curve.p3) ;
 					break;
 				}
 
@@ -203,18 +203,17 @@ namespace RollercoasterEdit
 
         public void CalculateLenghtAndNormals()
 		{
-			var nextSegment = TrackSegmentModify.GetNextSegment (true);
-			var previousSegment = TrackSegmentModify.GetPreviousSegment (true);
-
+			var nextSegment = trackSegmentModify.GetNextSegment (true);
+			var previousSegment = trackSegmentModify.GetPreviousSegment (true);
 
 			if(previousSegment != null)
-				previousSegment.TrackSegment.calculateLengthAndNormals (TrackSegmentModify.TrackSegment);
+				previousSegment.TrackSegment.calculateLengthAndNormals (trackSegmentModify.TrackSegment);
 
 			if(nextSegment != null)
-				TrackSegmentModify.TrackSegment.calculateLengthAndNormals (nextSegment.TrackSegment);
+				trackSegmentModify.TrackSegment.calculateLengthAndNormals (nextSegment.TrackSegment);
 
 			if(nextSegment != null)
-				nextSegment.TrackSegment.calculateLengthAndNormals (TrackSegmentModify.TrackSegment);
+				nextSegment.TrackSegment.calculateLengthAndNormals (trackSegmentModify.TrackSegment);
 		}
 
 

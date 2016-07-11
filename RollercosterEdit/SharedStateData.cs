@@ -5,7 +5,7 @@ namespace RollercoasterEdit
 {
     public class SharedStateData
     {
-		public Transform ActiveNode{ get;private set;}
+		public Transform ActiveNode{ get; private set; }
 		public void SetActiveNode(Transform active)
 		{
 			if (active != ActiveNode) {

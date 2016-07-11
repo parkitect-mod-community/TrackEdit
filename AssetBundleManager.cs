@@ -6,15 +6,15 @@ namespace RollercoasterEdit
 {
 	public class AssetBundleManager
 	{
-		private Main Main {get;set;}
-		public GameObject NodeGo;
-        public GameObject NodeRotateGo;
+        private Main main;
+		public GameObject nodeGo;
+        public GameObject nodeRotateGo;
 
 		public AssetBundleManager (Main main)
 		{
-			this.Main = main;
-            NodeRotateGo = LoadAsset<GameObject> ("Node_Rotate");
-			NodeGo = LoadAsset<GameObject> ("Node");
+			this.main = main;
+            nodeRotateGo = LoadAsset<GameObject> ("Node_Rotate");
+			nodeGo = LoadAsset<GameObject> ("Node");
 		}
 
 
@@ -26,7 +26,7 @@ namespace RollercoasterEdit
 				T asset;
 
 				char dsc = System.IO.Path.DirectorySeparatorChar;
-				using (WWW www = new WWW("file://" + Main.Path + dsc + "assetbundle" + dsc + "TrackEdit"))
+				using (WWW www = new WWW("file://" + main.Path + dsc + "assetbundle" + dsc + "TrackEdit"))
 				{
 
 					if (www.error != null)
