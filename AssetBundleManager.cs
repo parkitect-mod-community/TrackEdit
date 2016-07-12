@@ -6,6 +6,9 @@ namespace RollercoasterEdit
 {
 	public class AssetBundleManager
 	{
+        public Material MaterialPlane;
+
+
         private Main main;
 		public GameObject nodeGo;
         public GameObject nodeRotateGo;
@@ -13,8 +16,14 @@ namespace RollercoasterEdit
 		public AssetBundleManager (Main main)
 		{
 			this.main = main;
+
             nodeRotateGo = LoadAsset<GameObject> ("Node_Rotate");
 			nodeGo = LoadAsset<GameObject> ("Node");
+
+            MaterialPlane = new Material(Shader.Find("Particles/Additive"));
+            MaterialPlane.SetColor ("_TintColor", new Color (255, 255, 255, 100));
+            MaterialPlane.SetTexture("_MainTex",AssetManager.Instance.terrainGridProjectorGO.GetComponent<Light>().cookie);
+            MaterialPlane.SetTextureScale ("_MainTex", new Vector2 (1.0f, 1.0f));
 		}
 
 

@@ -7,9 +7,10 @@ namespace RollercoasterEdit
 {
     public class TrackSegmentModify : MonoBehaviour
 	{
-		public bool invalidate = false;
 
-		public TrackSegment4 TrackSegment{ get; private set; }
+
+		public bool invalidate = false;
+     	public TrackSegment4 TrackSegment{ get; private set; }
         private List<TrackNodeCurve> nodes = new List<TrackNodeCurve> ();
 
         private FieldInfo biNormalField;
@@ -20,7 +21,10 @@ namespace RollercoasterEdit
 
         void Awake()
         {
-            this.TrackSegment = this.GetComponent<TrackSegment4> ();
+           this.TrackSegment = this.GetComponent<TrackSegment4> ();
+
+
+
 
             BindingFlags flags = BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic;
             biNormalField = typeof(TrackSegment4).GetField ("startBinormal", flags);
@@ -195,6 +199,104 @@ namespace RollercoasterEdit
             UnityEngine.Object.DestroyImmediate( segment.gameObject.GetComponent<MouseCollider> ());
             UnityEngine.Object.DestroyImmediate( segment.gameObject.GetComponent<MeshCollider> ());
             UnityEngine.Object.DestroyImmediate( segment.gameObject.GetComponent<BoundingMesh> ());
+        }
+
+        private void GenerateHeightMarkerTrack(TrackSegment4 trackSegment)
+        {
+            Transform transform = this.transform.Find ("HeightMarkerPlane");
+            GameObject heightMarkerGo;
+            MeshFilter meshFilter;
+            if (transform == null) {
+                heightMarkerGo = new GameObject ("HeightMarkerPlane");
+                meshFilter = heightMarkerGo.AddComponent<MeshFilter> ();
+                MeshRenderer meshRenderer = heightMarkerGo.AddComponent<MeshRenderer> ();
+                meshRenderer.sharedMaterial = Main.AssetBundleManager.MaterialPlane;
+                heightMarkerGo.transform.SetParent (this.transform);
+            } else {
+                heightMarkerGo = transform.gameObject;
+                meshFilter = transform.gameObject.GetComponent<MeshFilter> ();
+                meshFilter.mesh.Clear ();
+
+            }
+
+
+            heightMarkerGo.transform.localPosition = Vector3.zero;
+            heightMarkerGo.transform.localRotation = Quaternion.identity;
+
+            List<Vector3> verticies = new List<Vector3> ();
+            List<int> triangles = new List<int> ();
+            List<Vector2> uvs = new List<Vector2> ();
+
+            float sample = trackSegment.getLength() / (float)Mathf.RoundToInt(trackSegment.getLength()/ .2f);
+            float pos = 0.0f;
+            int index = 0;
+
+
+
+            float tForDistance = trackSegment.getTForDistance (0);
+            Vector3 position = trackSegment.getPoint (tForDistance);
+
+            LandPatch terrain = GameController.Instance.park.getTerrain(base.transform.position);
+            Vector3 vector = position;
+            if (terrain != null)
+            {
+                vector = terrain.getPoint(base.transform.position);
+            }
+            float magnitude = (position - vector).magnitude;
+
+
+
+            verticies.Add (this.transform.InverseTransformPoint(position));
+            verticies.Add (this.transform.InverseTransformPoint(position + Vector3.down*magnitude* Mathf.Sign(position.y - vector.y)));
+
+            uvs.Add (new Vector2 (0, magnitude));
+            uvs.Add (new Vector2 (0, 0));
+
+            Vector3 previous = position;
+            float xoffset = 0;
+            while (pos < trackSegment.getLength ()) {
+                tForDistance = trackSegment.getTForDistance (pos);
+
+
+                index++;
+                pos += sample;
+
+                position = trackSegment.getPoint (tForDistance);
+
+                terrain = GameController.Instance.park.getTerrain(base.transform.position);
+                vector = position;
+                if (terrain != null)
+                {
+                    vector = terrain.getPoint(position);
+                }
+                magnitude = (position - vector).magnitude;
+
+
+
+                verticies.Add (this.transform.InverseTransformPoint(position));
+                verticies.Add (this.transform.InverseTransformPoint(position + Vector3.down*magnitude  * Mathf.Sign(position.y - vector.y)));
+
+                xoffset+= Vector3.Distance (previous, position);
+                uvs.Add (new Vector2 (xoffset,magnitude));
+                uvs.Add (new Vector2 (xoffset, 0));
+
+
+                int last = verticies.Count - 1;
+                triangles.Add (last - 3);
+                triangles.Add (last - 2);
+                triangles.Add (last - 1);
+
+                triangles.Add (last - 1);
+                triangles.Add (last - 2);
+                triangles.Add (last);
+
+                previous = position;
+
+
+            }
+            meshFilter.mesh.vertices = verticies.ToArray ();
+            meshFilter.mesh.triangles = triangles.ToArray ();;
+            meshFilter.mesh.uv = uvs.ToArray ();
 
         }
 
@@ -208,6 +310,7 @@ namespace RollercoasterEdit
 
                 ResetMeshForTrackSegment (TrackUIHandle.instance.trackRide.meshGenerator, TrackSegment);
                 TrackSegment.generateMesh (TrackUIHandle.instance.trackRide.meshGenerator);
+                GenerateHeightMarkerTrack (TrackSegment);
 
                 meshGenerationTime = Time.time;
 				invalidate = false;

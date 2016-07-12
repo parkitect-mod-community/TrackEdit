@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 889924480
+CRC: 2030743102
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: fb465d710285269848b5b5f5ff6202d1
+    Hash: aa8bc3e021a044a8a260f46b294ed5fa
   TypeTreeHash:
     serializedVersion: 2
     Hash: e087b009f2ac690e005fc7e9f03b9dfd
@@ -34,6 +34,8 @@ ClassTypes:
 - Class: 224
   Script: {instanceID: 0}
 Assets:
+- Assets/image_edging.png
 - Assets/Node.prefab
 - Assets/Node_Rotate.prefab
+- Assets/HeightMarkerMaterial.mat
 Dependencies: []
