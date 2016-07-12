@@ -24,6 +24,7 @@ namespace RollercoasterEdit
             MaterialPlane.SetColor ("_TintColor", new Color (255, 255, 255, 100));
             MaterialPlane.SetTexture("_MainTex",AssetManager.Instance.terrainGridProjectorGO.GetComponent<Light>().cookie);
             MaterialPlane.SetTextureScale ("_MainTex", new Vector2 (1.0f, 1.0f));
+            MaterialPlane.SetTextureOffset("_MainTex",new Vector2(0f,.5f));
 		}
 
 

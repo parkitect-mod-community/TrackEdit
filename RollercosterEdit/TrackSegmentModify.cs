@@ -263,7 +263,7 @@ namespace RollercoasterEdit
 
                 position = trackSegment.getPoint (tForDistance);
 
-                terrain = GameController.Instance.park.getTerrain(base.transform.position);
+                terrain = GameController.Instance.park.getTerrain(position);
                 vector = position;
                 if (terrain != null)
                 {
@@ -277,8 +277,8 @@ namespace RollercoasterEdit
                 verticies.Add (this.transform.InverseTransformPoint(position + Vector3.down*magnitude  * Mathf.Sign(position.y - vector.y)));
 
                 xoffset+= Vector3.Distance (previous, position);
-                uvs.Add (new Vector2 (xoffset,magnitude));
-                uvs.Add (new Vector2 (xoffset, 0));
+                uvs.Add (new Vector2 (xoffset,vector.y + magnitude ));
+                uvs.Add (new Vector2 (xoffset,vector.y - 0));
 
 
                 int last = verticies.Count - 1;
