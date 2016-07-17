@@ -22,7 +22,7 @@ namespace RollercoasterEdit
             Vector3 point = ray.GetPoint (stateData.Distance);
             Vector3 position = Vector3.zero;
 
-            if (Input.GetKey (Main.Configeration.VerticalKey)) {
+            if (Input.GetKey (Main.configuration.settings.verticalKey)) {
                 stateData.Offset = new Vector3(stateData.Offset.x,stateData.Selected.transform.position.y - point.y, stateData.Offset.z);
                 verticalDragState = true;
 
@@ -43,11 +43,11 @@ namespace RollercoasterEdit
                 position = new Vector3 (stateData.Selected.position.x, stateData.FixedY, stateData.Selected.position.z) + new Vector3(0, stateData.Offset.y, 0);
             }
 
-            if (Input.GetKeyDown (Main.Configeration.VerticalKey)) {
+            if (Input.GetKeyDown (Main.configuration.settings.verticalKey)) {
                 stateData.Offset = new Vector3(stateData.Offset.x,stateData.Selected.transform.position.y - point.y, stateData.Offset.z);
                 verticalDragState = true;
 
-            } else if (Input.GetKeyUp (Main.Configeration.VerticalKey)) {
+            } else if (Input.GetKeyUp (Main.configuration.settings.verticalKey)) {
                 verticalDragState = false;
                 stateData.Offset = (stateData.Selected.transform.position - point);
 

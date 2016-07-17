@@ -1,19 +1,19 @@
 ﻿using UnityEngine;
 namespace RollercoasterEdit
 {
-	public class Main : IMod
+    public class Main : IMod , IModSettings 
     {
         public string Identifier { get; set; }
 		public static AssetBundleManager AssetBundleManager = null;
-        public static Configuration Configeration = null;
+        public static Configuration configuration = null;
 
 
         public void onEnabled()
         {
-            if (Main.Configeration == null) {
-                Configeration = new Configuration ();
-                Configeration.Load (Path);
-                Configeration.Save (Path);
+            if (Main.configuration == null) {
+                Main.configuration = new Configuration (Path);
+                Main.configuration.Load ();
+                Main.configuration.Save ();
 
             }
 
@@ -43,5 +43,18 @@ namespace RollercoasterEdit
 
 		public string Path { get; set; }
 
+        public void onDrawSettingsUI() {
+            Main.configuration.DrawGUI ();
+        }
+
+        public void onSettingsOpened() {
+            if (Main.configuration == null)
+                Main.configuration = new Configuration (this.Path);
+            Main.configuration.Load ();
+
+        }
+        public void onSettingsClosed() {
+            Main.configuration.Save ();
+        }
     }
 }
