@@ -80,9 +80,9 @@ namespace RollercoasterEdit
             GUILayout.EndHorizontal();
         }
 
-        public string KeyToggle(string character,Event e,int id)
+        public KeyCode KeyToggle(KeyCode character,Event e,int id)
         {
-            if ( GUILayout.Button(character , keySelectionId == id ? ToggleButtonStyleToggled : ToggleButtonStyleNormal ) )
+            if ( GUILayout.Button(character.ToString() , keySelectionId == id ? ToggleButtonStyleToggled : ToggleButtonStyleNormal ) )
             {
                 keySelectionId = id;
             }
@@ -90,7 +90,7 @@ namespace RollercoasterEdit
             if (keySelectionId == id) {
                 if (e.isKey) {
                     keySelectionId = -1;
-                    return e.keyCode.ToString ();
+                    return e.keyCode;
                 }
             }
             return character;
