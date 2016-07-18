@@ -23,9 +23,6 @@ namespace RollercoasterEdit
         {
            this.TrackSegment = this.GetComponent<TrackSegment4> ();
 
-
-
-
             BindingFlags flags = BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic;
             biNormalField = typeof(TrackSegment4).GetField ("startBinormal", flags);
 

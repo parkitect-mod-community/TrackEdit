@@ -81,7 +81,8 @@
     <Compile Include="RollercosterEdit\StateMachine\FreeDragWithSmoothing.cs" />
     <Compile Include="RollercosterEdit\TrackNodeHelper.cs" />
     <Compile Include="RollercosterEdit\StateMachine\DraggableState.cs" />
-    <Compile Include="Settings.cs" />
+    <Compile Include="RollercosterEdit\TrackEditUI.cs" />
+    <Compile Include="ModSettings.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>

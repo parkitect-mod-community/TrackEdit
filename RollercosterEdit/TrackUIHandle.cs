@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Reflection;
 using System.Collections.Generic;
+using Parkitect.UI;
 
 namespace RollercoasterEdit
 {
@@ -24,7 +25,12 @@ namespace RollercoasterEdit
             trackBuilder = this.gameObject.GetComponent<TrackBuilder>();
             BindingFlags flags = BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic;
 			trackerRiderField = trackBuilder.GetType ().GetField ("trackedRide", flags);
-		}
+           
+            /*UIWindowFrame frame =  UIWindowsController.Instance.spawnWindow (UnityEngine.GameObject.Instantiate (Main.AssetBundleManager.UiWindowGo).GetComponent<TrackEditUI>());
+            frame.onClose += (UIWindowFrame windowFrame) => {
+                this.GetComponent<UIWindowFrame>().close();
+            };*/
+        }
 
 		void Start() {
 			trackRide = ((TrackedRide)trackerRiderField.GetValue (trackBuilder));

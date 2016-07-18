@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections.Generic;
+using Parkitect.UI;
 
 namespace RollercoasterEdit
 {
@@ -12,6 +13,7 @@ namespace RollercoasterEdit
         private Main main;
 		public GameObject nodeGo;
         public GameObject nodeRotateGo;
+        public GameObject UiWindowGo;
 
 		public AssetBundleManager (Main main)
 		{
@@ -19,6 +21,8 @@ namespace RollercoasterEdit
 
             nodeRotateGo = LoadAsset<GameObject> ("Node_Rotate");
 			nodeGo = LoadAsset<GameObject> ("Node");
+            UiWindowGo = LoadAsset<GameObject> ("UITrackRide");
+            UiWindowGo.AddComponent<TrackEditUI> ();
 
             MaterialPlane = new Material(Shader.Find("Particles/Additive"));
             MaterialPlane.SetColor ("_TintColor", new Color (255, 255, 255, 100));

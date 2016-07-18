@@ -3,14 +3,14 @@ using UnityEngine;
 
 namespace RollercoasterEdit
 {
-    public class Settings : SerializedRawObject 
+    public class ModSettings : SerializedRawObject 
     {
         [Serialized]
         public KeyCode verticalKey{ get; set;}
 
-        public Settings ()
+        public ModSettings ()
         {
-            verticalKey = KeyCode.LeftControl;
+            verticalKey = KeyCode.LeftShift;
         }
 
     }

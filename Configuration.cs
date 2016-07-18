@@ -13,7 +13,7 @@ namespace RollercoasterEdit
         private static GUIStyle ToggleButtonStyleNormal = null;
         private static GUIStyle ToggleButtonStyleToggled = null;
 
-        public Settings settings { get; private set; }
+        public ModSettings settings { get; private set; }
         private string path;
 
         public int keySelectionId = -1;
@@ -22,7 +22,7 @@ namespace RollercoasterEdit
         public Configuration(string path)
         {
             this.path =  path + System.IO.Path.DirectorySeparatorChar + "Config.json"; 
-            settings = new Settings ();
+            settings = new ModSettings ();
 
         }
 
@@ -73,14 +73,13 @@ namespace RollercoasterEdit
                 ToggleButtonStyleToggled.normal.background = ToggleButtonStyleToggled.active.background;
             }
 
-            Event e = Event.current;
             GUILayout.BeginHorizontal();
             GUILayout.Label ("Vertical Drag:");
-            settings.verticalKey =  KeyToggle (settings.verticalKey,e,0);
+            settings.verticalKey =  KeyToggle (settings.verticalKey,0);
             GUILayout.EndHorizontal();
         }
 
-        public KeyCode KeyToggle(KeyCode character,Event e,int id)
+        public KeyCode KeyToggle(KeyCode character,int id)
         {
             if ( GUILayout.Button(character.ToString() , keySelectionId == id ? ToggleButtonStyleToggled : ToggleButtonStyleNormal ) )
             {
@@ -88,14 +87,28 @@ namespace RollercoasterEdit
             }
 
             if (keySelectionId == id) {
-                if (e.isKey) {
+                KeyCode e;
+                if (FetchKey (out e)) {
                     keySelectionId = -1;
-                    return e.keyCode;
+                    return e;
                 }
             }
             return character;
             //selectedKey = Keyb
         }
+
+        private bool FetchKey(out KeyCode outKey)
+        {
+            foreach (KeyCode key in System.Enum.GetValues(typeof(KeyCode))) {
+                if (Input.GetKeyDown (key)) {
+                    outKey = key;
+                    return true;
+                }
+            }
+            outKey = KeyCode.A;
+            return false;
+        }
+
 
 
     }

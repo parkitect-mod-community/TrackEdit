@@ -37,7 +37,7 @@ namespace RollercoasterEdit
 
         public string Description
         {
-            get { return "Allows the User to modify track Path"; }
+            get { return "Allows the user to modify track paths"; }
         }
 
 
