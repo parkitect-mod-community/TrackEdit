@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Reflection;
 using System.Collections.Generic;
 using Parkitect.UI;
+using UnityEngine.UI;
 
 namespace RollercoasterEdit
 {
@@ -15,21 +16,36 @@ namespace RollercoasterEdit
         private FiniteStateMachine stateMachine = new FiniteStateMachine ();
 
         public static TrackUIHandle instance = null;
+        public TrackEditUI trackEditUI { get; set; }
         private bool isDirty = true;
 
+       // private GameObject TrackEditPanel;
+       // private GameObject TrackBuilderPanel;
 
+  
 		void Awake()
 		{
             TrackUIHandle.instance = this;
 
-            trackBuilder = this.gameObject.GetComponent<TrackBuilder>();
+            trackEditUI = this.gameObject.AddComponent<TrackEditUI> ();
+
+            trackBuilder = this.gameObject.GetComponentInChildren<TrackBuilder>();
             BindingFlags flags = BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic;
 			trackerRiderField = trackBuilder.GetType ().GetField ("trackedRide", flags);
            
-            /*UIWindowFrame frame =  UIWindowsController.Instance.spawnWindow (UnityEngine.GameObject.Instantiate (Main.AssetBundleManager.UiWindowGo).GetComponent<TrackEditUI>());
-            frame.onClose += (UIWindowFrame windowFrame) => {
-                this.GetComponent<UIWindowFrame>().close();
-            };*/
+
+
+            //TrackBuilderPanel = this.transform.FindRecursive ("UpperModules").gameObject;
+
+
+
+            //frame=  UIWindowsController.Instance.spawnWindow (UnityEngine.GameObject.Instantiate (Main.AssetBundleManager.UiContainerWindowGo).GetComponent<TrackEditUI>());
+            //UIWindowSettings old = this.gameObject.GetComponent<UIWindowSettings> ();
+
+
+            //UIWindowSettings current =  frame.gameObject.GetComponent<UIWindowSettings> ();
+            //current.uniqueTag = old.uniqueTag;
+           
         }
 
 		void Start() {
@@ -60,6 +76,12 @@ namespace RollercoasterEdit
 
 		void Update()
 		{
+            TrackedRide ride = ((TrackedRide)trackerRiderField.GetValue (trackBuilder));
+            if (ride != trackRide) {
+                UnityEngine.Object.Destroy (this);
+                this.gameObject.AddComponent<TrackUIHandle> ();
+            }
+
             if (isDirty) {
                 for (int x = 0; x <  trackRide.Track.trackSegments.Count; x++) {
                     if (!trackRide.Track.trackSegments [x].gameObject.GetComponent<TrackSegmentModify> ()) {

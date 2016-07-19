@@ -13,7 +13,8 @@ namespace RollercoasterEdit
         private Main main;
 		public GameObject nodeGo;
         public GameObject nodeRotateGo;
-        public GameObject UiWindowGo;
+        public GameObject UiContainerWindowGo;
+        public GameObject UiHeaderPanelGo;
 
 		public AssetBundleManager (Main main)
 		{
@@ -21,8 +22,11 @@ namespace RollercoasterEdit
 
             nodeRotateGo = LoadAsset<GameObject> ("Node_Rotate");
 			nodeGo = LoadAsset<GameObject> ("Node");
-            UiWindowGo = LoadAsset<GameObject> ("UITrackRide");
-            UiWindowGo.AddComponent<TrackEditUI> ();
+
+            //UiContainerWindowGo.AddComponent<TrackEditUI> ();
+
+            UiContainerWindowGo = LoadAsset<GameObject> ("TrackEditPanel");
+            UiHeaderPanelGo = LoadAsset<GameObject> ("HeaderPanel");
 
             MaterialPlane = new Material(Shader.Find("Particles/Additive"));
             MaterialPlane.SetColor ("_TintColor", new Color (255, 255, 255, 100));
@@ -40,7 +44,7 @@ namespace RollercoasterEdit
 				T asset;
 
 				char dsc = System.IO.Path.DirectorySeparatorChar;
-				using (WWW www = new WWW("file://" + main.Path + dsc + "assetbundle" + dsc + "TrackEdit"))
+				using (WWW www = new WWW("file://" + main.Path + dsc + "assetbundle" + dsc + "trackedit"))
 				{
 
 					if (www.error != null)
