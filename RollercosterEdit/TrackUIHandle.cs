@@ -27,13 +27,16 @@ namespace RollercoasterEdit
 		{
             TrackUIHandle.instance = this;
 
-            trackEditUI = this.gameObject.AddComponent<TrackEditUI> ();
-
+            if (this.gameObject.GetComponent<TrackEditUI> () == null) {
+                trackEditUI = this.gameObject.AddComponent<TrackEditUI> ();
+            }
+            else
+                trackEditUI = this.gameObject.GetComponent<TrackEditUI> ();
+            
             trackBuilder = this.gameObject.GetComponentInChildren<TrackBuilder>();
             BindingFlags flags = BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic;
 			trackerRiderField = trackBuilder.GetType ().GetField ("trackedRide", flags);
            
-
 
             //TrackBuilderPanel = this.transform.FindRecursive ("UpperModules").gameObject;
 
@@ -50,12 +53,7 @@ namespace RollercoasterEdit
 
 		void Start() {
 			trackRide = ((TrackedRide)trackerRiderField.GetValue (trackBuilder));
-			trackBuilder = this.gameObject.GetComponent<TrackBuilder>();
-           // _trackSegmentManger = new TrackSegmentManager (TrackBuilder, TrackRide);
-			
-            var sharedStateData = new SharedStateData ();
-			//sharedStateData.SegmentManager = _trackSegmentManger;
-			stateMachine.ChangeState (new IdleState (sharedStateData));
+            stateMachine.ChangeState (new IdleState (new SharedStateData ()));
 
             trackRide.Track.OnAddTrackSegment += (trackSegment) => {
                 isDirty = true;
@@ -64,6 +62,7 @@ namespace RollercoasterEdit
                 isDirty = true;
             };  
 
+            UnityEngine.Debug.Log (this.gameObject.GetComponent<RectTransform> ().sizeDelta);
 
 		}
 

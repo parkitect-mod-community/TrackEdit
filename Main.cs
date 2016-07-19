@@ -31,29 +31,28 @@ namespace RollercoasterEdit
 			ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject.AddComponent <TrackUIHandle>();
 
 
-            GameObject container = UnityEngine.GameObject.Instantiate (Main.AssetBundleManager.UiContainerWindowGo);
-            container.transform.SetParent(ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject.transform);
+            //GameObject container = UnityEngine.GameObject.Instantiate (Main.AssetBundleManager.UiContainerWindowGo);
+            //container.transform.SetParent(ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject.transform);
 
 
-            /*GameObject hider = new GameObject ();
-            hider.AddComponent<RectTransform> ();
-            hider.AddComponent<Mask> ();
-            hider.AddComponent<LayoutElement> ().minHeight = 0;
 
-            hider.transform.SetParent (ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject.transform);*/
-            //ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.transform.Find ("UpperModules").gameObject.AddComponent<Mask>();
-            //ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.transform.Find ("UpperModules").gameObject.GetComponent<LayoutElement> ().minHeight = 1;
+            Transform headerPanel= UnityEngine.Object.Instantiate (Main.AssetBundleManager.UiHeaderPanelGo).transform;
+            headerPanel.transform.SetParent( ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject.transform);
+            headerPanel.transform.name = "HeaderPanel";
 
-            //ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.transform.Find ("UpperModules").gameObject.AddComponent<Mask> ();
-            //ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.transform.Find ("UpperModules").gameObject.GetComponent<RectTransform> ().sizeDelta = new Vector2 (0, 0);
-
-           // ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject.GetComponent<UIWindowSettings> ().resizeability = UIWindowSettings.Resizeability.Horizontal | UIWindowSettings.Resizeability.Vertical;
+            Transform mainBody =  UnityEngine.Object.Instantiate (Main.AssetBundleManager.UiContainerWindowGo).transform;
+            mainBody.transform.SetParent ( ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject.transform);
+            mainBody.SetSiblingIndex (1);
+            mainBody.transform.name = "TrackEditPanel";
+            UnityEngine.Debug.Log (mainBody.name);
 
 		}
 
         public void onDisabled()
         {
 			UnityEngine.Object.Destroy (ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject.GetComponent<TrackUIHandle> ());
+            UnityEngine.Object.Destroy (ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.transform.Find(Main.AssetBundleManager.UiContainerWindowGo.name));
+            UnityEngine.Object.Destroy (ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.transform.Find(Main.AssetBundleManager.UiHeaderPanelGo.name));
         }
 
         public string Name
