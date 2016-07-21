@@ -22,10 +22,7 @@ namespace RollercoasterEdit
             TrackSegment4 trackSegment = UnityEngine.Object.Instantiate<TrackSegment4>( ScriptableSingleton<AssetManager>.Instance.getPrefab<TrackSegment4>(Prefabs.Straight));
 
             if (TrackUIHandle.instance.trackEditUI.chainToggle.isOn) {
-               // trackSegment = UnityEngine.Object.Instantiate<ChangeHeight4>( ScriptableSingleton<AssetManager>.Instance.getPrefab<ChangeHeight4>(Prefabs.ChangeHeight));
                 trackSegment.isLifthill = true;
-            } else {
-               // trackSegment = UnityEngine.Object.Instantiate<TrackSegment4>( ScriptableSingleton<AssetManager>.Instance.getPrefab<TrackSegment4>(Prefabs.Straight));
             }
 
             TrackUIHandle.instance.trackRide.Track.addSegment (trackSegment, stateData.Selected.GetComponent<ExtrudeNode> ().trackSegmentModify.GetIndexOfSegment ()+1);

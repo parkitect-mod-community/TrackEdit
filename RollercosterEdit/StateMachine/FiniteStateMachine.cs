@@ -24,7 +24,8 @@ namespace RollercoasterEdit
 
         public void Unload()
         {
-            currentState.Unload ();
+            if(currentState != null)
+                currentState.Unload ();
             currentState = null;
         }
     }

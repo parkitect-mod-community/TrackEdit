@@ -27,9 +27,8 @@ namespace RollercoasterEdit
 		{
             TrackUIHandle.instance = this;
 
-            if (this.gameObject.GetComponent<TrackEditUI> () == null) {
+            if (this.gameObject.GetComponent<TrackEditUI> () == null)
                 trackEditUI = this.gameObject.AddComponent<TrackEditUI> ();
-            }
             else
                 trackEditUI = this.gameObject.GetComponent<TrackEditUI> ();
             
@@ -69,7 +68,11 @@ namespace RollercoasterEdit
 		void OnDestroy() {
             stateMachine.Unload ();
             for (int x = 0; x < trackRide.Track.trackSegments.Count; x++) {
-                Destroy(trackRide.Track.trackSegments [x].gameObject.GetComponent<TrackSegmentModify> ());
+                if (trackRide.Track.trackSegments [x] != null) {
+                    TrackSegmentModify modify = trackRide.Track.trackSegments [x].gameObject.GetComponent<TrackSegmentModify> ();
+                    if (modify != null)
+                        Destroy (modify);
+                }
             }
 		}
 
