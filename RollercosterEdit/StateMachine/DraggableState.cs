@@ -86,9 +86,7 @@ namespace RollercoasterEdit
                 dragPosition = new Vector3 (Mathf.Round (position.x * gridSubdivision) / gridSubdivision, Mathf.Round (position.y * gridSubdivision) / gridSubdivision, Mathf.Round (position.z * gridSubdivision) / gridSubdivision);
 
             }
-                
-
-           
+            TrackUIHandle.instance.trackBuilder.generateNewGhost ();
                 
 
         }

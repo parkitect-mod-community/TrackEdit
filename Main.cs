@@ -14,6 +14,8 @@ namespace RollercoasterEdit
 
         public void onEnabled()
         {
+            Global.NO_TRACKBUILDER_RESTRICTIONS = true;
+
             if (Main.configuration == null) {
                 Main.configuration = new Configuration (Path);
                 Main.configuration.Load ();
@@ -29,14 +31,13 @@ namespace RollercoasterEdit
 
 
 			ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject.AddComponent <TrackUIHandle>();
-
-
+           
             //GameObject container = UnityEngine.GameObject.Instantiate (Main.AssetBundleManager.UiContainerWindowGo);
             //container.transform.SetParent(ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject.transform);
 
 
 
-            Transform headerPanel= UnityEngine.Object.Instantiate (Main.AssetBundleManager.UiHeaderPanelGo).transform;
+            /*Transform headerPanel= UnityEngine.Object.Instantiate (Main.AssetBundleManager.UiHeaderPanelGo).transform;
             headerPanel.transform.SetParent( ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject.transform);
             headerPanel.transform.name = "HeaderPanel";
 
@@ -44,12 +45,14 @@ namespace RollercoasterEdit
             mainBody.transform.SetParent ( ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject.transform);
             mainBody.SetSiblingIndex (1);
             mainBody.transform.name = "TrackEditPanel";
-            UnityEngine.Debug.Log (mainBody.name);
+            UnityEngine.Debug.Log (mainBody.name);*/
 
 		}
 
         public void onDisabled()
-        {
+        { 
+            Global.NO_TRACKBUILDER_RESTRICTIONS = false;
+            
 			UnityEngine.Object.Destroy (ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject.GetComponent<TrackUIHandle> ());
             UnityEngine.Object.Destroy (ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.transform.Find(Main.AssetBundleManager.UiContainerWindowGo.name));
             UnityEngine.Object.Destroy (ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.transform.Find(Main.AssetBundleManager.UiHeaderPanelGo.name));

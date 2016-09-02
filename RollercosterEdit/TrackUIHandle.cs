@@ -27,10 +27,10 @@ namespace RollercoasterEdit
 		{
             TrackUIHandle.instance = this;
 
-            if (this.gameObject.GetComponent<TrackEditUI> () == null)
+            /*if (this.gameObject.GetComponent<TrackEditUI> () == null)
                 trackEditUI = this.gameObject.AddComponent<TrackEditUI> ();
             else
-                trackEditUI = this.gameObject.GetComponent<TrackEditUI> ();
+                trackEditUI = this.gameObject.GetComponent<TrackEditUI> ();*/
             
             trackBuilder = this.gameObject.GetComponentInChildren<TrackBuilder>();
             BindingFlags flags = BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic;
