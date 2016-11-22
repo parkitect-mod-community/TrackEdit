@@ -224,14 +224,14 @@ namespace RollercoasterEdit
             List<int> triangles = new List<int> ();
             List<Vector2> uvs = new List<Vector2> ();
 
-            float sample = trackSegment.getLength() / (float)Mathf.RoundToInt(trackSegment.getLength()/ .2f);
+            float sample = trackSegment.getLength(0) / (float)Mathf.RoundToInt(trackSegment.getLength(0)/ .2f);
             float pos = 0.0f;
             int index = 0;
 
 
 
-            float tForDistance = trackSegment.getTForDistance (0);
-            Vector3 position = trackSegment.getPoint (tForDistance);
+            float tForDistance = trackSegment.getTForDistance (0,0);
+            Vector3 position = trackSegment.getPoint (tForDistance,0);
 
             LandPatch terrain = GameController.Instance.park.getTerrain(base.transform.position);
             Vector3 vector = position;
@@ -251,14 +251,14 @@ namespace RollercoasterEdit
 
             Vector3 previous = position;
             float xoffset = 0;
-            while (pos < trackSegment.getLength ()) {
-                tForDistance = trackSegment.getTForDistance (pos);
+            while (pos < trackSegment.getLength (0)) {
+                tForDistance = trackSegment.getTForDistance (pos,0);
 
 
                 index++;
                 pos += sample;
 
-                position = trackSegment.getPoint (tForDistance);
+                position = trackSegment.getPoint (tForDistance,0);
 
                 terrain = GameController.Instance.park.getTerrain(position);
                 vector = position;
