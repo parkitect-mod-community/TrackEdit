@@ -1,116 +1,112 @@
 ﻿using System;
-using System.IO;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using System.IO;
 using MiniJSON;
+using UnityEngine;
 
-
-namespace RollercoasterEdit
+namespace TrackEdit
 {
     public class Configuration
     {
-        private static GUIStyle ToggleButtonStyleNormal = null;
-        private static GUIStyle ToggleButtonStyleToggled = null;
+        private static GUIStyle _toggleButtonStyleNormal;
+        private static GUIStyle _toggleButtonStyleToggled;
+        private readonly string _path;
 
-        public ModSettings settings { get; private set; }
-        private string path;
-
-        public int keySelectionId = -1;
+        private int _keySelectionId = -1;
 
 
-        public Configuration(string path)
+        public Configuration()
         {
-            this.path =  path + System.IO.Path.DirectorySeparatorChar + "Config.json"; 
-            settings = new ModSettings ();
-
+            _path = FilePaths.getFolderPath("track_edit.config");
+            Settings = new ModSettings();
         }
+
+        public ModSettings Settings { get; }
 
         public void Save()
         {
-            SerializationContext context = new SerializationContext(SerializationContext.Context.Savegame);
+            var context = new SerializationContext(SerializationContext.Context.Savegame);
 
-            using (var stream = new FileStream(this.path, FileMode.Create))
+            using (var stream = new FileStream(_path, FileMode.Create))
             {
                 using (var writer = new StreamWriter(stream))
                 {
-                    writer.WriteLine(Json.Serialize(Serializer.serialize(context, settings)));
+                    writer.WriteLine(Json.Serialize(Serializer.serialize(context, Settings)));
                 }
             }
         }
 
         public void Load()
         {
-            try {
-                if (File.Exists(this.path)) {
-                    using (StreamReader reader = new StreamReader(this.path)) {
+            try
+            {
+                if (File.Exists(_path))
+                    using (var reader = new StreamReader(_path))
+                    {
                         string jsonString;
 
-                        SerializationContext context = new SerializationContext(SerializationContext.Context.Savegame);
-                        while((jsonString = reader.ReadLine()) != null) {
-                            Dictionary<string,object> values = (Dictionary<string,object>)Json.Deserialize(jsonString);
-                            Serializer.deserialize(context, settings, values);
+                        var context = new SerializationContext(SerializationContext.Context.Savegame);
+                        while ((jsonString = reader.ReadLine()) != null)
+                        {
+                            var values = (Dictionary<string, object>) Json.Deserialize(jsonString);
+                            Serializer.deserialize(context, Settings, values);
                         }
 
                         reader.Close();
                     }
-                }
-
             }
-            catch (System.Exception e) {
-
-                UnityEngine.Debug.Log("Couldn't properly load settings file! " + e.ToString());
+            catch (Exception e)
+            {
+                Debug.Log("Couldn't properly load settings file! " + e);
             }
         }
 
 
-        public void DrawGUI()
+        public void DrawGui()
         {
-            if ( ToggleButtonStyleNormal == null )
+            if (_toggleButtonStyleNormal == null)
             {
-                ToggleButtonStyleNormal = "Button";
-                ToggleButtonStyleToggled = new GUIStyle(ToggleButtonStyleNormal);
-                ToggleButtonStyleToggled.normal.background = ToggleButtonStyleToggled.active.background;
+                _toggleButtonStyleNormal = "Button";
+                _toggleButtonStyleToggled = new GUIStyle(_toggleButtonStyleNormal);
+                _toggleButtonStyleToggled.normal.background = _toggleButtonStyleToggled.active.background;
             }
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label ("Vertical Drag:");
-            settings.verticalKey =  KeyToggle (settings.verticalKey,0);
+            GUILayout.Label("Vertical Drag:");
+            Settings.VerticalKey = KeyToggle(Settings.VerticalKey, 0);
             GUILayout.EndHorizontal();
         }
 
-        public KeyCode KeyToggle(KeyCode character,int id)
+        public KeyCode KeyToggle(KeyCode character, int id)
         {
-            if ( GUILayout.Button(character.ToString() , keySelectionId == id ? ToggleButtonStyleToggled : ToggleButtonStyleNormal ) )
-            {
-                keySelectionId = id;
-            }
+            if (GUILayout.Button(character.ToString(),
+                _keySelectionId == id ? _toggleButtonStyleToggled : _toggleButtonStyleNormal)) _keySelectionId = id;
 
-            if (keySelectionId == id) {
+            if (_keySelectionId == id)
+            {
                 KeyCode e;
-                if (FetchKey (out e)) {
-                    keySelectionId = -1;
+                if (FetchKey(out e))
+                {
+                    _keySelectionId = -1;
                     return e;
                 }
             }
+
             return character;
             //selectedKey = Keyb
         }
 
         private bool FetchKey(out KeyCode outKey)
         {
-            foreach (KeyCode key in System.Enum.GetValues(typeof(KeyCode))) {
-                if (Input.GetKeyDown (key)) {
+            foreach (KeyCode key in Enum.GetValues(typeof(KeyCode)))
+                if (Input.GetKeyDown(key))
+                {
                     outKey = key;
                     return true;
                 }
-            }
+
             outKey = KeyCode.A;
             return false;
         }
-
-
-
     }
 }
-

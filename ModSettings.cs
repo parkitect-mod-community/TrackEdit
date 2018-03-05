@@ -1,18 +1,14 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace RollercoasterEdit
+namespace TrackEdit
 {
-    public class ModSettings : SerializedRawObject 
+    public class ModSettings : SerializedRawObject
     {
-        [Serialized]
-        public KeyCode verticalKey{ get; set;}
-
-        public ModSettings ()
+        public ModSettings()
         {
-            verticalKey = KeyCode.LeftShift;
+            VerticalKey = KeyCode.LeftShift;
         }
 
+        [Serialized] public KeyCode VerticalKey { get; set; }
     }
 }
-

@@ -1,42 +1,42 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
-using Parkitect.UI;
-using UnityEngine.UI;
 
-
-namespace RollercoasterEdit
+namespace TrackEdit
 {
-    public class Main : IMod , IModSettings 
+    public class Main : IMod, IModSettings
     {
+        public static AssetBundleManager AssetBundleManager;
+        public static Configuration Configuration;
         public string Identifier { get; set; }
-		public static AssetBundleManager AssetBundleManager = null;
-        public static Configuration configuration = null;
+
+        public string Path
+        {
+            get
+            {
+                var path = ModManager.Instance.getModEntries().First(x => x.mod == this).path;
+                return path;
+            }
+        }
 
 
         public void onEnabled()
         {
             Global.NO_TRACKBUILDER_RESTRICTIONS = true;
 
-            if (Main.configuration == null) {
-                Main.configuration = new Configuration (Path);
-                Main.configuration.Load ();
-                Main.configuration.Save ();
-
+            if (Configuration == null)
+            {
+                Configuration = new Configuration();
+                Configuration.Load();
+                Configuration.Save();
             }
 
-			if (Main.AssetBundleManager == null) {
-
-				AssetBundleManager = new AssetBundleManager (this);
-            } 
+            if (AssetBundleManager == null) AssetBundleManager = new AssetBundleManager(this);
 
 
+            ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject.AddComponent<TrackUiHandle>();
 
-			ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject.AddComponent <TrackUIHandle>();
-           
             //GameObject container = UnityEngine.GameObject.Instantiate (Main.AssetBundleManager.UiContainerWindowGo);
             //container.transform.SetParent(ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject.transform);
-
 
 
             /*Transform headerPanel= UnityEngine.Object.Instantiate (Main.AssetBundleManager.UiHeaderPanelGo).transform;
@@ -48,53 +48,43 @@ namespace RollercoasterEdit
             mainBody.SetSiblingIndex (1);
             mainBody.transform.name = "TrackEditPanel";
             UnityEngine.Debug.Log (mainBody.name);*/
-		}
+        }
 
         public void onDisabled()
-        { 
+        {
             Global.NO_TRACKBUILDER_RESTRICTIONS = false;
-            
-			UnityEngine.Object.Destroy (ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject.GetComponent<TrackUIHandle> ());
-            UnityEngine.Object.Destroy (ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.transform.Find(Main.AssetBundleManager.UiContainerWindowGo.name));
-            UnityEngine.Object.Destroy (ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.transform.Find(Main.AssetBundleManager.UiHeaderPanelGo.name));
+
+            Object.Destroy(ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject
+                .GetComponent<TrackUiHandle>());
+            Object.Destroy(
+                ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.transform.Find(AssetBundleManager
+                    .UiContainerWindowGo.name));
+            Object.Destroy(
+                ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.transform.Find(AssetBundleManager
+                    .UiHeaderPanelGo.name));
         }
 
-        public string Name
+        public string Name => "Track Edit";
+
+        public string Description => "Allows the user to modify track paths";
+
+        string IMod.Identifier => "TrackEdit";
+
+        public void onDrawSettingsUI()
         {
-            get { return "Track Edit"; }
+            Configuration.DrawGui();
         }
 
-        public string Description
+        public void onSettingsOpened()
         {
-            get { return "Allows the user to modify track paths"; }
+            if (Configuration == null)
+                Configuration = new Configuration();
+            Configuration.Load();
         }
 
-        string IMod.Identifier
+        public void onSettingsClosed()
         {
-            get { return "TrackEdit"; }
-        }
-
-        public string Path
-        {
-            get
-            {
-                String path = ModManager.Instance.getModEntries().First(x => x.mod == this).path;
-                return path;   
-            }
-        }
-
-        public void onDrawSettingsUI() {
-            Main.configuration.DrawGUI ();
-        }
-
-        public void onSettingsOpened() {
-            if (Main.configuration == null)
-                Main.configuration = new Configuration (this.Path);
-            Main.configuration.Load ();
-
-        }
-        public void onSettingsClosed() {
-            Main.configuration.Save ();
+            Configuration.Save();
         }
     }
 }
