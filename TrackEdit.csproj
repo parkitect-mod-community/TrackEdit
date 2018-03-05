@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{62921F50-6388-43FE-9DB2-B7F8556A7931}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TrackEdit</RootNamespace>
+    <AssemblyName>TrackEdit</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>../Output</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\output\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\Parkitect_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\Parkitect_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\..\Parkitect_Data\Managed\UnityEngine.UI.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssetBundleManager.cs" />
+    <Compile Include="Configuration.cs" />
+    <Compile Include="Main.cs" />
+    <Compile Include="ModSettings.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RollercosterEdit\ExtrudeNode.cs" />
+    <Compile Include="RollercosterEdit\INode.cs" />
+    <Compile Include="RollercosterEdit\MathHelper.cs" />
+    <Compile Include="RollercosterEdit\RotationNode.cs" />
+    <Compile Include="RollercosterEdit\SharedStateData.cs" />
+    <Compile Include="RollercosterEdit\StateMachine\ConsumeExtrudeNodeState.cs" />
+    <Compile Include="RollercosterEdit\StateMachine\DraggableState.cs" />
+    <Compile Include="RollercosterEdit\StateMachine\FiniteStateMachine.cs" />
+    <Compile Include="RollercosterEdit\StateMachine\FreeDragState.cs" />
+    <Compile Include="RollercosterEdit\StateMachine\FreeDragWithSmoothing.cs" />
+    <Compile Include="RollercosterEdit\StateMachine\IdleState.cs" />
+    <Compile Include="RollercosterEdit\StateMachine\IState.cs" />
+    <Compile Include="RollercosterEdit\StateMachine\LinearDragState.cs" />
+    <Compile Include="RollercosterEdit\StateMachine\NodeAttachState.cs" />
+    <Compile Include="RollercosterEdit\StateMachine\RotationState.cs" />
+    <Compile Include="RollercosterEdit\TrackEditUI.cs" />
+    <Compile Include="RollercosterEdit\TrackNode.cs" />
+    <Compile Include="RollercosterEdit\TrackNodeCurve.cs" />
+    <Compile Include="RollercosterEdit\TrackNodeHelper.cs" />
+    <Compile Include="RollercosterEdit\TrackSegmentModify.cs" />
+    <Compile Include="RollercosterEdit\TrackUIHandle.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="assetbundle\assetbundle" />
+    <Content Include="assetbundle\assetbundle.manifest" />
+    <Content Include="assetbundle\trackedit" />
+    <Content Include="assetbundle\trackedit.manifest" />
+    <Content Include="README.md" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+         Other similar extension points exist, see Microsoft.Common.targets.
+    <Target Name="BeforeBuild">
+    </Target>
+    <Target Name="AfterBuild">
+    </Target>
+    -->
+</Project>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="$USER_HOME$/.Rider2018.1/system/resharper-host/local/Transient/ReSharperHost/v12/SolutionCaches/_TrackEdit.1368393066.00" t="ExcludeRecursive" />
+    <e p="$PROJECT_DIR$" t="IncludeRecursive">
+      <e p="AssetBundleManager.cs" t="Include" />
+      <e p="Configuration.cs" t="Include" />
+      <e p="Main.cs" t="Include" />
+      <e p="ModSettings.cs" t="Include" />
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+      </e>
+      <e p="README.md" t="Include" />
+      <e p="RollercosterEdit" t="Include">
+        <e p="ExtrudeNode.cs" t="Include" />
+        <e p="INode.cs" t="Include" />
+        <e p="MathHelper.cs" t="Include" />
+        <e p="RotationNode.cs" t="Include" />
+        <e p="SharedStateData.cs" t="Include" />
+        <e p="StateMachine" t="Include">
+          <e p="ConsumeExtrudeNodeState.cs" t="Include" />
+          <e p="DraggableState.cs" t="Include" />
+          <e p="FiniteStateMachine.cs" t="Include" />
+          <e p="FreeDragState.cs" t="Include" />
+          <e p="FreeDragWithSmoothing.cs" t="Include" />
+          <e p="IState.cs" t="Include" />
+          <e p="IdleState.cs" t="Include" />
+          <e p="LinearDragState.cs" t="Include" />
+          <e p="NodeAttachState.cs" t="Include" />
+          <e p="RotationState.cs" t="Include" />
+        </e>
+        <e p="TrackEditUI.cs" t="Include" />
+        <e p="TrackNode.cs" t="Include" />
+        <e p="TrackNodeCurve.cs" t="Include" />
+        <e p="TrackNodeHelper.cs" t="Include" />
+        <e p="TrackSegmentModify.cs" t="Include" />
+        <e p="TrackUIHandle.cs" t="Include" />
+      </e>
+      <e p="TrackEdit.csproj" t="IncludeRecursive" />
+      <e p="TrackEdit.sln" t="IncludeFlat" />
+      <e p="assetbundle" t="Include">
+        <e p="assetbundle" t="Include" />
+        <e p="assetbundle.manifest" t="Include" />
+        <e p="trackedit" t="Include" />
+        <e p="trackedit.manifest" t="Include" />
+      </e>
+      <e p="obj" t="ExcludeRecursive" />
+      <e p="packages" t="ExcludeRecursive" />
+    </e>
+    <e p="$PROJECT_DIR$/../output" t="ExcludeRecursive" />
+  </component>
+</project>
