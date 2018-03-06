@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Reflection;
+using UnityEngine;
 
 namespace TrackEdit.StateMachine
 {
@@ -29,6 +30,10 @@ namespace TrackEdit.StateMachine
 
         public virtual void Update(FiniteStateMachine stateMachine)
         {
+
+            typeof(CameraController).GetMethod("stopLocksAndPans", BindingFlags.NonPublic | BindingFlags.Instance)
+                ?.Invoke(GameController.Instance.cameraController, new Object[] { });
+                
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             var point = ray.GetPoint(_stateData.Distance);
             Vector3 position;

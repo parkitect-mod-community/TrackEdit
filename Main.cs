@@ -21,6 +21,9 @@ namespace TrackEdit
 
         public void onEnabled()
         {
+            Debug.Log(Application.unityVersion);
+                
+            
             Global.NO_TRACKBUILDER_RESTRICTIONS = true;
 
             if (Configuration == null)
@@ -56,12 +59,12 @@ namespace TrackEdit
 
             Object.Destroy(ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject
                 .GetComponent<TrackUiHandle>());
-            Object.Destroy(
+            /*Object.Destroy(
                 ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.transform.Find(AssetBundleManager
                     .UiContainerWindowGo.name));
             Object.Destroy(
                 ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.transform.Find(AssetBundleManager
-                    .UiHeaderPanelGo.name));
+                    .UiHeaderPanelGo.name));*/
         }
 
         public string Name => "Track Edit";

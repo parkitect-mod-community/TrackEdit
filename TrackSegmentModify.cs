@@ -206,7 +206,7 @@ namespace TrackEdit
 
                 DestroyImmediate(child.gameObject);
             }
-
+            MouseCollisions.Instance.removeColliders(segment,segment.gameObject);
             //UnityEngine.Object.DestroyImmediate( segment.gameObject.GetComponent<MouseCollider> ());
             DestroyImmediate(segment.gameObject.GetComponent<MeshCollider>());
             DestroyImmediate(segment.gameObject.GetComponent<BoundingMesh>());

@@ -10,19 +10,24 @@ namespace TrackEdit
         public readonly Material MaterialPlane;
         public readonly GameObject NodeGo;
         public readonly GameObject NodeRotateGo;
-        public readonly GameObject UiContainerWindowGo;
-        public readonly GameObject UiHeaderPanelGo;
+       // public readonly GameObject UiContainerWindowGo;
+        //public readonly GameObject UiHeaderPanelGo;
 
+        private AssetBundle assetBundle;
         public AssetBundleManager(Main main)
         {
+            
             _main = main;
+            var dsc = System.IO.Path.DirectorySeparatorChar;
+            assetBundle = AssetBundle.LoadFromFile( _main.Path + dsc + "assetbundle" + dsc + "trackedit");
 
-            NodeRotateGo = LoadAsset<GameObject>("Node_Rotate");
-            NodeGo = LoadAsset<GameObject>("Node");
+
+            NodeRotateGo = assetBundle.LoadAsset<GameObject>("Node_Rotate");
+            NodeGo = assetBundle.LoadAsset<GameObject>("Node");
             NodeGo.layer = LayerMasks.COASTER_TRACKS;
 
-            UiContainerWindowGo = LoadAsset<GameObject>("TrackEditPanel");
-            UiHeaderPanelGo = LoadAsset<GameObject>("HeaderPanel");
+           // UiContainerWindowGo = assetBundle.LoadAsset<GameObject>("TrackEditPanel");
+           // UiHeaderPanelGo = assetBundle.LoadAsset<GameObject>("HeaderPanel");
 
             MaterialPlane = new Material(Shader.Find("Particles/Additive"));
             MaterialPlane.SetColor("_TintColor", new Color(255, 255, 255, 100));
@@ -33,7 +38,7 @@ namespace TrackEdit
         }
 
 
-        private T LoadAsset<T>(string prefabName) where T : Object
+        /*private T LoadAsset<T>(string prefabName) where T : Object
         {
             try
             {
@@ -77,6 +82,6 @@ namespace TrackEdit
                 Debug.LogException(e);
                 return null;
             }
-        }
+        }*/
     }
 }
