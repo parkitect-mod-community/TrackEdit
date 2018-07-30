@@ -14,7 +14,6 @@ namespace TrackEdit
 
         private int _keySelectionId = -1;
 
-
         public Configuration()
         {
             _path = FilePaths.getFolderPath("track_edit.config");

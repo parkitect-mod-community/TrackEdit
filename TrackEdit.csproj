@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -30,6 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -73,10 +75,15 @@
     <Compile Include="AssetBundleManager.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="ExtrudeNode.cs" />
+    <Compile Include="GameObjectUtility.cs" />
     <Compile Include="INode.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="MathHelper.cs" />
     <Compile Include="ModSettings.cs" />
+    <Compile Include="Node\BaseNode.cs" />
+    <Compile Include="Node\INode.cs" />
+    <Compile Include="Node\TrackNode.cs" />
+    <Compile Include="Node\TrackSegmentBorderNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RotationNode.cs" />
     <Compile Include="SharedStateData.cs" />
@@ -89,12 +96,12 @@
     <Compile Include="StateMachine\IState.cs" />
     <Compile Include="StateMachine\LinearDragState.cs" />
     <Compile Include="StateMachine\RotationState.cs" />
-    <Compile Include="TrackEditUI.cs" />
     <Compile Include="TrackNode.cs" />
     <Compile Include="TrackNodeCurve.cs" />
     <Compile Include="TrackNodeHelper.cs" />
+    <Compile Include="TrackSegmentHandler.cs" />
     <Compile Include="TrackSegmentModify.cs" />
-    <Compile Include="TrackUIHandle.cs" />
+    <Compile Include="TrackEditHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assetbundle\assetbundle">

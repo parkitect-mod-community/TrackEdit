@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
 namespace TrackEdit
 {
-    public class TrackSegmentModify : MonoBehaviour
+    public class TrackSegmentHandler : MonoBehaviour
     {
         private FieldInfo _biNormalField;
 
@@ -17,11 +18,6 @@ namespace TrackEdit
         public TrackSegment4 TrackSegment { get; private set; }
 
 
-        public List<TrackNodeCurve> GetTrackCurves { get; } = new List<TrackNodeCurve>();
-
-        public TrackNodeCurve GetLastCurve => GetTrackCurves[GetTrackCurves.Count - 1];
-        public TrackNodeCurve GetFirstCurve => GetTrackCurves[0];
-
         private void Awake()
         {
             TrackSegment = GetComponent<TrackSegment4>();
@@ -29,52 +25,11 @@ namespace TrackEdit
             var flags = BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic;
             _biNormalField = typeof(TrackSegment4).GetField("startBinormal", flags);
 
-
-            for (var x = 0; x < TrackSegment.curves.Count; x++)
-            {
-                var grouping = TrackNodeCurve.Grouping.Middle;
-
-                if (x == 0)
-                    grouping = TrackNodeCurve.Grouping.Start;
-                if (x == TrackSegment.curves.Count - 1)
-                    grouping = TrackNodeCurve.Grouping.End;
-                if (TrackSegment.curves.Count == 1)
-                    grouping = TrackNodeCurve.Grouping.Both;
-
-                GetTrackCurves.Add(new TrackNodeCurve(TrackSegment.curves[x], this, grouping));
-            }
-        }
-
-        public TrackNodeCurve GetNextCurve(TrackNodeCurve current)
-        {
-            var index = GetTrackCurves.IndexOf(current);
-            if (index + 1 >= GetTrackCurves.Count)
-            {
-                var nextSegment = current.SegmentModify.GetNextSegment(true);
-                if (nextSegment != null)
-                    return nextSegment.GetFirstCurve;
-                return null;
-            }
-
-            return GetTrackCurves[index + 1];
         }
 
         public int GetIndexOfSegment()
         {
             return TrackSegment.track.trackSegments.IndexOf(TrackSegment);
-        }
-
-        public TrackNodeCurve GetPreviousCurve(TrackNodeCurve current)
-        {
-            var index = GetTrackCurves.IndexOf(current);
-            if (index - 1 < 0)
-            {
-                var previousCurve = current.SegmentModify.GetPreviousSegment(true);
-                if (previousCurve != null)
-                    return previousCurve.GetLastCurve;
-            }
-
-            return GetTrackCurves[index - 1];
         }
 
         public void CalculateStartBinormal(bool hasToBeconnected)
@@ -135,54 +90,55 @@ namespace TrackEdit
         }
 
 
-        public TrackSegmentModify GetNextSegment(bool hasToBeconnected)
+        public TrackSegmentHandler GetNextSegment(bool hasToBeconnected)
         {
             if (TrackSegment.isConnectedToNextSegment || !hasToBeconnected)
             {
                 var track = TrackEditHandler.Instance.TrackRide.Track;
-                return track.trackSegments[track.getNextSegmentIndex(track.trackSegments.IndexOf(TrackSegment))]
-                    .GetComponent<TrackSegmentModify>();
+                return track.trackSegments[track.getNextSegmentIndex(track.trackSegments.IndexOf(TrackSegment))].GetComponent<TrackSegmentHandler>();
             }
 
             return null;
         }
 
-        public TrackSegmentModify GetPreviousSegment(bool hasToBeconnected)
+        public TrackSegmentHandler GetPreviousSegment(bool hasToBeconnected)
         {
             if (TrackSegment.isConnectedToPreviousSegment || !hasToBeconnected)
             {
                 var track = TrackEditHandler.Instance.TrackRide.Track;
                 return track.trackSegments[track.getPreviousSegmentIndex(track.trackSegments.IndexOf(TrackSegment))]
-                    .GetComponent<TrackSegmentModify>();
+                    .GetComponent<TrackSegmentHandler>();
             }
 
             return null;
         }
 
-        public bool ConnectWithForwardSegment(TrackSegmentModify next)
+       
+        public bool ConnectWithForwardSegment(TrackSegmentHandler next)
         {
             TrackSegment.isConnectedToNextSegment = true;
             next.TrackSegment.isConnectedToPreviousSegment = true;
 
 
-            var magnitude =
-                Mathf.Abs((next.GetFirstCurve.P0.GetGlobal() - next.GetFirstCurve.P1.GetGlobal()).magnitude);
+            var nextFirstCurve = next.TrackSegment.curves.First();            
+            var currentLastCurve = TrackSegment.curves.Last();
 
-            GetLastCurve.P2.SetPoint(GetLastCurve.P3.GetGlobal() +
-                                     next.TrackSegment.getTangentPoint(0f) * -1f * magnitude);
+            float magnitude = Mathf.Abs((
+                next.TrackSegment.transform.TransformPoint(nextFirstCurve.p0) - 
+                next.TrackSegment.transform.TransformPoint(nextFirstCurve.p1)).magnitude);
 
-
-            next.TrackSegment.calculateLengthAndNormals(GetLastCurve.SegmentModify.TrackSegment);
+            TrackSegment.curves.Last().p2 = TrackSegment.transform.InverseTransformPoint(
+                TrackSegment.transform.TransformPoint(currentLastCurve.p3) + next.TrackSegment.getTangentPoint(0f) * -1f * magnitude);
+            
+           
+            next.TrackSegment.calculateLengthAndNormals(TrackSegment);
             next.CalculateStartBinormal(false);
             Invalidate = true;
             return true;
         }
 
 
-        private void OnDestroy()
-        {
-            for (var x = 0; x < GetTrackCurves.Count; x++) GetTrackCurves[x].Destroy();
-        }
+     
 
         private void ResetMeshForTrackSegment(TrackSegment4 segment)
         {
@@ -302,6 +258,8 @@ namespace TrackEdit
             meshFilter.mesh.uv = uvs.ToArray();
         }
 
+  
+
         private void Update()
         {
             if (Invalidate)
@@ -334,7 +292,6 @@ namespace TrackEdit
                 _isSupportsInvalid = false;
             }
 
-            foreach (var curves in GetTrackCurves) curves.Update();
         }
     }
 }

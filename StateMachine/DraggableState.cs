@@ -31,8 +31,6 @@ namespace TrackEdit.StateMachine
         public virtual void Update(FiniteStateMachine stateMachine)
         {
 
-            typeof(CameraController).GetMethod("stopLocksAndPans", BindingFlags.NonPublic | BindingFlags.Instance)
-                ?.Invoke(GameController.Instance.cameraController, new Object[] { });
                 
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             var point = ray.GetPoint(_stateData.Distance);
@@ -96,7 +94,7 @@ namespace TrackEdit.StateMachine
                 DragPosition = new Vector3(Mathf.Round(position.x * _gridSubdivision) / _gridSubdivision,
                     Mathf.Round(position.y * _gridSubdivision) / _gridSubdivision,
                     Mathf.Round(position.z * _gridSubdivision) / _gridSubdivision);
-            TrackUiHandle.Instance.TrackBuilder.generateNewGhost();
+            TrackEditHandler.Instance.TrackBuilder.generateNewGhost();
         }
 
         public virtual void Unload()

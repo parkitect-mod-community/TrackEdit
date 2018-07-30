@@ -4,6 +4,11 @@
     {
         private IState _currentState;
 
+        public IState getCurrentState()
+        {
+            return _currentState;
+        }
+
         public void ChangeState(IState newState)
         {
             if (_currentState != null)

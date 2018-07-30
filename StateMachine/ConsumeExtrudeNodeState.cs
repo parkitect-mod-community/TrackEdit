@@ -21,12 +21,12 @@ namespace TrackEdit.StateMachine
                 Object.Instantiate(
                     ScriptableSingleton<AssetManager>.Instance.getPrefab<TrackSegment4>(Prefabs.Straight));
 
-            trackSegment.isLifthill = TrackUiHandle.Instance.TrackBuilder.liftToggle.isOn;
+            trackSegment.isLifthill = TrackEditHandler.Instance.TrackBuilder.liftToggle.isOn;
             /* if (TrackUIHandle.instance.trackEditUI.chainToggle.isOn) {
                  trackSegment.isLifthill = true;
              }*/
 
-            TrackUiHandle.Instance.TrackRide.Track.addSegment(trackSegment,
+            TrackEditHandler.Instance.TrackRide.Track.addSegment(trackSegment,
                 _stateData.Selected.GetComponent<ExtrudeNode>().TrackSegmentModify.GetIndexOfSegment() + 1);
             trackSegment.Initialize();
 
