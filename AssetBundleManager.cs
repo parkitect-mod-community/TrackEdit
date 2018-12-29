@@ -35,6 +35,7 @@ namespace TrackEdit
                 AssetManager.Instance.terrainGridProjectorGO.GetComponent<Light>().cookie);
             MaterialPlane.SetTextureScale("_MainTex", new Vector2(1.0f, 1.0f));
             MaterialPlane.SetTextureOffset("_MainTex", new Vector2(0f, .5f));
+            assetBundle.Unload(false);
         }
 
 
