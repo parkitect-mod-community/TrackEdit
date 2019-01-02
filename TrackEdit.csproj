@@ -109,6 +109,7 @@
     <Content Include="assetbundle\trackedit.manifest">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="license_template" />
     <Content Include="preview.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
