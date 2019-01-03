@@ -3,6 +3,7 @@
 ## Introduction
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![](https://img.shields.io/steam/subscriptions/1321066360.svg)](https://steamcommunity.com/sharedfiles/filedetails/?id=1321066360)
 
 
 This allows for the manipulation of tracks outside the normal grid boundries for Parkitect. This allows for the direct manipulate of the indvidual curves of any track segment in the game.
