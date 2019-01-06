@@ -92,7 +92,6 @@ namespace TrackEdit
             }
 
             return character;
-            //selectedKey = Keyb
         }
 
         private bool FetchKey(out KeyCode outKey)
@@ -106,6 +105,16 @@ namespace TrackEdit
 
             outKey = KeyCode.A;
             return false;
+        }
+
+        public class ModSettings : SerializedRawObject
+        {
+            public ModSettings()
+            {
+                VerticalKey = KeyCode.LeftShift;
+            }
+
+            [Serialized] public KeyCode VerticalKey { get; set; }
         }
     }
 }

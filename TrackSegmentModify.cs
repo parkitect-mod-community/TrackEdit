@@ -222,7 +222,7 @@ namespace TrackEdit
                 heightMarkerGo = new GameObject("HeightMarkerPlane");
                 meshFilter = heightMarkerGo.AddComponent<MeshFilter>();
                 var meshRenderer = heightMarkerGo.AddComponent<MeshRenderer>();
-                meshRenderer.sharedMaterial = Main.AssetBundleManager.MaterialPlane;
+                meshRenderer.sharedMaterial = GameObjectUtility.GetMaterialPlane();
                 heightMarkerGo.transform.SetParent(transform);
             }
             else

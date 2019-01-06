@@ -7,7 +7,6 @@ namespace TrackEdit
     public class Main : IMod, IModSettings
     {
 
-        public static AssetBundleManager AssetBundleManager;
         public static Configuration Configuration;
         public string Path
         {
@@ -29,8 +28,6 @@ namespace TrackEdit
                 Configuration.Load();
                 Configuration.Save();
             }
-
-            if (AssetBundleManager == null) AssetBundleManager = new AssetBundleManager(this);
 
             GameObject go =  ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject;
             TrackBuilder trackBuilder = go.GetComponent<TrackBuilder>();

@@ -91,11 +91,11 @@ namespace TrackEdit
             }
            
             GameObject result = new GameObject();
-            result.layer = LayerMasks.COASTER_TRACKS;
+            result.layer = LayerMasks.ID_COASTER_TRACKS;
             
             SphereCollider sphereCollider =  result.AddComponent<SphereCollider>();
             sphereCollider.center = new Vector3(0, 0.5f, 0.0f);
-            sphereCollider.radius = .1f;
+            sphereCollider.radius = 5;
                 
             GameObject child = new GameObject();
 
@@ -110,7 +110,6 @@ namespace TrackEdit
             lineRenderer.sharedMaterial = _nodeMaterial;
             lineRenderer.motionVectorGenerationMode = MotionVectorGenerationMode.Camera;
             lineRenderer.allowOcclusionWhenDynamic = true;
-            lineRenderer.startWidth = .1f;
             lineRenderer.startWidth = .1f;
             
             child.transform.position = new Vector3(0,.5f,0);
@@ -179,6 +178,21 @@ namespace TrackEdit
             return result;
         }
 
+        public static Material _MaterialPlane = null;
+        public static Material GetMaterialPlane()
+        {
+            if (_MaterialPlane == null)
+            {
+                _MaterialPlane = new Material(Shader.Find("GUI/Text Shader"));
+                _MaterialPlane.SetColor("_TintColor", new Color(255, 255, 255, 100));
+                _MaterialPlane.SetTexture("_MainTex",
+                    AssetManager.Instance.terrainGridProjectorGO.GetComponent<Light>().cookie);
+                _MaterialPlane.SetTextureScale("_MainTex", new Vector2(1.0f, 1.0f));
+                _MaterialPlane.SetTextureOffset("_MainTex", new Vector2(0f, .5f));
+            }
+
+            return _MaterialPlane;
+        }
      
     }
 }

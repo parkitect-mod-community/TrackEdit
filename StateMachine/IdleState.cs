@@ -19,7 +19,7 @@ namespace TrackEdit.StateMachine
             if (Input.GetMouseButtonDown(1))
             {
                 RaycastHit hit;
-                if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMasks.COASTER_TRACKS))
+                if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMasks.ID_COASTER_TRACKS))
                     if (hit.transform.name == "BezierNode")
                         _stateData.SetActiveNode(hit.transform);
             }
@@ -28,8 +28,9 @@ namespace TrackEdit.StateMachine
             {
                 RaycastHit hit;
 
-                if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMasks.COASTER_TRACKS))
+                if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMasks.ID_COASTER_TRACKS))
                 {
+                    Debug.Log("hit:" + hit.transform.gameObject.name);
                     _stateData.Selected = hit.transform;
                     _stateData.FixedY = hit.transform.position.y;
                     _stateData.Offset = new Vector3(hit.transform.position.x - hit.point.x, 0,

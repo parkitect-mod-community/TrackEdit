@@ -78,27 +78,25 @@ namespace TrackEdit
 
         private ExtrudeNode AddExtrudeNode(Vector3 position)
         {
-            var nodeGameObject = Object.Instantiate(Main.AssetBundleManager.NodeGo);
-            nodeGameObject.layer = LayerMasks.COASTER_TRACKS;
-            nodeGameObject.transform.transform.position = position;
-            nodeGameObject.name = "ExtrudeNode";
+            GameObject nodeObject = GameObjectUtility.CreateNode();
+            nodeObject.transform.position = position;
+            nodeObject.name = "ExtrudeNode";
 
-            var node = nodeGameObject.AddComponent<ExtrudeNode>();
+            var node = nodeObject.AddComponent<ExtrudeNode>();
             node.TrackSegmentModify = SegmentModify;
             node.Curve = _cubicBezier;
-            node.gameObject.layer = LayerMasks.ID_COASTER_TRACKS;
             node.TrackCurve = this;
             return node;
         }
 
         private TrackNode AddTrackCurveNode(Vector3 position, TrackNode.NodeType type)
         {
-            var nodeGameObject = Object.Instantiate(Main.AssetBundleManager.NodeGo);
-            nodeGameObject.layer = LayerMasks.COASTER_TRACKS;
-            nodeGameObject.transform.transform.position = position;
-            nodeGameObject.name = "BezierNode";
+          
+            GameObject nodeObject = GameObjectUtility.CreateNode();
+            nodeObject.transform.position = position;
+            nodeObject.name = "BezierNode";
 
-            var trackNode = nodeGameObject.AddComponent<TrackNode>();
+            var trackNode = nodeObject.AddComponent<TrackNode>();
 
             if (type == TrackNode.NodeType.P3)
                 trackNode.ActiveState = TrackNode.Activestate.AlwaysActive;
@@ -107,10 +105,10 @@ namespace TrackEdit
 
             if (type == TrackNode.NodeType.P3)
             {
-                var nodeRotate = Object.Instantiate(Main.AssetBundleManager.NodeRotateGo);
+                GameObject nodeRotate = GameObjectUtility.CreateNodeRotate();
                 nodeRotate.name = "MainRotate";
-                nodeRotate.transform.SetParent(nodeGameObject.transform);
-                nodeRotate.transform.position = nodeGameObject.transform.position;
+                nodeRotate.transform.SetParent(nodeObject.transform);
+                nodeRotate.transform.position = nodeObject.transform.position;
 
                 //add a roation ring
                 var mainRotate = nodeRotate.transform.Find("Rotate").gameObject;

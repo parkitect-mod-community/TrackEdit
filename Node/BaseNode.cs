@@ -11,6 +11,5 @@
             this.index = index;
         }
         
-        public bool 
     }
 }
