@@ -1,15 +1,14 @@
-﻿namespace TrackEdit.Node
+﻿using UnityEngine;
+
+namespace TrackEdit.Node
 {
-    public class BaseNode : INode
+    public abstract class BaseNode : MonoBehaviour, INode
     {
-        protected int index;
-        protected TrackSegment4 segment;
-        
-        public BaseNode(TrackSegment4 segment, int index)
-        {
-            this.segment = segment;
-            this.index = index;
-        }
-        
+        public delegate string OnPositionChange(EmptyNode node);
+
+        public abstract void OnPressed(RaycastHit hit);
+
+        public abstract void OnHold();
+        public abstract void OnRelease();
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace TrackEdit
 {
-    public class TrackNode : MonoBehaviour, INode
+    public class TrackNode : MonoBehaviour, INode,IActivatable
     {
         public enum Activestate
         {
@@ -199,6 +199,19 @@ namespace TrackEdit
 
             if (nextSegment != null)
                 nextSegment.TrackSegment.calculateLengthAndNormals(TrackSegmentModify.TrackSegment);
+        }
+
+   
+        public void onActivate(RaycastHit hit)
+        {
+        }
+
+        public void onDeactivate()
+        {
+        }
+
+        public void onRemove()
+        {
         }
     }
 }

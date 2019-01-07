@@ -30,7 +30,6 @@ namespace TrackEdit.StateMachine
 
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMasks.ID_COASTER_TRACKS))
                 {
-                    Debug.Log("hit:" + hit.transform.gameObject.name);
                     _stateData.Selected = hit.transform;
                     _stateData.FixedY = hit.transform.position.y;
                     _stateData.Offset = new Vector3(hit.transform.position.x - hit.point.x, 0,

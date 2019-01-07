@@ -1,38 +1,57 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using TrackEdit.Node;
 using UnityEngine;
 
 namespace TrackEdit
 {
-    public class TrackSegmentHandler : MonoBehaviour
-    {
-        private FieldInfo _biNormalField;
+    public class TrackSegmentHandler 
+    {   
+        private readonly FieldInfo _biNormalField;
 
         private bool _isSupportsInvalid;
         private float _meshGenerationTime;
-        private float _supportRegnerateTime;
+        private float _supportRegenerateTime;
 
-
-        public bool Invalidate;
+        public bool Invalidate { get; set; }
         public TrackSegment4 TrackSegment { get; private set; }
+        public TrackEditHandler Handler { get; private set; }
 
+        private readonly TrackEdgeNode _edgeNode;
 
-        private void Awake()
+        public TrackSegmentHandler(TrackSegment4 segment,TrackEditHandler handler)
         {
-            TrackSegment = GetComponent<TrackSegment4>();
+            TrackSegment = segment;
+            Handler = handler;
 
             var flags = BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic;
             _biNormalField = typeof(TrackSegment4).GetField("startBinormal", flags);
+            _edgeNode = TrackEdgeNode.Build();
+            
+            NotifySegmentChange();
 
         }
+
+        public void NotifySegmentChange()
+        {
+            var nextSegment = GetNextSegment(true);
+            var previousSegment = GetPreviousSegment(true);
+
+            if (nextSegment != null) {
+                _edgeNode.Forward = nextSegment;
+                _edgeNode.Previous = this;
+            }
+
+        }
+
 
         public int GetIndexOfSegment()
         {
             return TrackSegment.track.trackSegments.IndexOf(TrackSegment);
         }
 
-        public void CalculateStartBinormal(bool hasToBeconnected)
+        public void CalculateStartBinormal()
         {
             var previousSegment = GetPreviousSegment(true);
             if (previousSegment != null)
@@ -86,34 +105,44 @@ namespace TrackEdit
                 TrackSegment.calculateLengthAndNormals(previousSegment.TrackSegment);
             }
 
-            if (nextSegment != null) nextSegment.CalculateStartBinormal(true);
+            if (nextSegment != null) nextSegment.CalculateStartBinormal();
         }
 
 
-        public TrackSegmentHandler GetNextSegment(bool hasToBeconnected)
+        public TrackSegmentHandler GetNextSegment(bool hasToBeConnected)
         {
-            if (TrackSegment.isConnectedToNextSegment || !hasToBeconnected)
+            if (TrackSegment.isConnectedToNextSegment || !hasToBeConnected)
             {
-                var track = TrackEditHandler.Instance.TrackRide.Track;
-                return track.trackSegments[track.getNextSegmentIndex(track.trackSegments.IndexOf(TrackSegment))].GetComponent<TrackSegmentHandler>();
+                var track = Handler.TrackRide.Track;
+                return Handler.GetSegmentHandler(track.trackSegments[track.getNextSegmentIndex(track.trackSegments.IndexOf(TrackSegment))]);
             }
 
             return null;
         }
 
-        public TrackSegmentHandler GetPreviousSegment(bool hasToBeconnected)
+        public TrackSegmentHandler GetPreviousSegment(bool hasToBeConnected)
         {
-            if (TrackSegment.isConnectedToPreviousSegment || !hasToBeconnected)
+            if (TrackSegment.isConnectedToPreviousSegment || !hasToBeConnected)
             {
-                var track = TrackEditHandler.Instance.TrackRide.Track;
-                return track.trackSegments[track.getPreviousSegmentIndex(track.trackSegments.IndexOf(TrackSegment))]
-                    .GetComponent<TrackSegmentHandler>();
+                var track = Handler.TrackRide.Track;
+                return Handler.GetSegmentHandler(track.trackSegments[track.getPreviousSegmentIndex(track.trackSegments.IndexOf(TrackSegment))]);
             }
 
             return null;
         }
 
-       
+        public bool IsConnected(TrackSegmentHandler segment)
+        {
+            TrackSegmentHandler next = GetNextSegment(true);
+            TrackSegmentHandler previous = GetPreviousSegment(true);
+            if (segment == previous)
+                return previous.TrackSegment.isConnectedTo(TrackSegment);
+            if (segment == next)
+                return TrackSegment.isConnectedTo(next.TrackSegment);
+            return false;
+        }
+
+
         public bool ConnectWithForwardSegment(TrackSegmentHandler next)
         {
             TrackSegment.isConnectedToNextSegment = true;
@@ -132,7 +161,7 @@ namespace TrackEdit
             
            
             next.TrackSegment.calculateLengthAndNormals(TrackSegment);
-            next.CalculateStartBinormal(false);
+            next.CalculateStartBinormal();
             Invalidate = true;
             return true;
         }
@@ -147,7 +176,7 @@ namespace TrackEdit
             if (generatedMesh != null)
             {
                 var meshes = (List<Mesh>) generatedMesh.GetValue(segment);
-                foreach (var m in meshes) DestroyImmediate(m);
+                foreach (var m in meshes) Object.DestroyImmediate(m);
                 meshes.Clear();
             }
 
@@ -156,16 +185,16 @@ namespace TrackEdit
                 var meshFilter = child.gameObject.GetComponent<MeshFilter>();
                 if (meshFilter != null)
                 {
-                    DestroyImmediate(meshFilter.mesh);
-                    DestroyImmediate(meshFilter.sharedMesh);
+                    GameObject.DestroyImmediate(meshFilter.mesh);
+                    GameObject.DestroyImmediate(meshFilter.sharedMesh);
                 }
 
-                DestroyImmediate(child.gameObject);
+                Object.DestroyImmediate(child.gameObject);
             }
             MouseCollisions.Instance.removeColliders(segment,segment.gameObject);
             //UnityEngine.Object.DestroyImmediate( segment.gameObject.GetComponent<MouseCollider> ());
-            DestroyImmediate(segment.gameObject.GetComponent<MeshCollider>());
-            DestroyImmediate(segment.gameObject.GetComponent<BoundingMesh>());
+            Object.DestroyImmediate(segment.gameObject.GetComponent<MeshCollider>());
+            Object.DestroyImmediate(segment.gameObject.GetComponent<BoundingMesh>());
         }
 
         private void GenerateHeightMarkerTrack(TrackSegment4 trackSegment)
@@ -258,26 +287,32 @@ namespace TrackEdit
             meshFilter.mesh.uv = uvs.ToArray();
         }
 
-  
 
-        private void Update()
+        public void OnDestroy()
+        {
+            if(_edgeNode != null)
+                Object.Destroy(_edgeNode);
+        }
+
+        public void Update()
         {
             if (Invalidate)
-                _supportRegnerateTime = Time.time;
+                _supportRegenerateTime = Time.time;
 
             if (Invalidate && Time.time - _meshGenerationTime > .05f)
             {
                 _isSupportsInvalid = true;
 
                 ResetMeshForTrackSegment(TrackSegment);
-                TrackSegment.generateMesh(TrackEditHandler.Instance.TrackRide.meshGenerator);
+                
+                TrackSegment.generateMesh(Handler.TrackRide.meshGenerator);
                 GenerateHeightMarkerTrack(TrackSegment);
 
                 _meshGenerationTime = Time.time;
                 Invalidate = false;
             }
 
-            if (_isSupportsInvalid && Time.time - _supportRegnerateTime > .1f)
+            if (_isSupportsInvalid && Time.time - _supportRegenerateTime > .1f)
             {
                 for (var x = 0; x < 5; x++)
                 {
@@ -286,7 +321,7 @@ namespace TrackEdit
                         BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic);
                     if (localCrossTile != null) localCrossTile.SetValue(TrackSegment, null);
 
-                    TrackSegment.generateMesh(TrackEditHandler.Instance.TrackRide.meshGenerator);
+                    TrackSegment.generateMesh(Handler.TrackRide.meshGenerator);
                 }
 
                 _isSupportsInvalid = false;

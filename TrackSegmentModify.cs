@@ -15,10 +15,7 @@ namespace TrackEdit
 
         public bool Invalidate;
         public TrackSegment4 TrackSegment { get; private set; }
-
-
         public List<TrackNodeCurve> GetTrackCurves { get; } = new List<TrackNodeCurve>();
-
         public TrackNodeCurve GetLastCurve => GetTrackCurves[GetTrackCurves.Count - 1];
         public TrackNodeCurve GetFirstCurve => GetTrackCurves[0];
 

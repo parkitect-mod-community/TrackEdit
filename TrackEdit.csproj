@@ -75,11 +75,13 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Node\BaseNode.cs" />
+    <Compile Include="Node\EmptyNode.cs" />
     <Compile Include="Node\ExtrudeNode.cs" />
+    <Compile Include="Node\IActivatable.cs" />
     <Compile Include="Node\INode.cs" />
     <Compile Include="Node\RotationNode.cs" />
+    <Compile Include="Node\TrackEdgeNode.cs" />
     <Compile Include="Node\TrackNode.cs" />
-    <Compile Include="Node\TrackSegmentBorderNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SharedStateData.cs" />
     <Compile Include="StateMachine\ConsumeExtrudeNodeState.cs" />
@@ -92,12 +94,12 @@
     <Compile Include="StateMachine\LinearDragState.cs" />
     <Compile Include="StateMachine\RotationState.cs" />
     <Compile Include="TrackNodeCurve.cs" />
-    <Compile Include="TrackNodeHelper.cs" />
     <Compile Include="TrackSegmentHandler.cs" />
     <Compile Include="TrackSegmentModify.cs" />
     <Compile Include="TrackEditHandler.cs" />
     <Compile Include="utility\GameObjectUtility.cs" />
     <Compile Include="utility\MathHelper.cs" />
+    <Compile Include="utility\TrackNodeHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="preview.png">

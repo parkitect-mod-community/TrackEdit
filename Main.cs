@@ -29,8 +29,8 @@ namespace TrackEdit
                 Configuration.Save();
             }
 
-            GameObject go =  ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject;
-            TrackBuilder trackBuilder = go.GetComponent<TrackBuilder>();
+//            GameObject go =  ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject;
+//            TrackBuilder trackBuilder = go.GetComponent<TrackBuilder>();
 
 
             ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject.AddComponent<TrackEditHandler>();
