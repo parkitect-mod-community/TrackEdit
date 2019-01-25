@@ -8,5 +8,6 @@ namespace TrackEdit.Node
         void OnPressed(RaycastHit hit);
         void OnHold();
         void OnRelease();
+        void OnNotifySegmentChange();
     }
 }

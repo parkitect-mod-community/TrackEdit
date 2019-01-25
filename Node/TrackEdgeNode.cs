@@ -9,43 +9,65 @@ namespace TrackEdit.Node
         public TrackSegmentHandler Forward { get; set; }
         public TrackSegmentHandler Current { get; set; }
 
-        private bool _isActive = false;
+       // private bool _isActive = false;
 
-        private TextMesh _text;
-        
-        private RotationNode _rotationNode;
+        //private RotationNode _rotationNode;
         private EmptyNode _forwardNode;
         private EmptyNode _backwardNode;
-        
-        
 
-        public override void Awake()
+
+
+        protected override void Awake()
         {
             base.Awake();
             _forwardNode = Build<EmptyNode>();
             _backwardNode = Build<EmptyNode>();
-            _rotationNode = RotationNode.build(Current);
+            //_rotationNode = RotationNode.Build(Current);
 
-            
-            _rotationNode.transform.parent = transform;
-            _rotationNode.transform.position = Vector3.zero;
+            _forwardNode.OnDragEvent += OnDrag;
+            _backwardNode.OnDragEvent += OnDrag;
+            OnDragEvent += OnDrag;
+
+            //_rotationNode.transform.parent = transform;
+            //_rotationNode.transform.position = Vector3.zero;
 
         }
-
-        public override void Update()
+        public override void OnNotifySegmentChange()
         {
-            Vector3 pos = _forwardNode.transform.TransformPoint(Vector3.zero);
+            base.OnNotifySegmentChange();
+            if(Current != null)
+                transform.position = Current.TrackSegment.transform.TransformPoint(Current.TrackSegment.curves.Last().p3);
+        }
+        protected override void Update()
+        {
             base.Update();
+           
         }
-
-        public void onActivate(RaycastHit hit)
+        private void OnDrag(BaseNode node)
         {
-            _isActive = true;
-        }
+            Vector3 forwardNodePos = _forwardNode.transform.TransformPoint(Vector3.zero);
+            Vector3 backNodePos = _backwardNode.transform.TransformPoint(Vector3.zero);
+            Vector3 currentNodePos = transform.TransformPoint(Vector3.zero);
 
-        public void onDeactivate()
-        {
-            _isActive = false;
+            if (node == _forwardNode)
+            {
+            }
+            else if (node == _backwardNode)
+            {
+                
+            }
+            else if (node == this)
+            {
+                Debug.Log("updating pos of zero node");
+                Forward.TrackSegment.curves.First().p0  = Forward.TrackSegment.transform.InverseTransformPoint(currentNodePos);
+                Current.TrackSegment.curves.Last().p3 = Current.TrackSegment.transform.InverseTransformPoint(currentNodePos);
+                
+                
+                Current.CalculateStartBinormal();
+                Current.Invalidate = true;
+                Forward.Invalidate = true;
+
+            }
         }
 
         public override void OnHold()
@@ -53,12 +75,15 @@ namespace TrackEdit.Node
             base.OnHold();
         }
 
-        public override void OnRelease()
+        public void onActivate(RaycastHit hit)
         {
-            base.OnRelease();
+            //_isActive = true;
         }
 
- 
+        public void onDeactivate()
+        {
+           // _isActive = false;
+        }
       
     }
 }

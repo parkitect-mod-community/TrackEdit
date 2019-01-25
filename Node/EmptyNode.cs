@@ -5,8 +5,6 @@ namespace TrackEdit.Node
 {
     public class EmptyNode : BaseNode
     {
-      
-        public event OnPositionChange OnDragEvent;
         
         private Transform _face;
 
@@ -22,23 +20,27 @@ namespace TrackEdit.Node
         
         private Vector3 _dragPosition = Vector3.zero;
 
-        public void onRemove()
+        public void OnRemove()
         {
         }
 
-        public virtual void Awake()
+        protected override void Awake()
         {
             _face = transform.Find("node");
         }
 
-        public virtual void Update()
+        public override void OnNotifySegmentChange()
+        {
+            
+        }
+
+        protected override void Update()
         {
             Camera camera = Camera.main;
             if (camera != null)
             {
                 _face.LookAt(Camera.main.transform, Vector3.up);
             }
-
         }
 
         public override void OnPressed(RaycastHit hit)
@@ -46,6 +48,10 @@ namespace TrackEdit.Node
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             _distance = (ray.origin - hit.point).magnitude;
             var point = ray.GetPoint(_distance);
+            
+            _fixedY = hit.transform.position.y;
+            _offset = new Vector3(hit.transform.position.x - hit.point.x, 0,hit.transform.position.z - hit.point.z);
+           
             if (Input.GetKey(Main.Configuration.Settings.VerticalKey))
             {
                _offset = new Vector3(_offset.x, transform.position.y - point.y,
@@ -56,18 +62,19 @@ namespace TrackEdit.Node
 
         public override void OnHold()
         {
+            base.OnHold();
+            
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             var point = ray.GetPoint(_distance);
-            Vector3 position;
             if (!_verticalDragState)
             {
-                position = new Vector3(point.x, _fixedY, point.z) +
+                transform.position = new Vector3(point.x, _fixedY, point.z) +
                            new Vector3(_offset.x, _offset.y, _offset.z);
             }
             else
             {
                 _fixedY = point.y;
-                position = new Vector3(transform.position.x, _fixedY,
+                transform.position = new Vector3(transform.position.x, _fixedY,
                                transform.position.z) + new Vector3(0, _offset.y, 0);
             }
             
@@ -91,11 +98,13 @@ namespace TrackEdit.Node
                 }
 
                 for (var i = 1; i <= 9; i++)
+                {
                     if (Input.GetKeyDown(i + string.Empty))
                     {
                         _gridSubdivision = i;
                         GameController.Instance.terrainGridBuilderProjector.setGridSubdivision(_gridSubdivision);
                     }
+                }
             }
 
             if (InputManager.getKeyDown("BuildingSnapToGrid"))
@@ -111,14 +120,14 @@ namespace TrackEdit.Node
                 _isGridActive = false;
             }
 
-            _dragPosition = new Vector3(Mathf.Round(position.x * 10.0f) / 10.0f, Mathf.Round(position.y * 10.0f) / 10.0f,
-                Mathf.Round(position.z * 10.0f) / 10.0f);
+            _dragPosition = new Vector3(Mathf.Round(transform.position.x * 10.0f) / 10.0f, Mathf.Round(transform.position.y * 10.0f) / 10.0f,
+                Mathf.Round(transform.position.z * 10.0f) / 10.0f);
             if (_isGridActive)
-                _dragPosition = new Vector3(Mathf.Round(position.x * _gridSubdivision) / _gridSubdivision,
-                    Mathf.Round(position.y * _gridSubdivision) / _gridSubdivision,
-                    Mathf.Round(position.z * _gridSubdivision) / _gridSubdivision);
+                _dragPosition = new Vector3(Mathf.Round(transform.position.x * _gridSubdivision) / _gridSubdivision,
+                    Mathf.Round(transform.position.y * _gridSubdivision) / _gridSubdivision,
+                    Mathf.Round(transform.position.z * _gridSubdivision) / _gridSubdivision);
             
-            if (OnDragEvent != null) OnDragEvent.Invoke(this);
+          
         }
         
         private void resetToDefaultGrid()
@@ -132,7 +141,9 @@ namespace TrackEdit.Node
         {
             resetToDefaultGrid();
         }
-        
+
+    
+
         private static Mesh _nodeCircleMesh = null;
         private static Material _nodeMaterial = null;
         private static readonly int _TintColor = Shader.PropertyToID("_TintColor");
@@ -140,7 +151,7 @@ namespace TrackEdit.Node
         public static T Build<T> () where T : EmptyNode 
         {
             if(_nodeCircleMesh == null)
-                _nodeCircleMesh = GameObjectUtility.CreateCircle(0.1f,10);;
+                _nodeCircleMesh = GameObjectUtility.CreateCircle(.1f,10);;
             if (_nodeMaterial == null)
             {
                 _nodeMaterial =  new Material(Shader.Find("UI/Default"));
@@ -148,11 +159,12 @@ namespace TrackEdit.Node
             }
            
             GameObject result = new GameObject();
-            result.layer = LayerMasks.ID_COASTER_TRACKS;
+           // result.layer = LayerMasks.ID_COASTER_TRACKS;
             
             SphereCollider sphereCollider =  result.AddComponent<SphereCollider>();
-            sphereCollider.center = new Vector3(0, 0.5f, 0.0f);
-            sphereCollider.radius = 5;
+            sphereCollider.center = new Vector3(0, 0.6f, 0.0f);
+            sphereCollider.radius = .1f;
+
                 
             GameObject child = new GameObject();
 
@@ -161,15 +173,15 @@ namespace TrackEdit.Node
             MeshRenderer meshRenderer = child.AddComponent<MeshRenderer>();
             meshRenderer.sharedMaterial = _nodeMaterial;
 
-            LineRenderer lineRenderer = child.AddComponent<LineRenderer>();
-            lineRenderer.positionCount = 3;
-            lineRenderer.useWorldSpace = true;
-            lineRenderer.sharedMaterial = _nodeMaterial;
-            lineRenderer.motionVectorGenerationMode = MotionVectorGenerationMode.Camera;
-            lineRenderer.allowOcclusionWhenDynamic = true;
-            lineRenderer.startWidth = .1f;
+//            LineRenderer lineRenderer = child.AddComponent<LineRenderer>();
+//            lineRenderer.positionCount = 3;
+//            lineRenderer.useWorldSpace = true;
+//            lineRenderer.sharedMaterial = _nodeMaterial;
+//            lineRenderer.motionVectorGenerationMode = MotionVectorGenerationMode.Camera;
+//            lineRenderer.allowOcclusionWhenDynamic = true;
+//            lineRenderer.startWidth = .1f;
             
-            child.transform.position = new Vector3(0,.5f,0);
+            child.transform.position = new Vector3(0,.6f,0);
             child.transform.parent = result.transform;
             child.name = "node";
 

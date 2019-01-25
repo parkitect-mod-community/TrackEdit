@@ -27,9 +27,8 @@ namespace TrackEdit
 
             var flags = BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic;
             _biNormalField = typeof(TrackSegment4).GetField("startBinormal", flags);
-            _edgeNode = TrackEdgeNode.Build();
+            _edgeNode = TrackEdgeNode.Build<TrackEdgeNode>();
             
-            NotifySegmentChange();
 
         }
 
@@ -40,10 +39,12 @@ namespace TrackEdit
 
             if (nextSegment != null) {
                 _edgeNode.Forward = nextSegment;
-                _edgeNode.Previous = this;
+                _edgeNode.Current = this;
+                _edgeNode.OnNotifySegmentChange();
             }
-
         }
+        
+
 
 
         public int GetIndexOfSegment()
@@ -197,96 +198,6 @@ namespace TrackEdit
             Object.DestroyImmediate(segment.gameObject.GetComponent<BoundingMesh>());
         }
 
-        private void GenerateHeightMarkerTrack(TrackSegment4 trackSegment)
-        {
-            var heightTransform = transform.Find("HeightMarkerPlane");
-            GameObject heightMarkerGo;
-            MeshFilter meshFilter;
-            if (heightTransform == null)
-            {
-                heightMarkerGo = new GameObject("HeightMarkerPlane");
-                meshFilter = heightMarkerGo.AddComponent<MeshFilter>();
-                var meshRenderer = heightMarkerGo.AddComponent<MeshRenderer>();
-                meshRenderer.sharedMaterial = GameObjectUtility.GetMaterialPlane();
-                heightMarkerGo.transform.SetParent(transform);
-            }
-            else
-            {
-                heightMarkerGo = heightTransform.gameObject;
-                meshFilter = heightTransform.gameObject.GetComponent<MeshFilter>();
-                meshFilter.mesh.Clear();
-            }
-
-
-            heightMarkerGo.transform.localPosition = Vector3.zero;
-            heightMarkerGo.transform.localRotation = Quaternion.identity;
-
-            var verticies = new List<Vector3>();
-            var triangles = new List<int>();
-            var uvs = new List<Vector2>();
-
-            var sample = trackSegment.getLength() / Mathf.RoundToInt(trackSegment.getLength() / .2f);
-            var pos = 0.0f;
-
-            var tForDistance = trackSegment.getTForDistance(0);
-            var position = trackSegment.getPoint(tForDistance);
-
-            var terrain = GameController.Instance.park.getTerrain(transform.position);
-            var vector = position;
-            if (terrain != null) vector = terrain.getPoint(transform.position);
-            var magnitude = (position - vector).magnitude;
-
-
-            verticies.Add(transform.InverseTransformPoint(position));
-            verticies.Add(
-                transform.InverseTransformPoint(position + Vector3.down * magnitude *
-                                                Mathf.Sign(position.y - vector.y)));
-
-            uvs.Add(new Vector2(0, magnitude));
-            uvs.Add(new Vector2(0, 0));
-
-            var previous = position;
-            float xoffset = 0;
-            while (pos < trackSegment.getLength())
-            {
-                tForDistance = trackSegment.getTForDistance(pos);
-                pos += sample;
-
-                position = trackSegment.getPoint(tForDistance);
-
-                terrain = GameController.Instance.park.getTerrain(position);
-                vector = position;
-                if (terrain != null) vector = terrain.getPoint(position);
-                magnitude = (position - vector).magnitude;
-
-
-                verticies.Add(transform.InverseTransformPoint(position));
-                verticies.Add(
-                    transform.InverseTransformPoint(
-                        position + Vector3.down * magnitude * Mathf.Sign(position.y - vector.y)));
-
-                xoffset += Vector3.Distance(previous, position);
-                uvs.Add(new Vector2(xoffset, vector.y + magnitude));
-                uvs.Add(new Vector2(xoffset, vector.y - 0));
-
-
-                var last = verticies.Count - 1;
-                triangles.Add(last - 3);
-                triangles.Add(last - 2);
-                triangles.Add(last - 1);
-
-                triangles.Add(last - 1);
-                triangles.Add(last - 2);
-                triangles.Add(last);
-
-                previous = position;
-            }
-
-            meshFilter.mesh.vertices = verticies.ToArray();
-            meshFilter.mesh.triangles = triangles.ToArray();
-            meshFilter.mesh.uv = uvs.ToArray();
-        }
-
 
         public void OnDestroy()
         {
@@ -306,7 +217,6 @@ namespace TrackEdit
                 ResetMeshForTrackSegment(TrackSegment);
                 
                 TrackSegment.generateMesh(Handler.TrackRide.meshGenerator);
-                GenerateHeightMarkerTrack(TrackSegment);
 
                 _meshGenerationTime = Time.time;
                 Invalidate = false;

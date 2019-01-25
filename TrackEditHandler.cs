@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using TrackEdit.Node;
-using TrackEdit.StateMachine;
 using UnityEngine;
 
 namespace TrackEdit
@@ -20,7 +19,9 @@ namespace TrackEdit
 
         public TrackSegmentHandler GetSegmentHandler(TrackSegment4 segment)
         {
-            return _handlers[segment];
+            if(_handlers.ContainsKey(segment))
+                return _handlers[segment];
+            return null;
         }
 
 //        public void SetActiveNode(Transform active)
@@ -39,37 +40,57 @@ namespace TrackEdit
 
         private void Awake()
         {
+            TrackBuilder = gameObject.GetComponentInChildren<TrackBuilder>();
             var flags = BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic;
             _trackerRiderField = TrackBuilder.GetType().GetField("trackedRide", flags);
 
+        }
+
+        private void Start()
+        {
             WithTrackedRideChange();
         }
-        
+
         private void refreshHandlers()
         {
             foreach (var segment in TrackRide.Track.trackSegments)
             {
                 if (!_handlers.ContainsKey(segment))
                 {
-                    segment.OnDestroyed += () => {
-                        if (_handlers.ContainsKey(segment)){
-                            TrackSegmentHandler handler = _handlers[segment];
-                            
-                            TrackSegmentHandler previous = handler.GetPreviousSegment(true);
-                            TrackSegmentHandler next = handler.GetNextSegment(true);
-                            
-                            if(previous != null)
-                                previous.NotifySegmentChange();
-                            if(next != null)
-                                next.NotifySegmentChange();
-
-                            _handlers.Remove(segment);
-                            handler.OnDestroy();
-                        }
-                    };
-                    _handlers.Add(segment, new TrackSegmentHandler(segment, this));
+                    RegisterHandler(segment);
                 }
             }
+
+            foreach (var segment in TrackRide.Track.trackSegments)
+            {
+                TrackSegmentHandler handler = GetSegmentHandler(segment);
+                if(handler  != null)
+                    handler.NotifySegmentChange();
+
+            }
+        }
+
+        public TrackSegmentHandler RegisterHandler(TrackSegment4 segment)
+        {
+            segment.OnDestroyed += () => {
+                if (_handlers.ContainsKey(segment)){
+                    TrackSegmentHandler handler = _handlers[segment];
+                            
+                    TrackSegmentHandler previous = handler.GetPreviousSegment(true);
+                    TrackSegmentHandler next = handler.GetNextSegment(true);
+                            
+                    if(previous != null)
+                        previous.NotifySegmentChange();
+                    if(next != null)
+                        next.NotifySegmentChange();
+
+                    _handlers.Remove(segment);
+                    handler.OnDestroy();
+                }
+            };
+            TrackSegmentHandler h = new TrackSegmentHandler(segment, this);
+            _handlers.Add(segment, h);
+            return h;
         }
 
         private void OnDestroy()
@@ -91,7 +112,9 @@ namespace TrackEdit
             TrackRide = (TrackedRide) _trackerRiderField.GetValue(TrackBuilder);
             clearHandlers();
             TrackRide.Track.OnAddTrackSegment += trackSegment =>  refreshHandlers();
-            TrackRide.Track.OnRemoveTrackSegment += trackSegment => refreshHandlers();     
+            TrackRide.Track.OnRemoveTrackSegment += trackSegment => refreshHandlers();    
+            
+            refreshHandlers();
         }
 
 
@@ -103,18 +126,25 @@ namespace TrackEdit
                 WithTrackedRideChange();
             }
 
+            foreach (var segment in TrackRide.Track.trackSegments)
+            {
+                TrackSegmentHandler handler = GetSegmentHandler(segment);
+                if(handler  != null)
+                    handler.Update();
+
+            }
+            
             Camera cam = Camera.main;
             if (cam != null)
             {
                 var ray = cam.ScreenPointToRay(Input.mousePosition);
                 if (Input.GetMouseButtonDown(0))
                 {
-                    if (_hold == null)
-                    {
+                   
                         if (Physics.Raycast(ray, out var hit, Mathf.Infinity, LayerMasks.ID_COASTER_TRACKS))
                         {
-                            INode node = hit.transform.gameObject.GetComponent<INode>();
-
+                            Debug.Log(hit.transform.gameObject.name);
+                            INode node = hit.transform.gameObject.GetComponent<BaseNode>();
                             if (node is IActivatable)
                             {
                                 IActivatable activate = (IActivatable) node;
@@ -134,15 +164,20 @@ namespace TrackEdit
                                 node.OnPressed(hit);
                             _hold = node;
                         }
-                    }
-                    else
-                    {
-                        _hold.OnHold();
-                    }
+                  
+                        
+                    
+                }
+
+                if (_hold != null)
+                {
+                    Debug.Log("holding");
+                    _hold.OnHold();
                 }
 
                 if (Input.GetMouseButtonUp(0))
                 {
+                    Debug.Log("Release");
                     if (_hold != null)
                     {
                         _hold.OnRelease();

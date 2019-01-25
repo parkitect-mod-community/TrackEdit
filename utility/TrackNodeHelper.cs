@@ -4,9 +4,9 @@ namespace TrackEdit
 {
     public static class TrackNodeHelper
     {
-        public static void CalculateMatch(TrackNode trackNode, Vector3 position)
+        public static void CalculateMatch()//TrackNode trackNode, Vector3 position)
         {
-            var nextSegment = trackNode.TrackSegmentModify.GetNextSegment(true);
+         /*   var nextSegment = trackNode.TrackSegmentModify.GetNextSegment(true);
             var previousSegment = trackNode.TrackSegmentModify.GetPreviousSegment(true);
 
             switch (trackNode.NodePoint)
@@ -76,7 +76,7 @@ namespace TrackEdit
             }
 
             trackNode.CalculateLenghtAndNormals();
-            trackNode.TrackSegmentModify.Invalidate = true;
+            trackNode.TrackSegmentModify.Invalidate = true;*/
         }
     }
 }
