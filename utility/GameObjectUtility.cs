@@ -39,7 +39,7 @@ namespace TrackEdit
             return mesh;
         }
 
-        public static Mesh CreateRing(float inner, float outter, int numOfPoints)
+        public static Mesh CreateRing(float inner, float outer, int numOfPoints)
         {
             float angleStep = 360.0f / numOfPoints;
             List<Vector3> vertexList = new List<Vector3>();
@@ -48,27 +48,27 @@ namespace TrackEdit
             Quaternion quaternion = Quaternion.Euler(0.0f, 0.0f, angleStep);
             
             vertexList.Add(new Vector3(0.0f, inner, 0.0f));
-            vertexList.Add(new Vector3(0.0f, outter, 0.0f));
+            vertexList.Add(new Vector3(0.0f, outer, 0.0f));
 
             for (int i = 0; i < numOfPoints-1;i++)
             {
                 int innerIndex = vertexList.Count - 2;
-                int outterIndex = vertexList.Count - 1;
+                int outerIndex = vertexList.Count - 1;
 
      
-                vertexList.Add(quaternion * vertexList[vertexList.Count - 1]);
                 vertexList.Add(quaternion * vertexList[vertexList.Count - 2]);
+                vertexList.Add(quaternion * vertexList[vertexList.Count - 1]);
                 
-                int nexinnerIndex = vertexList.Count - 2;
-                int nextoutterIndex = vertexList.Count - 1;
+                int nextInnerIndex = vertexList.Count - 2;
+                int nextOuterIndex = vertexList.Count - 1;
 
-                triangleList.Add(outterIndex);                     
+                triangleList.Add(outerIndex);                     
                 triangleList.Add(innerIndex);
-                triangleList.Add(nexinnerIndex);
+                triangleList.Add(nextOuterIndex);
                 
-                triangleList.Add(outterIndex);                     
-                triangleList.Add(nextoutterIndex);
-                triangleList.Add(nexinnerIndex);
+                triangleList.Add(outerIndex);                     
+                triangleList.Add(nextInnerIndex);
+                triangleList.Add(innerIndex);
                 
             }
             Mesh mesh = new Mesh();

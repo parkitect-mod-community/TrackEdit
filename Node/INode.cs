@@ -5,7 +5,7 @@ namespace TrackEdit.Node
     public interface INode
     {
         
-        void OnPressed(RaycastHit hit);
+        void OnBeginHold(RaycastHit hit);
         void OnHold();
         void OnRelease();
         void OnNotifySegmentChange();

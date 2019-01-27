@@ -6,9 +6,10 @@ using UnityEngine;
 
 namespace TrackEdit
 {
-    public class TrackSegmentHandler 
-    {   
+    public class TrackSegmentHandler
+    {
         private readonly FieldInfo _biNormalField;
+        private readonly MethodInfo _trackResetLength;
 
         private bool _isSupportsInvalid;
         private float _meshGenerationTime;
@@ -20,15 +21,18 @@ namespace TrackEdit
 
         private readonly TrackEdgeNode _edgeNode;
 
-        public TrackSegmentHandler(TrackSegment4 segment,TrackEditHandler handler)
+        public TrackSegmentHandler(TrackSegment4 segment, TrackEditHandler handler)
         {
             TrackSegment = segment;
             Handler = handler;
 
-            var flags = BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic;
-            _biNormalField = typeof(TrackSegment4).GetField("startBinormal", flags);
             _edgeNode = TrackEdgeNode.Build<TrackEdgeNode>();
-            
+
+            _biNormalField = typeof(TrackSegment4).GetField("startBinormal",
+                BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic);
+            _trackResetLength =
+                typeof(TrackSegment4).GetMethod("clearLength", BindingFlags.NonPublic | BindingFlags.Instance);
+
 
         }
 
@@ -37,23 +41,23 @@ namespace TrackEdit
             var nextSegment = GetNextSegment(true);
             var previousSegment = GetPreviousSegment(true);
 
-            if (nextSegment != null) {
+            if (nextSegment != null)
+            {
                 _edgeNode.Forward = nextSegment;
                 _edgeNode.Current = this;
                 _edgeNode.OnNotifySegmentChange();
             }
         }
-        
-
-
 
         public int GetIndexOfSegment()
         {
             return TrackSegment.track.trackSegments.IndexOf(TrackSegment);
         }
 
-        public void CalculateStartBinormal()
+        public void RecalculateSegment()
         {
+            _trackResetLength.Invoke(TrackSegment, new object[] { });
+
             var previousSegment = GetPreviousSegment(true);
             if (previousSegment != null)
             {
@@ -106,7 +110,7 @@ namespace TrackEdit
                 TrackSegment.calculateLengthAndNormals(previousSegment.TrackSegment);
             }
 
-            if (nextSegment != null) nextSegment.CalculateStartBinormal();
+            if (nextSegment != null) nextSegment.RecalculateSegment();
         }
 
 
@@ -115,7 +119,8 @@ namespace TrackEdit
             if (TrackSegment.isConnectedToNextSegment || !hasToBeConnected)
             {
                 var track = Handler.TrackRide.Track;
-                return Handler.GetSegmentHandler(track.trackSegments[track.getNextSegmentIndex(track.trackSegments.IndexOf(TrackSegment))]);
+                return Handler.GetSegmentHandler(
+                    track.trackSegments[track.getNextSegmentIndex(track.trackSegments.IndexOf(TrackSegment))]);
             }
 
             return null;
@@ -126,7 +131,8 @@ namespace TrackEdit
             if (TrackSegment.isConnectedToPreviousSegment || !hasToBeConnected)
             {
                 var track = Handler.TrackRide.Track;
-                return Handler.GetSegmentHandler(track.trackSegments[track.getPreviousSegmentIndex(track.trackSegments.IndexOf(TrackSegment))]);
+                return Handler.GetSegmentHandler(
+                    track.trackSegments[track.getPreviousSegmentIndex(track.trackSegments.IndexOf(TrackSegment))]);
             }
 
             return null;
@@ -150,25 +156,26 @@ namespace TrackEdit
             next.TrackSegment.isConnectedToPreviousSegment = true;
 
 
-            var nextFirstCurve = next.TrackSegment.curves.First();            
+            var nextFirstCurve = next.TrackSegment.curves.First();
             var currentLastCurve = TrackSegment.curves.Last();
 
             float magnitude = Mathf.Abs((
-                next.TrackSegment.transform.TransformPoint(nextFirstCurve.p0) - 
+                next.TrackSegment.transform.TransformPoint(nextFirstCurve.p0) -
                 next.TrackSegment.transform.TransformPoint(nextFirstCurve.p1)).magnitude);
 
             TrackSegment.curves.Last().p2 = TrackSegment.transform.InverseTransformPoint(
-                TrackSegment.transform.TransformPoint(currentLastCurve.p3) + next.TrackSegment.getTangentPoint(0f) * -1f * magnitude);
-            
-           
+                TrackSegment.transform.TransformPoint(currentLastCurve.p3) +
+                next.TrackSegment.getTangentPoint(0f) * -1f * magnitude);
+
+
             next.TrackSegment.calculateLengthAndNormals(TrackSegment);
-            next.CalculateStartBinormal();
+            next.RecalculateSegment();
             Invalidate = true;
             return true;
         }
 
 
-     
+
 
         private void ResetMeshForTrackSegment(TrackSegment4 segment)
         {
@@ -192,7 +199,8 @@ namespace TrackEdit
 
                 Object.DestroyImmediate(child.gameObject);
             }
-            MouseCollisions.Instance.removeColliders(segment,segment.gameObject);
+
+            MouseCollisions.Instance.removeColliders(segment, segment.gameObject);
             //UnityEngine.Object.DestroyImmediate( segment.gameObject.GetComponent<MouseCollider> ());
             Object.DestroyImmediate(segment.gameObject.GetComponent<MeshCollider>());
             Object.DestroyImmediate(segment.gameObject.GetComponent<BoundingMesh>());
@@ -201,8 +209,8 @@ namespace TrackEdit
 
         public void OnDestroy()
         {
-            if(_edgeNode != null)
-                Object.Destroy(_edgeNode);
+            if (_edgeNode != null)
+                Object.Destroy(_edgeNode.gameObject);
         }
 
         public void Update()
@@ -215,7 +223,7 @@ namespace TrackEdit
                 _isSupportsInvalid = true;
 
                 ResetMeshForTrackSegment(TrackSegment);
-                
+
                 TrackSegment.generateMesh(Handler.TrackRide.meshGenerator);
 
                 _meshGenerationTime = Time.time;
