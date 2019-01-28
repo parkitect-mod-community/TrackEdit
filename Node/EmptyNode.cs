@@ -36,6 +36,11 @@ namespace TrackEdit.Node
 
         protected override void Update()
         {
+            if (InputManager.getKeyUp("BuildingSnapToGrid"))
+            {
+                resetToDefaultGrid();
+                _isGridActive = false;
+            }
            
         }
 
@@ -111,11 +116,6 @@ namespace TrackEdit.Node
                 GameController.Instance.terrainGridProjector.setHighIntensityEnabled(true);
                 GameController.Instance.terrainGridBuilderProjector.setHighIntensityEnabled(true);
                 GameController.Instance.terrainGridBuilderProjector.setGridSubdivision(_gridSubdivision);
-            }
-            else if (InputManager.getKeyUp("BuildingSnapToGrid"))
-            {
-                resetToDefaultGrid();
-                _isGridActive = false;
             }
 
             transform.position = new Vector3(Mathf.Round(transform.position.x * 10.0f) / 10.0f,

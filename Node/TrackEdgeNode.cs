@@ -141,9 +141,21 @@ namespace TrackEdit.Node
 
             }
 
-            _lineRenderer.SetPosition(0, _forwardNode.transform.position + NodeOffset);
+            
+            if (Forward != null)
+            {
+                _lineRenderer.positionCount = 3;
+                _lineRenderer.SetPosition(2, _forwardNode.transform.position + NodeOffset);
+            }
+            else
+            {
+                _lineRenderer.positionCount = 2;
+            }
+            
+
+            _lineRenderer.SetPosition(0, _backwardNode.transform.position + NodeOffset);               
             _lineRenderer.SetPosition(1, transform.position + NodeOffset);
-            _lineRenderer.SetPosition(2, _backwardNode.transform.position + NodeOffset);
+
         }
 
         public override void OnHold()
@@ -153,7 +165,8 @@ namespace TrackEdit.Node
 
         public void onActivate(RaycastHit hit)
         {
-            _forwardNode.gameObject.SetActive(true);
+            if(Forward != null)
+                _forwardNode.gameObject.SetActive(true);
             _backwardNode.gameObject.SetActive(true);
             _rotationNode.gameObject.SetActive(true);
             _lineRenderer.enabled = true;

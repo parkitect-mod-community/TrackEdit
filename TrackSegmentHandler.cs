@@ -40,13 +40,10 @@ namespace TrackEdit
         {
             var nextSegment = GetNextSegment(true);
             var previousSegment = GetPreviousSegment(true);
+            _edgeNode.Forward = nextSegment;
+            _edgeNode.Current = this;
+            _edgeNode.OnNotifySegmentChange();
 
-            if (nextSegment != null)
-            {
-                _edgeNode.Forward = nextSegment;
-                _edgeNode.Current = this;
-                _edgeNode.OnNotifySegmentChange();
-            }
         }
 
         public int GetIndexOfSegment()
@@ -175,16 +172,16 @@ namespace TrackEdit
         }
 
 
-
-
         private void ResetMeshForTrackSegment(TrackSegment4 segment)
         {
+            typeof(TrackSegment4).GetMethod("onKill", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(segment,new object[]{});
+            
             var generatedMesh = typeof(TrackSegment4).GetField("generatedMeshes",
                 BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic);
             if (generatedMesh != null)
             {
                 var meshes = (List<Mesh>) generatedMesh.GetValue(segment);
-                foreach (var m in meshes) Object.DestroyImmediate(m);
+                foreach (var m in meshes) Object.Destroy(m);
                 meshes.Clear();
             }
 
@@ -193,8 +190,8 @@ namespace TrackEdit
                 var meshFilter = child.gameObject.GetComponent<MeshFilter>();
                 if (meshFilter != null)
                 {
-                    GameObject.DestroyImmediate(meshFilter.mesh);
-                    GameObject.DestroyImmediate(meshFilter.sharedMesh);
+                    Object.Destroy(meshFilter.mesh);
+                    Object.Destroy(meshFilter.sharedMesh);
                 }
 
                 Object.DestroyImmediate(child.gameObject);
@@ -202,8 +199,8 @@ namespace TrackEdit
 
             MouseCollisions.Instance.removeColliders(segment, segment.gameObject);
             //UnityEngine.Object.DestroyImmediate( segment.gameObject.GetComponent<MouseCollider> ());
-            Object.DestroyImmediate(segment.gameObject.GetComponent<MeshCollider>());
-            Object.DestroyImmediate(segment.gameObject.GetComponent<BoundingMesh>());
+            Object.Destroy(segment.gameObject.GetComponent<MeshCollider>());
+            Object.Destroy(segment.gameObject.GetComponent<BoundingMesh>());
         }
 
 
@@ -214,35 +211,26 @@ namespace TrackEdit
         }
 
         public void Update()
-        {
+        { 
             if (Invalidate)
                 _supportRegenerateTime = Time.time;
-
-            if (Invalidate && Time.time - _meshGenerationTime > .05f)
+            if (Invalidate && Time.time - _meshGenerationTime > .05f )
             {
                 _isSupportsInvalid = true;
-
+                
                 ResetMeshForTrackSegment(TrackSegment);
 
-                TrackSegment.generateMesh(Handler.TrackRide.meshGenerator);
+                var localCrossTile = typeof(TrackSegment4).GetField("localCrossedTiles",
+                    BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic);
+                if (localCrossTile != null) localCrossTile.SetValue(TrackSegment, null);
+//                TrackSegment.generateMesh(TrackSegment.track.TrackedRide.meshGenerator);
 
+                TrackSegment.Initialize();
+
+                
+                
                 _meshGenerationTime = Time.time;
                 Invalidate = false;
-            }
-
-            if (_isSupportsInvalid && Time.time - _supportRegenerateTime > .1f)
-            {
-                for (var x = 0; x < 5; x++)
-                {
-                    ResetMeshForTrackSegment(TrackSegment);
-                    var localCrossTile = typeof(TrackSegment4).GetField("localCrossedTiles",
-                        BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic);
-                    if (localCrossTile != null) localCrossTile.SetValue(TrackSegment, null);
-
-                    TrackSegment.generateMesh(Handler.TrackRide.meshGenerator);
-                }
-
-                _isSupportsInvalid = false;
             }
 
         }
