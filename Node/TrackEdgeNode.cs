@@ -125,7 +125,6 @@ namespace TrackEdit.Node
                 Forward.TrackSegment.curves.First().p1 =
                     Forward.TrackSegment.transform.InverseTransformPoint(forwardNodePos);
 
-                Forward.RecalculateSegment();
                 Forward.Invalidate = true;
             }
 
@@ -136,7 +135,6 @@ namespace TrackEdit.Node
                 Current.TrackSegment.curves.Last().p2 =
                     Current.TrackSegment.transform.InverseTransformPoint(backNodePos);
 
-                Current.RecalculateSegment();
                 Current.Invalidate = true;
 
             }

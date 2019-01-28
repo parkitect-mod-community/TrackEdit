@@ -13,7 +13,6 @@ namespace TrackEdit
 
         private bool _isSupportsInvalid;
         private float _meshGenerationTime;
-        private float _supportRegenerateTime;
 
         public bool Invalidate { get; set; }
         public TrackSegment4 TrackSegment { get; private set; }
@@ -51,47 +50,7 @@ namespace TrackEdit
             return TrackSegment.track.trackSegments.IndexOf(TrackSegment);
         }
 
-        public void RecalculateSegment()
-        {
-            _trackResetLength.Invoke(TrackSegment, new object[] { });
-
-            var previousSegment = GetPreviousSegment(true);
-            if (previousSegment != null)
-            {
-                var nextSegment = GetNextSegment(true);
-
-                _biNormalField.SetValue(TrackSegment,
-                    TrackSegment.transform.InverseTransformDirection(Vector3.Cross(
-                        previousSegment.TrackSegment.getNormal(1f), previousSegment.TrackSegment.getTangentPoint(1f))));
-
-                if (nextSegment != null)
-                {
-                    //try to match the curve 
-                    for (var x = 0; x < 10; x++)
-                    {
-                        TrackSegment.deltaRotation -= MathHelper.AngleSigned(
-                            Quaternion.AngleAxis(0, nextSegment.TrackSegment.getTangentPoint(0.0f)) *
-                            nextSegment.TrackSegment.getNormalPoint(0.0f),
-                            Quaternion.AngleAxis(TrackSegment.deltaRotation, TrackSegment.getTangentPoint(1.0f)) *
-                            TrackSegment.getNormalPoint(1.0f), TrackSegment.getTangentPoint(1.0f));
-                        TrackSegment.totalRotation =
-                            previousSegment.TrackSegment.totalRotation +
-                            TrackSegment.deltaRotation; // + TrackSegment.getAdditionalRotation ();
-                        TrackSegment.calculateLengthAndNormals(previousSegment.TrackSegment);
-                        if (previousSegment.TrackSegment.isConnectedTo(nextSegment.TrackSegment))
-                            break;
-                    }
-                }
-                else
-                {
-                    TrackSegment.totalRotation =
-                        previousSegment.TrackSegment.totalRotation +
-                        TrackSegment.deltaRotation; // + TrackSegment.getAdditionalRotation ();
-                    TrackSegment.calculateLengthAndNormals(previousSegment.TrackSegment);
-                }
-            }
-        }
-
+        
 
         //calculate new rotation for segment and update the total and delta rotation
         public void CalculateWithNewTotalRotation(float newRotation)
@@ -172,6 +131,51 @@ namespace TrackEdit
         }
 
 
+        private void RecalculateSegment()
+        {
+            _trackResetLength.Invoke(TrackSegment, new object[] { });
+
+            var previousSegment = GetPreviousSegment(true);
+            if (previousSegment != null)
+            {
+                var nextSegment = GetNextSegment(true);
+
+                _biNormalField.SetValue(TrackSegment,
+                    TrackSegment.transform.InverseTransformDirection(Vector3.Cross(
+                        previousSegment.TrackSegment.getNormal(1f), previousSegment.TrackSegment.getTangentPoint(1f))));
+
+                if (nextSegment != null)
+                {
+                    nextSegment.TrackSegment.calculateLengthAndNormals(TrackSegment);
+                    
+                    //try to match the curve 
+                    for (var x = 0; x < 10; x++)
+                    {
+                        TrackSegment.deltaRotation -= MathHelper.AngleSigned(
+                            Quaternion.AngleAxis(0, nextSegment.TrackSegment.getTangentPoint(0.0f)) *
+                            nextSegment.TrackSegment.getNormalPoint(0.0f),
+                            Quaternion.AngleAxis(TrackSegment.deltaRotation, TrackSegment.getTangentPoint(1.0f)) *
+                            TrackSegment.getNormalPoint(1.0f), TrackSegment.getTangentPoint(1.0f));
+                        TrackSegment.totalRotation =
+                            previousSegment.TrackSegment.totalRotation +
+                            TrackSegment.deltaRotation; // + TrackSegment.getAdditionalRotation ();
+                        TrackSegment.calculateLengthAndNormals(previousSegment.TrackSegment);
+                        if (previousSegment.TrackSegment.isConnectedTo(nextSegment.TrackSegment))
+                            break;
+                    }
+                }
+                else
+                {
+                    TrackSegment.totalRotation =
+                        previousSegment.TrackSegment.totalRotation +
+                        TrackSegment.deltaRotation; // + TrackSegment.getAdditionalRotation ();
+                    TrackSegment.calculateLengthAndNormals(previousSegment.TrackSegment);
+                }
+            }
+        }
+
+        
+        
         private void ResetMeshForTrackSegment(TrackSegment4 segment)
         {
             typeof(TrackSegment4).GetMethod("onKill", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(segment,new object[]{});
@@ -212,12 +216,11 @@ namespace TrackEdit
 
         public void Update()
         { 
-            if (Invalidate)
-                _supportRegenerateTime = Time.time;
             if (Invalidate && Time.time - _meshGenerationTime > .05f )
             {
-                _isSupportsInvalid = true;
-                
+                if(GetNextSegment(TrackSegment) == null) Handler.TrackBuilder.generateNewGhost();
+
+                RecalculateSegment();
                 ResetMeshForTrackSegment(TrackSegment);
 
                 var localCrossTile = typeof(TrackSegment4).GetField("localCrossedTiles",
@@ -226,8 +229,6 @@ namespace TrackEdit
 //                TrackSegment.generateMesh(TrackSegment.track.TrackedRide.meshGenerator);
 
                 TrackSegment.Initialize();
-
-                
                 
                 _meshGenerationTime = Time.time;
                 Invalidate = false;
