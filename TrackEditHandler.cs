@@ -33,7 +33,22 @@ namespace TrackEdit
 
         private void Start()
         {
-            WithTrackedRideChange();
+            TrackRide = (TrackedRide) _trackerRiderField.GetValue(TrackBuilder);
+            clearHandlers();
+            TrackRide.Track.OnAddTrackSegment += trackSegment =>
+            {
+                Debug.Log("On Track Added");
+                TrackRide.Track.recalculateIsClosedTrack();
+                refreshHandlers();
+            };
+            TrackRide.Track.OnRemoveTrackSegment += trackSegment =>
+            {
+                Debug.Log("On Track Removed");
+                TrackRide.Track.recalculateIsClosedTrack();
+                clearHandlers();
+                refreshHandlers();
+            };    
+            refreshHandlers();
         }
 
         private void refreshHandlers()
@@ -91,17 +106,6 @@ namespace TrackEdit
             }   
             _handlers.Clear();
         }
-
-        private void WithTrackedRideChange()
-        {
-            TrackRide = (TrackedRide) _trackerRiderField.GetValue(TrackBuilder);
-            clearHandlers();
-            TrackRide.Track.OnAddTrackSegment += trackSegment =>  refreshHandlers();
-            TrackRide.Track.OnRemoveTrackSegment += trackSegment => refreshHandlers();    
-            
-            refreshHandlers();
-        }
-
 
         private void Update()
         {

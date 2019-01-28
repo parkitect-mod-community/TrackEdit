@@ -44,11 +44,11 @@ namespace TrackEdit
                 .GetComponent<TrackEditHandler>());
         }
 
-        public string Name => "Track Edit";
+        public string Name => "Track Edit 2";
 
         public string Description => "Allows the user to modify track paths";
 
-        string IMod.Identifier => "TrackEdit";
+        string IMod.Identifier => "TrackEdit_2";
 
         public void onDrawSettingsUI()
         {

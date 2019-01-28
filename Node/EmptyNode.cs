@@ -41,7 +41,15 @@ namespace TrackEdit.Node
                 resetToDefaultGrid();
                 _isGridActive = false;
             }
-           
+            
+            if (Input.GetKeyUp(Main.Configuration.Settings.VerticalKey))
+            {
+                var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                var point = ray.GetPoint(_distance);
+                
+                _verticalDragState = false;
+                _offset = this.transform.position - point;
+            }
         }
 
         public override void OnBeginHold(RaycastHit hit)
@@ -85,11 +93,6 @@ namespace TrackEdit.Node
             {
                 _offset = new Vector3(_offset.x, transform.position.y - point.y, _offset.z);
                 _verticalDragState = true;
-            }
-            else if (Input.GetKeyUp(Main.Configuration.Settings.VerticalKey))
-            {
-                _verticalDragState = false;
-                _offset = this.transform.position - point;
             }
 
             if (InputManager.getKey("BuildingSnapToGrid"))

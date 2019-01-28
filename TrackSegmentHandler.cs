@@ -9,7 +9,6 @@ namespace TrackEdit
     public class TrackSegmentHandler
     {
         private readonly FieldInfo _biNormalField;
-        private readonly MethodInfo _trackResetLength;
 
         private bool _isSupportsInvalid;
         private float _meshGenerationTime;
@@ -29,9 +28,6 @@ namespace TrackEdit
 
             _biNormalField = typeof(TrackSegment4).GetField("startBinormal",
                 BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic);
-            _trackResetLength =
-                typeof(TrackSegment4).GetMethod("clearLength", BindingFlags.NonPublic | BindingFlags.Instance);
-
 
         }
 
@@ -39,7 +35,9 @@ namespace TrackEdit
         {
             var nextSegment = GetNextSegment(true);
             var previousSegment = GetPreviousSegment(true);
-            _edgeNode.Forward = nextSegment;
+            
+            if(IsConnectedForwardSegment())
+                _edgeNode.Forward = nextSegment;
             _edgeNode.Current = this;
             _edgeNode.OnNotifySegmentChange();
 
@@ -78,7 +76,6 @@ namespace TrackEdit
                 return Handler.GetSegmentHandler(
                     track.trackSegments[track.getNextSegmentIndex(track.trackSegments.IndexOf(TrackSegment))]);
             }
-
             return null;
         }
 
@@ -105,6 +102,20 @@ namespace TrackEdit
             return false;
         }
 
+        public bool IsConnectedForwardSegment()
+        {
+            TrackSegmentHandler next = GetNextSegment(true);
+            if (next == null)
+                return false;
+            return TrackSegment.isConnectedTo(next.TrackSegment);
+        }
+        public bool IsConnectedPreviousSegment()
+        {
+            TrackSegmentHandler previous = GetPreviousSegment(true);
+            if (previous == null)
+                return false;
+            return previous.TrackSegment.isConnectedTo(TrackSegment);
+        }
 
         public bool ConnectWithForwardSegment(TrackSegmentHandler next)
         {
@@ -133,8 +144,8 @@ namespace TrackEdit
 
         private void RecalculateSegment()
         {
-            _trackResetLength.Invoke(TrackSegment, new object[] { });
-
+            typeof(TrackSegment4).GetMethod("clearLength", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(TrackSegment, new object[] { });
+            
             var previousSegment = GetPreviousSegment(true);
             if (previousSegment != null)
             {
@@ -147,7 +158,7 @@ namespace TrackEdit
                 if (nextSegment != null)
                 {
                     nextSegment.TrackSegment.calculateLengthAndNormals(TrackSegment);
-                    
+
                     //try to match the curve 
                     for (var x = 0; x < 10; x++)
                     {
@@ -172,6 +183,8 @@ namespace TrackEdit
                     TrackSegment.calculateLengthAndNormals(previousSegment.TrackSegment);
                 }
             }
+            TrackSegment.calculateLengthAndNormals(null);
+
         }
 
         
@@ -220,16 +233,14 @@ namespace TrackEdit
             {
                 if(GetNextSegment(TrackSegment) == null) Handler.TrackBuilder.generateNewGhost();
 
-                RecalculateSegment();
                 ResetMeshForTrackSegment(TrackSegment);
+                RecalculateSegment();
 
-                var localCrossTile = typeof(TrackSegment4).GetField("localCrossedTiles",
-                    BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic);
-                if (localCrossTile != null) localCrossTile.SetValue(TrackSegment, null);
+//                typeof(TrackSegment4).GetField("localCrossedTiles",BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic).SetValue(TrackSegment, null);
 //                TrackSegment.generateMesh(TrackSegment.track.TrackedRide.meshGenerator);
 
                 TrackSegment.Initialize();
-                
+      
                 _meshGenerationTime = Time.time;
                 Invalidate = false;
             }

@@ -17,6 +17,8 @@ namespace TrackEdit.Node
         
         private LineRenderer _lineRenderer;
 
+        private bool _isSnapping = false;
+        
         protected override void Awake()
         {
             base.Awake();
@@ -158,6 +160,32 @@ namespace TrackEdit.Node
 
         public override void OnHold()
         {
+            TrackSegmentHandler nextSegment = Current.GetNextSegment(false);
+            if (Current != null && nextSegment != null)
+            {
+                Vector3 current = Current.TrackSegment.transform.TransformPoint(Current.TrackSegment.curves.Last().p3);
+                Vector3 forward = nextSegment.TrackSegment.transform.TransformPoint(nextSegment.TrackSegment.curves.First().p0);
+                float mag = (current - forward).magnitude;
+                _isSnapping = false;
+                if (mag < .04f)
+                {
+
+//                    Current.TrackSegment.curves.Last().p0 = Current.TrackSegment.transform.InverseTransformPoint();
+                    
+                    transform.position = nextSegment.TrackSegment.transform.TransformPoint(nextSegment.TrackSegment.curves.First().p0);
+                    _forwardNode.transform.position =
+                        nextSegment.TrackSegment.transform.TransformPoint(nextSegment.TrackSegment.curves.First().p1);
+
+                    
+                        
+                        
+    
+                    _isSnapping = true;
+
+                }
+                    
+            }
+            
             base.OnHold();
         }
 
