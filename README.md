@@ -1,14 +1,14 @@
-![track edit](https://parkitectnexus.com/media/images/1920x1080/1618ff87ece5ac4192da6c6d036f9f9e901d1017.jpg)
-**Description**
+![track edit](https://steamuserimages-a.akamaihd.net/ugc/928177176931522825/BCA9A6EC3E858659AD9508937533CB62AB4256A3/)
 
-This mod allows the user to modify tracks.
+## Introduction
 
-**Planned Features**
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![](https://img.shields.io/steam/subscriptions/1321066360.svg)](https://steamcommunity.com/sharedfiles/filedetails/?id=1321066360)
 
-- Method to attach segment back onto the grid
-- re-implement segments and allow them to be built under the editor
 
-**Controls**
+This allows for the manipulation of tracks outside the normal grid boundries for Parkitect. This allows for the direct manipulate of the indvidual curves of any track segment in the game.
+
+## Controls
 
 - left-click drag - will move a track piece in the horizontal plane
 - left-click left-ctrl drag - will move the node in the vertical position only 
@@ -19,40 +19,25 @@ In the mod folder there is a config.json that can modified to change the key bin
 
 Consider donating if you want to see more: https://www.paypal.me/michaelpollind
 
-**Changelog**
-
-#### V1.3.6
-- Implemented way to change the rotation of segments
-- removed segment manager
-- Changed the way deltas are calculated to the next segment to be more general
-
-#### V1.3.7
-- implemented a better way to approximate the end track after extrusion from an end segment
-- track segments behind the extruded segment keep their shape
-- added loop step to calculating bi-normal to avoid segment breakage
-
-#### V1.3.8
-- fix a bug with stuck rotation of end segment
-- added grid to nodes
-
-#### V1.4.0
-- fixed shift bug with vertical drag and click
-- redid track regeneration to run faster and also account for supports better
 
 
-#### V1.4.1
-- removed unity project
-- added height mark helper
+# License
 
-#### V1.5
-- Removed special segment restrictions
-- Updated ghost when moving a segment around
-- Removed special UI
-- Chain lift is applied on extrude when selected from the track builder
+```
+/**
+* Copyright 2018 Michael Pollind
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
-
-**Notes**
-
-If you have any nice pictures using the mod I would like to exchange them with the default set of images I have at the moment.
-
-Please submit issues with the mod to this issue tracker: [here](https://github.com/pollend/Parkitect_Track_Modify/issues)
+```

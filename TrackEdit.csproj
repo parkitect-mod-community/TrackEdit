@@ -87,9 +87,9 @@
     <Compile Include="utility\FaceCamera.cs" />
     <Compile Include="utility\GameObjectUtility.cs" />
     <Compile Include="utility\MathHelper.cs" />
-    <Compile Include="utility\TrackNodeHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="license_template" />
     <Content Include="preview.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
