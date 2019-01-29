@@ -75,7 +75,10 @@ namespace TrackEdit
         {
             foreach (var segment in TrackRide.Track.trackSegments)
             {
-                Object.Destroy(segment.gameObject.GetComponent<TrackSegmentHandler>());           
+                if (segment != null && segment.gameObject != null)
+                {
+                    Object.Destroy(segment.gameObject.GetComponent<TrackSegmentHandler>());
+                }
             }
         }
 

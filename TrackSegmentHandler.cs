@@ -62,6 +62,16 @@ namespace TrackEdit
             if (nextSegment != null) nextSegment.RecalculateSegment();
         }
 
+        public float GetCurrentTotalRotation()
+        {
+            return TrackSegment.totalRotation;
+        }
+
+        public float GetStartRotation()
+        {
+            return TrackSegment.getSegmentStartRotation();
+        }
+
 
         public TrackSegmentHandler GetNextSegment(bool hasToBeConnected)
         {
@@ -131,17 +141,27 @@ namespace TrackEdit
                 TrackSegment.transform.TransformPoint(currentLastCurve.p3) +
                 next.TrackSegment.getTangentPoint(0f) * -1f * magnitude);
 
-
-            next.TrackSegment.calculateLengthAndNormals(TrackSegment);
+            
+            RecalculateSegment();
             next.RecalculateSegment();
+            
             Invalidate = true;
+            next.Invalidate = true;
+            
+            NotifySegmentChange();
+            next.NotifySegmentChange();
             return true;
         }
 
 
-        private void RecalculateSegment()
+        private void Recalculaterotation()
         {
             typeof(TrackSegment4).GetMethod("clearLength", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(TrackSegment, new object[] { });
+            TrackSegment.calculateLengthAndNormals(null);
+        }
+        
+        private void RecalculateSegment()
+        {
             
             var previousSegment = GetPreviousSegment(true);
             if (previousSegment != null)
@@ -154,7 +174,7 @@ namespace TrackEdit
 
                 if (nextSegment != null)
                 {
-                    nextSegment.TrackSegment.calculateLengthAndNormals(TrackSegment);
+                    nextSegment.Recalculaterotation();
 
                     //try to match the curve 
                     for (var x = 0; x < 10; x++)
@@ -167,7 +187,7 @@ namespace TrackEdit
                         TrackSegment.totalRotation =
                             previousSegment.TrackSegment.totalRotation +
                             TrackSegment.deltaRotation; // + TrackSegment.getAdditionalRotation ();
-                        TrackSegment.calculateLengthAndNormals(previousSegment.TrackSegment);
+                        Recalculaterotation();
                         if (previousSegment.TrackSegment.isConnectedTo(nextSegment.TrackSegment))
                             break;
                     }
@@ -177,7 +197,7 @@ namespace TrackEdit
                     TrackSegment.totalRotation =
                         previousSegment.TrackSegment.totalRotation +
                         TrackSegment.deltaRotation; // + TrackSegment.getAdditionalRotation ();
-                    TrackSegment.calculateLengthAndNormals(previousSegment.TrackSegment);
+                    Recalculaterotation();
                 }
             }
             TrackSegment.calculateLengthAndNormals(null);
@@ -189,6 +209,14 @@ namespace TrackEdit
         private void ResetMeshForTrackSegment(TrackSegment4 segment)
         {
             typeof(TrackSegment4).GetMethod("onKill", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(segment,new object[]{});
+            
+//            //TODO: do i need this?
+//            foreach (CrossedTileInfo crossedTileInfo in segment.getCrossedTiles().crossedTilesInfo)
+//            {
+//                GameController.Instance.park.trackSegmentRegistry.removeObject(segment, crossedTileInfo.getWorldX(), crossedTileInfo.getWorldZ());
+//                if (segment.track.TrackedRide.canOnlyPlaceOnWater)
+//                    GameController.Instance.park.tileTerraformingChangeRegistry.removeObject((ITileListenerTerraformingChange)segment.track.TrackedRide, crossedTileInfo.getWorldX(), crossedTileInfo.getWorldZ());
+//            }
             
             var generatedMesh = typeof(TrackSegment4).GetField("generatedMeshes",
                 BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic);
@@ -249,7 +277,7 @@ namespace TrackEdit
                 ResetMeshForTrackSegment(TrackSegment);
                 RecalculateSegment();
 
-//                typeof(TrackSegment4).GetField("localCrossedTiles",BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic).SetValue(TrackSegment, null);
+
 //                TrackSegment.generateMesh(TrackSegment.track.TrackedRide.meshGenerator);
 
                 TrackSegment.Initialize();

@@ -151,8 +151,10 @@ namespace TrackEdit.Node
         
         private static Mesh _nodeCircleMesh = null;
         private static Material _nodeMaterial = null;
+        private static Material _nodeErrorMaterial = null;
 
-        private static readonly int _TintColor = Shader.PropertyToID("_TintColor");
+
+        private static readonly int _TintColor = Shader.PropertyToID("_Color");
 
         public static T Build<T>() where T : EmptyNode
         {
@@ -168,7 +170,7 @@ namespace TrackEdit.Node
             sphereCollider.center = NodeOffset;
             sphereCollider.radius = .1f;
           
-            GameObject button = new GameObject();
+            GameObject button = new GameObject("button");
             
             MeshFilter meshFilter = button.AddComponent<MeshFilter>();
             meshFilter.sharedMesh = _nodeCircleMesh;
@@ -180,6 +182,17 @@ namespace TrackEdit.Node
 
             return result.AddComponent<T>();
         }
+
+        public static Material DefaultNodeMaterialError()
+        {
+            if (_nodeErrorMaterial  == null)
+            {
+                _nodeErrorMaterial  = new Material(Shader.Find("UI/Default"));
+                _nodeErrorMaterial.SetColor(_TintColor, new Color(255, 0, 0, 100));
+            }
+            return _nodeErrorMaterial ;
+        }
+
 
         public static Material DefaultNodeMaterial()
         {

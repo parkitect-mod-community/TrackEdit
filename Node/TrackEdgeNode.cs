@@ -63,11 +63,37 @@ namespace TrackEdit.Node
         }
         protected override void Update()
         {
+            if (Forward != null)
+            {
+                _lineRenderer.positionCount = 3;
+                _lineRenderer.SetPosition(2, _forwardNode.transform.position + NodeOffset);
+            }
+            else
+            {
+                _lineRenderer.positionCount = 2;
+            }
+
+            _lineRenderer.SetPosition(0, _backwardNode.transform.position + NodeOffset);
+            _lineRenderer.SetPosition(1, transform.position + NodeOffset);
+
             base.Update();
  
         }
 
-        
+        public override void OnRelease()
+        {
+            base.OnRelease();
+            if (_isSnapping && Current != null)
+            {
+                TrackSegmentHandler nextSegment = Current.GetNextSegment(false);
+                if (nextSegment != null)
+                { 
+                    _forwardNode.gameObject.SetActive(true);
+                    Current.ConnectWithForwardSegment(nextSegment);
+                }
+            }
+        }
+
         private void OnBeginHoldHandler(BaseNode node)
         {
             if (Current != null)
@@ -95,9 +121,57 @@ namespace TrackEdit.Node
         }
 
 
-        private void OnHoldHandler(BaseNode node)
+        private float _oldRotation = 0.0f;
+        private Vector3 _oldBackLocalPosition = Vector3.zero;
+
+        private void TrySnap()
         {
 
+            TrackSegmentHandler nextSegment = Current.GetNextSegment(false);
+            if (Current != null && nextSegment != null && !Current.IsConnectedForwardSegment())
+            {
+//                Vector3 currentPos = nextSegment.TrackSegment.transform.TransformPoint(nextSegment.TrackSegment.curves.First().p0);
+                Vector3 nextSegmentP0 =
+                    nextSegment.TrackSegment.transform.TransformPoint(nextSegment.TrackSegment.curves.First().p0);
+                Vector3 nextSegmentP1 =
+                    nextSegment.TrackSegment.transform.TransformPoint(nextSegment.TrackSegment.curves.First().p1);
+
+                Vector3 dir = nextSegmentP0 - nextSegmentP1;
+
+                float dist = (this.transform.position - nextSegmentP0).magnitude;
+
+                if (dist < .5f)
+                {
+                    transform.position = nextSegmentP0;
+                    _backwardNode.transform.position =
+                        nextSegmentP0 + dir.normalized *
+                        (_backwardNode.transform.position - transform.position).magnitude;
+                    _forwardNode.transform.position = nextSegmentP1;
+
+                    Current.CalculateWithNewTotalRotation(nextSegment.GetStartRotation());
+                    _isSnapping = true;
+
+                }
+                else
+                {
+                    if (_isSnapping)
+                    {
+                        _backwardNode.transform.localPosition = _oldBackLocalPosition;
+                        Current.CalculateWithNewTotalRotation(_oldRotation);
+                    }
+
+                    _oldRotation = Current.GetCurrentTotalRotation();
+                    _oldBackLocalPosition = _backwardNode.transform.localPosition;
+
+                    _isSnapping = false;
+                }
+            }
+        }
+
+        private void OnHoldHandler(BaseNode node)
+        {
+            TrySnap();
+            
             Vector3 currentNodePos = transform.position;
             Vector3 forwardNodePos = _forwardNode.transform.position;
             Vector3 backNodePos = _backwardNode.transform.position;
@@ -127,6 +201,10 @@ namespace TrackEdit.Node
                     Forward.TrackSegment.transform.InverseTransformPoint(forwardNodePos);
 
                 Forward.Invalidate = true;
+
+
+                MeshRenderer mesh = transform.Find("button").GetComponent<MeshRenderer>();
+                mesh.sharedMaterial = Current.IsConnected(Forward) ? DefaultNodeMaterial() : DefaultNodeMaterialError();
             }
 
             if (Current != null)
@@ -141,51 +219,13 @@ namespace TrackEdit.Node
             }
 
 
-            if (Forward != null)
-            {
-                _lineRenderer.positionCount = 3;
-                _lineRenderer.SetPosition(2, _forwardNode.transform.position + NodeOffset);
-            }
-            else
-            {
-                _lineRenderer.positionCount = 2;
-            }
-
-
-            _lineRenderer.SetPosition(0, _backwardNode.transform.position + NodeOffset);
-            _lineRenderer.SetPosition(1, transform.position + NodeOffset);
-
         }
 
         public override void OnHold()
         {
-            TrackSegmentHandler nextSegment = Current.GetNextSegment(false);
-//            if (Current != null && nextSegment != null)
-//            {
-//                Vector3 current = Current.TrackSegment.transform.TransformPoint(Current.TrackSegment.curves.Last().p3);
-//                Vector3 forward = nextSegment.TrackSegment.transform.TransformPoint(nextSegment.TrackSegment.curves.First().p0);
-//                float mag = (current - forward).magnitude;
-//                _isSnapping = false;
-//                if (mag < .04f)
-//                {
-//
-////                    Current.TrackSegment.curves.Last().p0 = Current.TrackSegment.transform.InverseTransformPoint();
-//                    
-//                    transform.position = nextSegment.TrackSegment.transform.TransformPoint(nextSegment.TrackSegment.curves.First().p0);
-//                    _forwardNode.transform.position =
-//                        nextSegment.TrackSegment.transform.TransformPoint(nextSegment.TrackSegment.curves.First().p1);
-//
-//                    
-//                        
-//                        
-//    
-//                    _isSnapping = true;
-//
-//                }
-//                    
-//            }
             
             base.OnHold();
+            
         }
 
         public void onActivate(RaycastHit hit)
