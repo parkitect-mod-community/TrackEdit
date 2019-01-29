@@ -6,30 +6,25 @@ using UnityEngine;
 
 namespace TrackEdit
 {
-    public class TrackSegmentHandler
+    public class TrackSegmentHandler : MonoBehaviour
     {
-        private readonly FieldInfo _biNormalField;
 
         private bool _isSupportsInvalid;
         private float _meshGenerationTime;
 
         public bool Invalidate { get; set; }
         public TrackSegment4 TrackSegment { get; private set; }
-        public TrackEditHandler Handler { get; private set; }
+        public TrackEditHandler Handler { get; set; }
+        
+        private TrackEdgeNode _edgeNode;
 
-        private readonly TrackEdgeNode _edgeNode;
-
-        public TrackSegmentHandler(TrackSegment4 segment, TrackEditHandler handler)
+        public void Awake()
         {
-            TrackSegment = segment;
-            Handler = handler;
-
             _edgeNode = TrackEdgeNode.Build<TrackEdgeNode>();
-
-            _biNormalField = typeof(TrackSegment4).GetField("startBinormal",
-                BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic);
-
+            TrackSegment = this.gameObject.GetComponent<TrackSegment4>();
         }
+        
+        
 
         public void NotifySegmentChange()
         {
@@ -73,9 +68,10 @@ namespace TrackEdit
             if (TrackSegment.isConnectedToNextSegment || !hasToBeConnected)
             {
                 var track = Handler.TrackRide.Track;
-                return Handler.GetSegmentHandler(
-                    track.trackSegments[track.getNextSegmentIndex(track.trackSegments.IndexOf(TrackSegment))]);
+                return track.trackSegments[track.getNextSegmentIndex(track.trackSegments.IndexOf(TrackSegment))]
+                    .GetComponent<TrackSegmentHandler>();
             }
+
             return null;
         }
 
@@ -84,8 +80,9 @@ namespace TrackEdit
             if (TrackSegment.isConnectedToPreviousSegment || !hasToBeConnected)
             {
                 var track = Handler.TrackRide.Track;
-                return Handler.GetSegmentHandler(
-                    track.trackSegments[track.getPreviousSegmentIndex(track.trackSegments.IndexOf(TrackSegment))]);
+                return
+                    track.trackSegments[track.getPreviousSegmentIndex(track.trackSegments.IndexOf(TrackSegment))]
+                        .GetComponent<TrackSegmentHandler>();
             }
 
             return null;
@@ -151,7 +148,7 @@ namespace TrackEdit
             {
                 var nextSegment = GetNextSegment(true);
 
-                _biNormalField.SetValue(TrackSegment,
+                typeof(TrackSegment4).GetField("startBinormal",BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic).SetValue(TrackSegment,
                     TrackSegment.transform.InverseTransformDirection(Vector3.Cross(
                         previousSegment.TrackSegment.getNormal(1f), previousSegment.TrackSegment.getTangentPoint(1f))));
 
@@ -198,7 +195,7 @@ namespace TrackEdit
             if (generatedMesh != null)
             {
                 var meshes = (List<Mesh>) generatedMesh.GetValue(segment);
-                foreach (var m in meshes) Object.Destroy(m);
+                foreach (var m in meshes) Destroy(m);
                 meshes.Clear();
             }
 
@@ -207,27 +204,43 @@ namespace TrackEdit
                 var meshFilter = child.gameObject.GetComponent<MeshFilter>();
                 if (meshFilter != null)
                 {
-                    Object.Destroy(meshFilter.mesh);
-                    Object.Destroy(meshFilter.sharedMesh);
+                    Destroy(meshFilter.mesh);
+                    Destroy(meshFilter.sharedMesh);
                 }
 
-                Object.DestroyImmediate(child.gameObject);
+                Destroy(child.gameObject);
             }
 
             MouseCollisions.Instance.removeColliders(segment, segment.gameObject);
             //UnityEngine.Object.DestroyImmediate( segment.gameObject.GetComponent<MouseCollider> ());
-            Object.Destroy(segment.gameObject.GetComponent<MeshCollider>());
-            Object.Destroy(segment.gameObject.GetComponent<BoundingMesh>());
+            Destroy(segment.gameObject.GetComponent<MeshCollider>());
+            Destroy(segment.gameObject.GetComponent<BoundingMesh>());
         }
 
 
-        public void OnDestroy()
+
+        private void OnDestroy()
         {
             if (_edgeNode != null)
-                Object.Destroy(_edgeNode.gameObject);
+                Destroy(_edgeNode.gameObject);
+
+            TrackSegmentHandler nextHandler = GetNextSegment(false);
+            if (nextHandler != null)
+            {
+                nextHandler.NotifySegmentChange();
+            }
+            
+            TrackSegmentHandler previousHandler = GetPreviousSegment(false);
+            if (previousHandler != null)
+            {
+                previousHandler.NotifySegmentChange();
+            }
+
+
         }
 
-        public void Update()
+
+        private void Update()
         { 
             if (Invalidate && Time.time - _meshGenerationTime > .05f )
             {

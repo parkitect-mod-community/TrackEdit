@@ -73,7 +73,6 @@ namespace TrackEdit.Node
 
         public override void OnHold()
         {
-            base.OnHold();
 
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             var point = ray.GetPoint(_distance);
@@ -130,6 +129,7 @@ namespace TrackEdit.Node
                     Mathf.Round(transform.position.y * _gridSubdivision) / _gridSubdivision,
                     Mathf.Round(transform.position.z * _gridSubdivision) / _gridSubdivision);
 
+            base.OnHold();
 
         }
 

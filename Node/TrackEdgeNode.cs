@@ -26,13 +26,13 @@ namespace TrackEdit.Node
             _backwardNode = Build<EmptyNode>();
             _rotationNode = RotationNode.Build(Current);
 
-            _forwardNode.OnHoldEvent += OnHold;
-            _backwardNode.OnHoldEvent += OnHold;
-            OnHoldEvent += OnHold;
+            _forwardNode.OnHoldEvent += OnHoldHandler;
+            _backwardNode.OnHoldEvent += OnHoldHandler;
+            OnHoldEvent += OnHoldHandler;
             
-            _forwardNode.OnBeginHoldEvent += OnBeginHold;
-            _backwardNode.OnBeginHoldEvent += OnBeginHold;
-            OnBeginHoldEvent += OnBeginHold;
+            _forwardNode.OnBeginHoldEvent += OnBeginHoldHandler;
+            _backwardNode.OnBeginHoldEvent += OnBeginHoldHandler;
+            OnBeginHoldEvent += OnBeginHoldHandler;
 
             _forwardNode.transform.parent = transform;
             _backwardNode.transform.parent = transform;
@@ -59,6 +59,7 @@ namespace TrackEdit.Node
                 transform.position =
                     Current.TrackSegment.transform.TransformPoint(Current.TrackSegment.curves.Last().p3);
             }
+            base.OnNotifySegmentChange();
         }
         protected override void Update()
         {
@@ -66,10 +67,8 @@ namespace TrackEdit.Node
  
         }
 
-
-
         
-        private void OnBeginHold(BaseNode node)
+        private void OnBeginHoldHandler(BaseNode node)
         {
             if (Current != null)
             {
@@ -96,9 +95,9 @@ namespace TrackEdit.Node
         }
 
 
-        private void OnHold(BaseNode node)
+        private void OnHoldHandler(BaseNode node)
         {
-            
+
             Vector3 currentNodePos = transform.position;
             Vector3 forwardNodePos = _forwardNode.transform.position;
             Vector3 backNodePos = _backwardNode.transform.position;
@@ -141,7 +140,7 @@ namespace TrackEdit.Node
 
             }
 
-            
+
             if (Forward != null)
             {
                 _lineRenderer.positionCount = 3;
@@ -151,9 +150,9 @@ namespace TrackEdit.Node
             {
                 _lineRenderer.positionCount = 2;
             }
-            
 
-            _lineRenderer.SetPosition(0, _backwardNode.transform.position + NodeOffset);               
+
+            _lineRenderer.SetPosition(0, _backwardNode.transform.position + NodeOffset);
             _lineRenderer.SetPosition(1, transform.position + NodeOffset);
 
         }
@@ -161,30 +160,30 @@ namespace TrackEdit.Node
         public override void OnHold()
         {
             TrackSegmentHandler nextSegment = Current.GetNextSegment(false);
-            if (Current != null && nextSegment != null)
-            {
-                Vector3 current = Current.TrackSegment.transform.TransformPoint(Current.TrackSegment.curves.Last().p3);
-                Vector3 forward = nextSegment.TrackSegment.transform.TransformPoint(nextSegment.TrackSegment.curves.First().p0);
-                float mag = (current - forward).magnitude;
-                _isSnapping = false;
-                if (mag < .04f)
-                {
-
-//                    Current.TrackSegment.curves.Last().p0 = Current.TrackSegment.transform.InverseTransformPoint();
-                    
-                    transform.position = nextSegment.TrackSegment.transform.TransformPoint(nextSegment.TrackSegment.curves.First().p0);
-                    _forwardNode.transform.position =
-                        nextSegment.TrackSegment.transform.TransformPoint(nextSegment.TrackSegment.curves.First().p1);
-
-                    
-                        
-                        
-    
-                    _isSnapping = true;
-
-                }
-                    
-            }
+//            if (Current != null && nextSegment != null)
+//            {
+//                Vector3 current = Current.TrackSegment.transform.TransformPoint(Current.TrackSegment.curves.Last().p3);
+//                Vector3 forward = nextSegment.TrackSegment.transform.TransformPoint(nextSegment.TrackSegment.curves.First().p0);
+//                float mag = (current - forward).magnitude;
+//                _isSnapping = false;
+//                if (mag < .04f)
+//                {
+//
+////                    Current.TrackSegment.curves.Last().p0 = Current.TrackSegment.transform.InverseTransformPoint();
+//                    
+//                    transform.position = nextSegment.TrackSegment.transform.TransformPoint(nextSegment.TrackSegment.curves.First().p0);
+//                    _forwardNode.transform.position =
+//                        nextSegment.TrackSegment.transform.TransformPoint(nextSegment.TrackSegment.curves.First().p1);
+//
+//                    
+//                        
+//                        
+//    
+//                    _isSnapping = true;
+//
+//                }
+//                    
+//            }
             
             base.OnHold();
         }

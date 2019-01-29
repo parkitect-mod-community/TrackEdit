@@ -14,15 +14,6 @@ namespace TrackEdit
         private IActivatable _activatedNode = null;
         private INode _hold = null;
 
-        private readonly Dictionary<TrackSegment4,TrackSegmentHandler> _handlers = new Dictionary<TrackSegment4, TrackSegmentHandler>();
-
-        public TrackSegmentHandler GetSegmentHandler(TrackSegment4 segment)
-        {
-            if(_handlers.ContainsKey(segment))
-                return _handlers[segment];
-            return null;
-        }
-
         private void Awake()
         {
             TrackBuilder = gameObject.GetComponentInChildren<TrackBuilder>();
@@ -55,43 +46,25 @@ namespace TrackEdit
         {
             foreach (var segment in TrackRide.Track.trackSegments)
             {
-                if (!_handlers.ContainsKey(segment))
-                {
-                    RegisterHandler(segment);
-                }
+                GameObject ob = segment.gameObject;
+                TrackSegmentHandler handler = ob.GetComponent<TrackSegmentHandler>();
+                if (handler == null)
+                    handler = ob.AddComponent<TrackSegmentHandler>();
+                handler.Handler = this;
             }
-
+            
             foreach (var segment in TrackRide.Track.trackSegments)
             {
-                TrackSegmentHandler handler = GetSegmentHandler(segment);
-                if(handler  != null)
+                GameObject ob = segment.gameObject;
+                TrackSegmentHandler handler = ob.GetComponent<TrackSegmentHandler>();
+                
+                if (handler != null)
+                {
                     handler.NotifySegmentChange();
-
+                }
             }
         }
 
-        public TrackSegmentHandler RegisterHandler(TrackSegment4 segment)
-        {
-            segment.OnDestroyed += () => {
-                if (_handlers.ContainsKey(segment)){
-                    TrackSegmentHandler handler = _handlers[segment];
-                            
-                    TrackSegmentHandler previous = handler.GetPreviousSegment(true);
-                    TrackSegmentHandler next = handler.GetNextSegment(true);
-                            
-                    if(previous != null)
-                        previous.NotifySegmentChange();
-                    if(next != null)
-                        next.NotifySegmentChange();
-
-                    _handlers.Remove(segment);
-                    handler.OnDestroy();
-                }
-            };
-            TrackSegmentHandler h = new TrackSegmentHandler(segment, this);
-            _handlers.Add(segment, h);
-            return h;
-        }
 
         private void OnDestroy()
         {
@@ -100,11 +73,10 @@ namespace TrackEdit
 
         private void clearHandlers()
         {
-            foreach (var handler in _handlers.Values)
+            foreach (var segment in TrackRide.Track.trackSegments)
             {
-                handler.OnDestroy();
-            }   
-            _handlers.Clear();
+                Object.Destroy(segment.gameObject.GetComponent<TrackSegmentHandler>());           
+            }
         }
 
         private void Update()
@@ -113,14 +85,7 @@ namespace TrackEdit
             if (ride != TrackRide)
             {
                 clearHandlers();
-            }
-
-            foreach (var segment in TrackRide.Track.trackSegments)
-            {
-                TrackSegmentHandler handler = GetSegmentHandler(segment);
-                if (handler != null)
-                    handler.Update();
-
+                TrackRide = ride;
             }
 
             Camera cam = Camera.main;
