@@ -42,6 +42,34 @@
       <HintPath>../../Parkitect_Data/Managed/Parkitect.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="ThirdParty, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>../../Parkitect_Data/Managed/ThirdParty.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ThirdParty., Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>../../Parkitect_Data/Managed/ThirdParty..dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ThirdParty.DynamicDecals, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>../../Parkitect_Data/Managed/ThirdParty.DynamicDecals.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ThirdParty.GraphMaker, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>../../Parkitect_Data/Managed/ThirdParty.GraphMaker.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ThirdParty.Lutify, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>../../Parkitect_Data/Managed/ThirdParty.Lutify.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ThirdParty.ScreenSpaceCloudShadow, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>../../Parkitect_Data/Managed/ThirdParty.ScreenSpaceCloudShadow.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ThirdParty.TiltShift, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>../../Parkitect_Data/Managed/ThirdParty.TiltShift.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>../../Parkitect_Data/Managed/UnityEngine.dll</HintPath>
       <Private>False</Private>

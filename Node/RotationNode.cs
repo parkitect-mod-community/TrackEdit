@@ -14,6 +14,7 @@
 * limitations under the License.
 */
 
+using Parkitect.UI;
 using TrackEdit.Node;
 using UnityEngine;
 
@@ -23,11 +24,9 @@ namespace TrackEdit
     {
 
         public TrackSegmentHandler Handler { get; set; }
+        private UIWorldSpaceText worldSpaceText;
 
 
-        private GameObject _angleGo;
-        private TextMesh _textMesh;
-        
         public override void OnNotifySegmentChange()
         {
         }
@@ -36,37 +35,42 @@ namespace TrackEdit
         {
             if (Handler != null)
             {
-                
-                Vector3 binormal = Vector3.Cross(Vector3.up, Handler.TrackSegment.getTangentPoint(1f));
-                _angleGo.transform.position = transform.position + binormal * 1.5f + Vector3.up * 1.5f;
-                _angleGo.transform.LookAt(Camera.main.transform, Vector3.up);
-               
-                transform.rotation =  Quaternion.LookRotation(Handler.TrackSegment.getTangentPoint(1f)) * Quaternion.Euler(0,0,Handler.TrackSegment.totalRotation);
 
-                _textMesh.text = Handler.TrackSegment.totalRotation % 360 + "\u00B0";
+                Vector3 binormal = Vector3.Cross(Vector3.up, Handler.TrackSegment.getTangentPoint(1f));
+//                worldSpaceText.gameObject.transform.position = transform.position + binormal * 1.5f + Vector3.up * 1.5f;
+//                worldSpaceText.gameObject.transform.LookAt(Camera.main.transform, Vector3.up);
+                worldSpaceText.rectTransform.position = transform.position + binormal * 1.5f + Vector3.up * 1.5f;
+                worldSpaceText.rectTransform.ForceUpdateRectTransforms();
+
+                transform.rotation = Quaternion.LookRotation(Handler.TrackSegment.getTangentPoint(1f)) *
+                                     Quaternion.Euler(0, 0, Handler.TrackSegment.totalRotation);
+
+                worldSpaceText.text.text = Handler.TrackSegment.totalRotation % 360 + "\u00B0";
             }
         }
 
         protected override void Awake()
         {
-            _angleGo = new GameObject();
-            MeshRenderer meshRenderer = _angleGo.AddComponent<MeshRenderer>();
-            meshRenderer.sharedMaterial = AssetManager.Instance.signTextMaterial;
-           
-            _textMesh = _angleGo.AddComponent<TextMesh>();
-            _textMesh.characterSize = .03f;
-            _textMesh.anchor = TextAnchor.MiddleCenter;
-            _textMesh.alignment = TextAlignment.Left;
-            _textMesh.fontSize = 125;
-            _textMesh.richText = true;
-            
+            worldSpaceText =
+                Object.Instantiate<UIWorldSpaceText>(ScriptableSingleton<UIAssetManager>.Instance.uiWorldSpaceTextGO);
+            worldSpaceText.text.color = Color.white;
+            worldSpaceText.text.fontSize = 18f;
         }
-        
+
+        private void OnDisable()
+        {
+            worldSpaceText.gameObject.SetActive(false);
+        }
+
+        private void OnEnable()
+        {
+            worldSpaceText.gameObject.SetActive(true);
+        }
+
 
         private void OnDestroy()
         {
-            if(_angleGo != null)
-                Destroy(_angleGo);
+            Object.Destroy((Object) this.worldSpaceText.gameObject);
         }
 
         public override void OnHold()
@@ -107,7 +111,7 @@ namespace TrackEdit
 
         public static readonly float RingRadius = 1.5f;
         public static readonly float HalfRingWidth = .02f;
-        
+
         public static RotationNode Build(TrackSegmentHandler handler)
         {
             if (_nodeRotateMesh == null)
@@ -116,7 +120,7 @@ namespace TrackEdit
                 combine[0].mesh = GameObjectUtility.CreateCircle(EmptyNode.NodeRadius, 10);
                 combine[0].transform = Matrix4x4.Translate(new Vector3(0, RingRadius, 0));
 
-                Mesh ring = GameObjectUtility.CreateRing(RingRadius - HalfRingWidth , RingRadius + HalfRingWidth , 40);
+                Mesh ring = GameObjectUtility.CreateRing(RingRadius - HalfRingWidth, RingRadius + HalfRingWidth, 40);
                 combine[1].mesh = ring;
                 combine[1].transform = Matrix4x4.identity;
 
@@ -128,7 +132,7 @@ namespace TrackEdit
 
             result.AddComponent<MeshFilter>().sharedMesh = _nodeRotateMesh;
             result.AddComponent<MeshRenderer>().sharedMaterial = EmptyNode.DefaultNodeMaterial();
-     
+
             SphereCollider sphereCollider = result.AddComponent<SphereCollider>();
             sphereCollider.center = new Vector3(0, RingRadius, 0);
             sphereCollider.radius = EmptyNode.NodeRadius;
