@@ -58,7 +58,7 @@ namespace TrackEdit.Node
             _lineRenderer = gameObject.AddComponent<LineRenderer>();
             _lineRenderer.positionCount = 3;
             _lineRenderer.useWorldSpace = true;
-            _lineRenderer.sharedMaterial = EmptyNode.DefaultNodeMaterial();
+//            _lineRenderer.sharedMaterial = EmptyNode.DefaultNodeMaterial();
             _lineRenderer.motionVectorGenerationMode = MotionVectorGenerationMode.Camera;
             _lineRenderer.allowOcclusionWhenDynamic = true;
             _lineRenderer.startWidth = .1f;
@@ -219,8 +219,8 @@ namespace TrackEdit.Node
                 Forward.Invalidate = true;
 
 
-                MeshRenderer mesh = transform.Find("button").GetComponent<MeshRenderer>();
-                mesh.sharedMaterial = Current.IsConnected(Forward) ? DefaultNodeMaterial() : DefaultNodeMaterialError();
+//                MeshRenderer mesh = transform.Find("button").GetComponent<MeshRenderer>();
+//                mesh.sharedMaterial = Current.IsConnected(Forward) ? DefaultNodeMaterial() : DefaultNodeMaterialError();
             }
 
             if (Current != null)

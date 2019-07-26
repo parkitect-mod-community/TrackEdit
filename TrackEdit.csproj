@@ -100,6 +100,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssetBundleManager.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="HeightMarkerPlane.cs" />
     <Compile Include="Main.cs" />
@@ -117,6 +118,10 @@
     <Compile Include="utility\MathHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assetbundle\trackedit">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="assetbundle\trackedit.manifest" />
     <Content Include="license_template" />
     <Content Include="preview.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

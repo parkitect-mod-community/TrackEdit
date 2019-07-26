@@ -48,11 +48,17 @@ namespace TrackEdit
                 triangleList.Add(vertexList.Count - 1);
                 triangleList.Add(vertexList.Count);
                 vertexList.Add(quaternion * vertexList[vertexList.Count - 1]);
+                
+
             }
             
             Mesh mesh = new Mesh();
             mesh.vertices = vertexList.ToArray();
             mesh.triangles = triangleList.ToArray();
+            
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+
             return mesh;
         }
 

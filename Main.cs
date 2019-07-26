@@ -36,6 +36,7 @@ namespace TrackEdit
   
         public void onEnabled()
         {
+            AssetBundleManager.Load(this);
             Global.NO_TRACKBUILDER_RESTRICTIONS = true;
 
             if (Configuration == null)

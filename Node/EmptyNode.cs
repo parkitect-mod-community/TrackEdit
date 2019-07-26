@@ -188,9 +188,17 @@ namespace TrackEdit.Node
             GameObject button = new GameObject("button");
             
             MeshFilter meshFilter = button.AddComponent<MeshFilter>();
-            meshFilter.sharedMesh = _nodeCircleMesh;
+            meshFilter.mesh = _nodeCircleMesh;//ScriptableSingleton<AssetManager>.Instance.guestSittingMesh;
+            
+            
             MeshRenderer meshRenderer = button.AddComponent<MeshRenderer>();
-            meshRenderer.sharedMaterial = DefaultNodeMaterial();
+            
+//            meshRenderer.materials = new Material[1];
+//            meshRenderer.sharedMaterial = new Material(ScriptableSingleton<AssetManager>.Instance.standardShader);
+            meshRenderer.materials = new Material[1];
+//            meshRenderer.materials[0] = AssetBundleManager.NodeShader;
+            meshRenderer.sharedMaterial = AssetBundleManager.NodeShader;
+            
             button.transform.parent = result.transform;
             button.transform.localPosition = NodeOffset;
             button.AddComponent<FaceCamera>();
@@ -198,26 +206,28 @@ namespace TrackEdit.Node
             return result.AddComponent<T>();
         }
 
-        public static Material DefaultNodeMaterialError()
-        {
-            if (_nodeErrorMaterial  == null)
-            {
-                _nodeErrorMaterial  = new Material(Shader.Find("UI/Default"));
-                _nodeErrorMaterial.SetColor(_TintColor, new Color(255, 0, 0, 100));
-            }
-            return _nodeErrorMaterial ;
-        }
-
-
-        public static Material DefaultNodeMaterial()
-        {
-            if (_nodeMaterial == null)
-            {
-                _nodeMaterial = new Material(Shader.Find("UI/Default"));
-                _nodeMaterial.SetColor(_TintColor, new Color(255, 255, 255, 100));
-            }
-            return _nodeMaterial;
-        }
+//        public static Material DefaultNodeMaterialError()
+//        {
+//            if (_nodeErrorMaterial  == null)
+//            {
+//                
+//                _nodeErrorMaterial  = new Material(Shader.Find("UI/Default"));
+//                _nodeErrorMaterial.SetColor(_TintColor, new Color(255, 0, 0, 100));
+//            }
+//            return _nodeErrorMaterial ;
+//        }
+//
+//
+//        public static Material DefaultNodeMaterial()
+//        {
+//            if (_nodeMaterial == null)
+//            {
+////                ;//
+//                _nodeMaterial = ScriptableSingleton<AssetManager>.Instance.diffuseMaterial;
+////                _nodeMaterial.SetColor(_TintColor, new Color(255, 255, 255, 100));
+//            }
+//            return _nodeMaterial;
+//        }
         
 
 

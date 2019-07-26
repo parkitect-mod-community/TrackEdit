@@ -131,7 +131,7 @@ namespace TrackEdit
             GameObject result = new GameObject();
 
             result.AddComponent<MeshFilter>().sharedMesh = _nodeRotateMesh;
-            result.AddComponent<MeshRenderer>().sharedMaterial = EmptyNode.DefaultNodeMaterial();
+//            result.AddComponent<MeshRenderer>().sharedMaterial = EmptyNode.DefaultNodeMaterial();
 
             SphereCollider sphereCollider = result.AddComponent<SphereCollider>();
             sphereCollider.center = new Vector3(0, RingRadius, 0);
