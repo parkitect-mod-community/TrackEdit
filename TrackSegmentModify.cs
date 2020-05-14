@@ -98,7 +98,7 @@ namespace TrackEdit
                         TrackSegment.totalRotation =
                             previousSegment.TrackSegment.totalRotation +
                             TrackSegment.deltaRotation; // + TrackSegment.getAdditionalRotation ();
-                        TrackSegment.calculateLengthAndNormals(previousSegment.TrackSegment);
+                        TrackSegment.calculateLengthAndNormals();
                         if (previousSegment.TrackSegment.isConnectedTo(nextSegment.TrackSegment))
                             break;
                     }
@@ -108,7 +108,7 @@ namespace TrackEdit
                     TrackSegment.totalRotation =
                         previousSegment.TrackSegment.totalRotation +
                         TrackSegment.deltaRotation; // + TrackSegment.getAdditionalRotation ();
-                    TrackSegment.calculateLengthAndNormals(previousSegment.TrackSegment);
+                    TrackSegment.calculateLengthAndNormals();
                 }
             }
         }
@@ -125,7 +125,7 @@ namespace TrackEdit
             {
                 TrackSegment.deltaRotation += diff;
                 TrackSegment.totalRotation += diff;
-                TrackSegment.calculateLengthAndNormals(previousSegment.TrackSegment);
+                TrackSegment.calculateLengthAndNormals();
             }
 
             if (nextSegment != null) nextSegment.CalculateStartBinormal(true);
@@ -169,7 +169,7 @@ namespace TrackEdit
                                      next.TrackSegment.getTangentPoint(0f) * -1f * magnitude);
 
 
-            next.TrackSegment.calculateLengthAndNormals(GetLastCurve.SegmentModify.TrackSegment);
+            next.TrackSegment.calculateLengthAndNormals();
             next.CalculateStartBinormal(false);
             Invalidate = true;
             return true;

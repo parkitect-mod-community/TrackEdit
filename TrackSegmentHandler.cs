@@ -73,7 +73,7 @@ namespace TrackEdit
             {
                 TrackSegment.deltaRotation += diff;
                 TrackSegment.totalRotation += diff;
-                TrackSegment.calculateLengthAndNormals(previousSegment.TrackSegment);
+                TrackSegment.calculateLengthAndNormals();
             }
 
             if (nextSegment != null) nextSegment.RecalculateSegment();
@@ -174,7 +174,7 @@ namespace TrackEdit
         private void Recalculaterotation()
         {
             typeof(TrackSegment4).GetMethod("clearLength", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(TrackSegment, new object[] { });
-            TrackSegment.calculateLengthAndNormals(null);
+            TrackSegment.calculateLengthAndNormals();
         }
         
         private void RecalculateSegment()
@@ -217,7 +217,7 @@ namespace TrackEdit
                     Recalculaterotation();
                 }
             }
-            TrackSegment.calculateLengthAndNormals(null);
+            TrackSegment.calculateLengthAndNormals();
 
         }
 

@@ -39,63 +39,63 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Parkitect">
-      <HintPath>../../Parkitect_Data/Managed/Parkitect.dll</HintPath>
+      <HintPath>../../../Parkitect_Data/Managed/Parkitect.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ThirdParty, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>../../Parkitect_Data/Managed/ThirdParty.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ThirdParty., Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>../../Parkitect_Data/Managed/ThirdParty..dll</HintPath>
+      <HintPath>../../../Parkitect_Data/Managed/ThirdParty.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ThirdParty.DynamicDecals, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>../../Parkitect_Data/Managed/ThirdParty.DynamicDecals.dll</HintPath>
+      <HintPath>../../../Parkitect_Data/Managed/ThirdParty.DynamicDecals.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ThirdParty.GraphMaker, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>../../Parkitect_Data/Managed/ThirdParty.GraphMaker.dll</HintPath>
+      <HintPath>../../../Parkitect_Data/Managed/ThirdParty.GraphMaker.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ThirdParty.Lutify, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>../../Parkitect_Data/Managed/ThirdParty.Lutify.dll</HintPath>
+      <HintPath>../../../Parkitect_Data/Managed/ThirdParty.Lutify.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ThirdParty.ScreenSpaceCloudShadow, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>../../Parkitect_Data/Managed/ThirdParty.ScreenSpaceCloudShadow.dll</HintPath>
+      <HintPath>../../../Parkitect_Data/Managed/ThirdParty.ScreenSpaceCloudShadow.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ThirdParty.TiltShift, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>../../Parkitect_Data/Managed/ThirdParty.TiltShift.dll</HintPath>
+      <HintPath>../../../Parkitect_Data/Managed/ThirdParty.TiltShift.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>../../Parkitect_Data/Managed/UnityEngine.dll</HintPath>
+      <HintPath>../../../Parkitect_Data/Managed/UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>../../Parkitect_Data/Managed/UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>../../../Parkitect_Data/Managed/UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>../../Parkitect_Data/Managed/UnityEngine.IMGUIModule.dll</HintPath>
+      <HintPath>../../../Parkitect_Data/Managed/UnityEngine.IMGUIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>../../Parkitect_Data/Managed/UnityEngine.PhysicsModule.dll</HintPath>
+      <HintPath>../../../Parkitect_Data/Managed/UnityEngine.PhysicsModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>../../Parkitect_Data/Managed/UnityEngine.TextRenderingModule.dll</HintPath>
+      <HintPath>../../../Parkitect_Data/Managed/UnityEngine.TextRenderingModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>../../Parkitect_Data/Managed/UnityEngine.UI.dll</HintPath>
+      <HintPath>../../../Parkitect_Data/Managed/UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UnityWebRequestWWWModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>../../Parkitect_Data/Managed/UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+      <HintPath>../../../Parkitect_Data/Managed/UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>../../../Parkitect_Data/Managed/Unity.TextMeshPro.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>

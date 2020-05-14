@@ -44,7 +44,7 @@ namespace TrackEdit
 
                 transform.rotation = Quaternion.LookRotation(Handler.TrackSegment.getTangentPoint(1f)) *
                                      Quaternion.Euler(0, 0, Handler.TrackSegment.totalRotation);
-
+                
                 worldSpaceText.text.text = Handler.TrackSegment.totalRotation % 360 + "\u00B0";
             }
         }

@@ -113,7 +113,8 @@ namespace TrackEdit
                 if (Input.GetMouseButtonDown(0))
                 {
 
-                    if (Physics.Raycast(ray, out var hit, Mathf.Infinity, LayerMasks.ID_COASTER_TRACKS))
+                    RaycastHit hit;
+                    if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMasks.ID_COASTER_TRACKS))
                     {
                         INode node = hit.transform.gameObject.GetComponent<BaseNode>();
                         if (node is IActivatable)
