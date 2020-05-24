@@ -33,15 +33,13 @@ namespace TrackEdit.Node
 
         private Vector3 _dragPosition = Vector3.zero;
 
-        private BuilderHeightMarker _heightMarker;
-
         public void OnRemove()
         {
         }
 
         protected override void Awake()
         {
-           
+
         }
 
         public override void OnNotifySegmentChange()
@@ -56,12 +54,12 @@ namespace TrackEdit.Node
                 resetToDefaultGrid();
                 _isGridActive = false;
             }
-            
+
             if (Input.GetKeyUp(Main.Configuration.Settings.VerticalKey))
             {
                 var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 var point = ray.GetPoint(_distance);
-                
+
                 _verticalDragState = false;
                 _offset = this.transform.position - point;
             }
@@ -70,7 +68,7 @@ namespace TrackEdit.Node
         public override void OnBeginHold(RaycastHit hit)
         {
             base.OnBeginHold(hit);
-            
+
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             _distance = (ray.origin - hit.point).magnitude;
             var point = ray.GetPoint(_distance);
@@ -163,7 +161,7 @@ namespace TrackEdit.Node
 
         public static readonly Vector3 NodeOffset = new Vector3(0, .6f, 0);
         public static readonly float NodeRadius = .1f;
-        
+
         private static Mesh _nodeCircleMesh = null;
         private static Material _nodeMaterial = null;
         private static Material _nodeErrorMaterial = null;
@@ -184,9 +182,9 @@ namespace TrackEdit.Node
             SphereCollider sphereCollider = result.AddComponent<SphereCollider>();
             sphereCollider.center = NodeOffset;
             sphereCollider.radius = .1f;
-          
+
             GameObject button = new GameObject("button");
-            
+
             MeshFilter meshFilter = button.AddComponent<MeshFilter>();
             meshFilter.sharedMesh = _nodeCircleMesh;
             MeshRenderer meshRenderer = button.AddComponent<MeshRenderer>();
@@ -218,7 +216,7 @@ namespace TrackEdit.Node
             }
             return _nodeMaterial;
         }
-        
+
 
 
     }

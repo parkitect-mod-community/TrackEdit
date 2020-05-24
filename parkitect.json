@@ -1,0 +1,27 @@
+{
+    "name": "TrackEdit",
+    "folder": "pollend@TrackEdit",
+    "version": "v1.0.0",
+    "workshop": "1321066360",
+    "author": "Michael Pollind",
+    "description": null,
+    "preview": "./preview.png",
+    "assemblies": [
+      "System",
+      "System.Core",
+      "System.Data",
+      "UnityEngine",
+      "UnityEngine.AssetBundleModule",
+      "UnityEngine.CoreModule",
+      "Parkitect",
+      "UnityEngine",
+      "UnityEngine.UI",
+      "UnityEngine.PhysicsModule",
+      "UnityEngine.IMGUIModule",
+      "UnityEngine.TextRenderingModule",
+      "ThirdParty."
+    ],
+    "assets": [
+      "assetbundle/**"
+    ]
+  }

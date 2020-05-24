@@ -25,14 +25,12 @@ namespace TrackEdit
 {
     public class TrackSegmentHandler : MonoBehaviour
     {
-
-        private bool _isSupportsInvalid;
         private float _meshGenerationTime;
 
         public bool Invalidate { get; set; }
         public TrackSegment4 TrackSegment { get; private set; }
         public TrackEditHandler Handler { get; set; }
-        
+
         private TrackEdgeNode _edgeNode;
 
         public void Awake()
@@ -40,14 +38,14 @@ namespace TrackEdit
             _edgeNode = TrackEdgeNode.Build<TrackEdgeNode>();
             TrackSegment = this.gameObject.GetComponent<TrackSegment4>();
         }
-        
-        
+
+
 
         public void NotifySegmentChange()
         {
             var nextSegment = GetNextSegment(true);
             var previousSegment = GetPreviousSegment(true);
-            
+
             if(IsConnectedForwardSegment())
                 _edgeNode.Forward = nextSegment;
             _edgeNode.Current = this;
@@ -60,7 +58,7 @@ namespace TrackEdit
             return TrackSegment.track.trackSegments.IndexOf(TrackSegment);
         }
 
-        
+
 
         //calculate new rotation for segment and update the total and delta rotation
         public void CalculateWithNewTotalRotation(float newRotation)
@@ -158,13 +156,13 @@ namespace TrackEdit
                 TrackSegment.transform.TransformPoint(currentLastCurve.p3) +
                 next.TrackSegment.getTangentPoint(0f) * -1f * magnitude);
 
-            
+
             RecalculateSegment();
             next.RecalculateSegment();
-            
+
             Invalidate = true;
             next.Invalidate = true;
-            
+
             NotifySegmentChange();
             next.NotifySegmentChange();
             return true;
@@ -176,10 +174,10 @@ namespace TrackEdit
             typeof(TrackSegment4).GetMethod("clearLength", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(TrackSegment, new object[] { });
             TrackSegment.calculateLengthAndNormals();
         }
-        
+
         private void RecalculateSegment()
         {
-            
+
             var previousSegment = GetPreviousSegment(true);
             if (previousSegment != null)
             {
@@ -193,7 +191,7 @@ namespace TrackEdit
                 {
                     nextSegment.Recalculaterotation();
 
-                    //try to match the curve 
+                    //try to match the curve
                     for (var x = 0; x < 10; x++)
                     {
                         TrackSegment.deltaRotation -= MathHelper.AngleSigned(
@@ -221,12 +219,12 @@ namespace TrackEdit
 
         }
 
-        
-        
+
+
         private void ResetMeshForTrackSegment(TrackSegment4 segment)
         {
             typeof(TrackSegment4).GetMethod("onKill", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(segment,new object[]{});
-            
+
 //            //TODO: do i need this?
 //            foreach (CrossedTileInfo crossedTileInfo in segment.getCrossedTiles().crossedTilesInfo)
 //            {
@@ -234,7 +232,7 @@ namespace TrackEdit
 //                if (segment.track.TrackedRide.canOnlyPlaceOnWater)
 //                    GameController.Instance.park.tileTerraformingChangeRegistry.removeObject((ITileListenerTerraformingChange)segment.track.TrackedRide, crossedTileInfo.getWorldX(), crossedTileInfo.getWorldZ());
 //            }
-            
+
             var generatedMesh = typeof(TrackSegment4).GetField("generatedMeshes",
                 BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic);
             if (generatedMesh != null)
@@ -274,7 +272,7 @@ namespace TrackEdit
             {
                 nextHandler.NotifySegmentChange();
             }
-            
+
             TrackSegmentHandler previousHandler = GetPreviousSegment(false);
             if (previousHandler != null)
             {
@@ -286,7 +284,7 @@ namespace TrackEdit
 
 
         private void Update()
-        { 
+        {
             if (Invalidate && Time.time - _meshGenerationTime > .05f )
             {
                 if(GetNextSegment(TrackSegment) == null) Handler.TrackBuilder.generateNewGhost();
@@ -298,7 +296,7 @@ namespace TrackEdit
 //                TrackSegment.generateMesh(TrackSegment.track.TrackedRide.meshGenerator);
 
                 TrackSegment.Initialize();
-      
+
                 _meshGenerationTime = Time.time;
                 Invalidate = false;
             }

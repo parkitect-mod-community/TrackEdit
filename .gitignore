@@ -31,3 +31,10 @@ _UpgradeReport_Files/
 Thumbs.db
 Desktop.ini
 .DS_Store 
+
+
+*.csproj
+*.sln
+steam_workshop-id
+.Parkitect
+.idea/

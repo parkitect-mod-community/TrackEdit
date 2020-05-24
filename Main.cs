@@ -19,7 +19,7 @@ using UnityEngine;
 
 namespace TrackEdit
 {
-    
+
     public class Main : IMod, IModSettings
     {
 
@@ -33,7 +33,7 @@ namespace TrackEdit
             }
         }
 
-  
+
         public void onEnabled()
         {
             Global.NO_TRACKBUILDER_RESTRICTIONS = true;
@@ -47,7 +47,6 @@ namespace TrackEdit
 
 //            GameObject go =  ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject;
 //            TrackBuilder trackBuilder = go.GetComponent<TrackBuilder>();
-
 
             ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject.AddComponent<TrackEditHandler>();
         }
