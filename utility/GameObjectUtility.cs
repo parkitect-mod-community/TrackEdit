@@ -25,9 +25,9 @@ namespace TrackEdit
     {
         private GameObjectUtility()
         {
-            
+
         }
-        
+
         public static Mesh CreateCircle(float radius,int numOfPoints)
         {
             float angleStep = 360.0f / numOfPoints;
@@ -49,7 +49,7 @@ namespace TrackEdit
                 triangleList.Add(vertexList.Count);
                 vertexList.Add(quaternion * vertexList[vertexList.Count - 1]);
             }
-            
+
             Mesh mesh = new Mesh();
             mesh.vertices = vertexList.ToArray();
             mesh.triangles = triangleList.ToArray();
@@ -61,9 +61,9 @@ namespace TrackEdit
             float angleStep = 360.0f / numOfPoints;
             List<Vector3> vertexList = new List<Vector3>();
             List<int> triangleList = new List<int>();
-            
+
             Quaternion quaternion = Quaternion.Euler(0.0f, 0.0f, angleStep);
-            
+
             vertexList.Add(new Vector3(0.0f, inner, 0.0f));
             vertexList.Add(new Vector3(0.0f, outer, 0.0f));
 
@@ -72,21 +72,21 @@ namespace TrackEdit
                 int innerIndex = vertexList.Count - 2;
                 int outerIndex = vertexList.Count - 1;
 
-     
+
                 vertexList.Add(quaternion * vertexList[vertexList.Count - 2]);
                 vertexList.Add(quaternion * vertexList[vertexList.Count - 1]);
-                
+
                 int nextInnerIndex = vertexList.Count - 2;
                 int nextOuterIndex = vertexList.Count - 1;
 
-                triangleList.Add(outerIndex);                     
+                triangleList.Add(outerIndex);
                 triangleList.Add(innerIndex);
                 triangleList.Add(nextOuterIndex);
-                
-                triangleList.Add(outerIndex);                     
+
+                triangleList.Add(outerIndex);
                 triangleList.Add(nextInnerIndex);
                 triangleList.Add(innerIndex);
-                
+
             }
             Mesh mesh = new Mesh();
             mesh.vertices = vertexList.ToArray();
@@ -94,17 +94,18 @@ namespace TrackEdit
             return mesh;
         }
 
-        
-       
 
-       
+
+
+
 
         public static Material _MaterialPlane = null;
         public static Material GetMaterialPlane()
         {
             if (_MaterialPlane == null)
             {
-                _MaterialPlane = new Material(Shader.Find("GUI/Text Shader"));
+
+                _MaterialPlane = new Material(AssetManager.Instance.diffuseMaterial);
                 _MaterialPlane.SetColor("_TintColor", new Color(255, 255, 255, 100));
                 _MaterialPlane.SetTexture("_MainTex",
                     AssetManager.Instance.terrainGridProjectorGO.GetComponent<Light>().cookie);
@@ -114,6 +115,6 @@ namespace TrackEdit
 
             return _MaterialPlane;
         }
-     
+
     }
 }

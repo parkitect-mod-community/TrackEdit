@@ -200,8 +200,10 @@ namespace TrackEdit.Node
         {
             if (_nodeErrorMaterial  == null)
             {
-                _nodeErrorMaterial  = new Material(Shader.Find("UI/Default"));
-                _nodeErrorMaterial.SetColor(_TintColor, new Color(255, 0, 0, 100));
+                _nodeErrorMaterial  = new Material(Shader.Find("GUI/Text Shader"));
+                _nodeErrorMaterial.color = new Color(1f, 0.00f, 0f, 1f);
+
+                // _nodeErrorMaterial.SetColor("_TintColor", new Color(255, 0, 0, 100));
             }
             return _nodeErrorMaterial ;
         }
@@ -211,8 +213,9 @@ namespace TrackEdit.Node
         {
             if (_nodeMaterial == null)
             {
-                _nodeMaterial = new Material(Shader.Find("UI/Default"));
-                _nodeMaterial.SetColor(_TintColor, new Color(255, 255, 255, 100));
+                _nodeMaterial = new Material(Shader.Find("GUI/Text Shader"));
+                _nodeMaterial.color =new Color(1f, 1f, 1f, 1f);
+                // _nodeMaterial.SetColor("_TintColor", new Color(255, 255, 255, 100));
             }
             return _nodeMaterial;
         }
