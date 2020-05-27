@@ -19,7 +19,8 @@
       "UnityEngine.PhysicsModule",
       "UnityEngine.IMGUIModule",
       "UnityEngine.TextRenderingModule",
-      "ThirdParty."
+      "ThirdParty.",
+      "Unity.TextMeshPro"
     ],
     "assets": [
       "assetbundle/**"
