@@ -46,8 +46,11 @@ namespace TrackEdit
             var nextSegment = GetNextSegment(true);
             var previousSegment = GetPreviousSegment(true);
 
-            if(IsConnectedForwardSegment())
+            if (IsConnectedForwardSegment())
+            {
                 _edgeNode.Forward = nextSegment;
+            }
+
             _edgeNode.Current = this;
             _edgeNode.OnNotifySegmentChange();
 
@@ -57,7 +60,6 @@ namespace TrackEdit
         {
             return TrackSegment.track.trackSegments.IndexOf(TrackSegment);
         }
-
 
 
         //calculate new rotation for segment and update the total and delta rotation
@@ -131,6 +133,7 @@ namespace TrackEdit
                 return false;
             return TrackSegment.isConnectedTo(next.TrackSegment);
         }
+
         public bool IsConnectedPreviousSegment()
         {
             TrackSegmentHandler previous = GetPreviousSegment(true);
@@ -171,7 +174,8 @@ namespace TrackEdit
 
         private void Recalculaterotation()
         {
-            typeof(TrackSegment4).GetMethod("clearLength", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(TrackSegment, new object[] { });
+            typeof(TrackSegment4).GetMethod("clearLength", BindingFlags.NonPublic | BindingFlags.Instance)
+                .Invoke(TrackSegment, new object[] { });
             TrackSegment.calculateLengthAndNormals();
         }
 
@@ -183,9 +187,12 @@ namespace TrackEdit
             {
                 var nextSegment = GetNextSegment(true);
 
-                typeof(TrackSegment4).GetField("startBinormal",BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic).SetValue(TrackSegment,
-                    TrackSegment.transform.InverseTransformDirection(Vector3.Cross(
-                        previousSegment.TrackSegment.getNormal(1f), previousSegment.TrackSegment.getTangentPoint(1f))));
+                typeof(TrackSegment4)
+                    .GetField("startBinormal", BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic)
+                    .SetValue(TrackSegment,
+                        TrackSegment.transform.InverseTransformDirection(Vector3.Cross(
+                            previousSegment.TrackSegment.getNormal(1f),
+                            previousSegment.TrackSegment.getTangentPoint(1f))));
 
                 if (nextSegment != null)
                 {
@@ -215,6 +222,7 @@ namespace TrackEdit
                     Recalculaterotation();
                 }
             }
+
             TrackSegment.calculateLengthAndNormals();
 
         }
@@ -224,6 +232,7 @@ namespace TrackEdit
         private void ResetMeshForTrackSegment(TrackSegment4 segment)
         {
             typeof(TrackSegment4).GetMethod("onKill", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(segment,new object[]{});
+            segment.decoScoreTrackers.Clear();
 
 //            //TODO: do i need this?
 //            foreach (CrossedTileInfo crossedTileInfo in segment.getCrossedTiles().crossedTilesInfo)
@@ -278,20 +287,16 @@ namespace TrackEdit
             {
                 previousHandler.NotifySegmentChange();
             }
-
-
         }
-
 
         private void Update()
         {
-            if (Invalidate && Time.time - _meshGenerationTime > .05f )
+            if (Invalidate && Time.time - _meshGenerationTime > .05f)
             {
-                if(GetNextSegment(TrackSegment) == null) Handler.TrackBuilder.generateNewGhost();
+                if (GetNextSegment(TrackSegment) == null) Handler.TrackBuilder.generateNewGhost();
 
                 ResetMeshForTrackSegment(TrackSegment);
                 RecalculateSegment();
-
 
 //                TrackSegment.generateMesh(TrackSegment.track.TrackedRide.meshGenerator);
 
@@ -300,7 +305,6 @@ namespace TrackEdit
                 _meshGenerationTime = Time.time;
                 Invalidate = false;
             }
-
         }
     }
 }

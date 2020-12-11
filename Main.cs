@@ -20,22 +20,46 @@ using UnityEngine;
 namespace TrackEdit
 {
 
-    public class Main : IMod, IModSettings
+    public class Main : AbstractMod, IModSettings
     {
 
         public static Configuration Configuration;
+
         public string Path
         {
             get
             {
+
                 var path = ModManager.Instance.getModEntries().First(x => x.mod == this).path;
                 return path;
             }
         }
 
 
-        public void onEnabled()
+        public override string getName()
         {
+            return "Track Edit 2";
+        }
+
+        public override string getDescription()
+        {
+            return "Allows the user to modify track paths";
+        }
+
+        public override string getVersionNumber()
+        {
+            return "1.0";
+        }
+
+        public override string getIdentifier()
+        {
+            return "TrackEdit_2";
+        }
+
+        public override void onEnabled()
+        {
+            base.onEnabled();
+
             Global.NO_TRACKBUILDER_RESTRICTIONS = true;
 
             if (Configuration == null)
@@ -45,25 +69,17 @@ namespace TrackEdit
                 Configuration.Save();
             }
 
-//            GameObject go =  ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject;
-//            TrackBuilder trackBuilder = go.GetComponent<TrackBuilder>();
-
-            ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject.AddComponent<TrackEditHandler>();
+            ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject
+                .AddComponent<TrackEditHandler>();
         }
 
-        public void onDisabled()
+        public override void onDisabled()
         {
             Global.NO_TRACKBUILDER_RESTRICTIONS = false;
 
             Object.Destroy(ScriptableSingleton<UIAssetManager>.Instance.trackBuilderWindowGO.gameObject
                 .GetComponent<TrackEditHandler>());
         }
-
-        public string Name => "Track Edit 2";
-
-        public string Description => "Allows the user to modify track paths";
-
-        string IMod.Identifier => "TrackEdit_2";
 
         public void onDrawSettingsUI()
         {
